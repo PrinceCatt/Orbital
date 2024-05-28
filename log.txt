@@ -1,0 +1,5 @@
+Orbital log:
+
+Date, Time, event
+5/14-5/31, 15 hours, learning basic usage of Springboot, MyBatis and Vue
+
