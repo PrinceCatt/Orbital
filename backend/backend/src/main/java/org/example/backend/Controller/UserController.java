@@ -17,7 +17,7 @@ public class UserController {
     //As the frontEnd sending data in json format, @RequestBody is needed
     public Result login(@RequestBody User user){
 
-        String token = JwtUtils.generateToken((user.getUsername()));
+        String token = JwtUtils.generateToken((user.getEmail()));
         return Result.ok().data("token", token);
     }
 

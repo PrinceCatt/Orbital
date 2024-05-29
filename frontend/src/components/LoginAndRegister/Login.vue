@@ -20,6 +20,7 @@
 <script>
 import axios from 'axios';
 
+
   export default {
     data() {
       var checkEmail = (rule, value, callback) => {
@@ -48,12 +49,20 @@ import axios from 'axios';
             { validator: validatePass, trigger: 'blur' }
           ],
         }
-      };
-
-      mounted() {
-        axios.post('http://localhost:8088',{}),
-      },
+      }
     },
+
+    mounted:function(){
+        axios.post("https://localhost:8088/user/login",{
+          params:{
+            email: this.email,
+            password: this.password,
+          }
+        }).then(function(response){
+          console.log(response)
+        })
+    },
+
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
