@@ -1,16 +1,16 @@
 
 <template>
   
-  <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+  <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="login-form">
     <el-form-item label="Email" prop="email">
-    <el-input v-model.number="ruleForm.age"></el-input>
+    <el-input v-model.number="loginForm.email"></el-input>
   </el-form-item>
   <el-form-item label="Password" prop="password">
-    <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+    <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
   </el-form-item>
   <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm')">Enter</el-button>
-    <el-button @click="resetForm('ruleForm')">Reset</el-button>
+    <el-button type="primary" @click="submitForm('loginForm')">Enter</el-button>
+    <el-button @click="resetForm('loginForm')">Reset</el-button>
   </el-form-item>
 </el-form>
 </template>
@@ -21,7 +21,9 @@
 import axios from 'axios';
 
   export default {
+
     data() {
+
       var checkEmail = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('Email cannot be empty'));
@@ -33,14 +35,13 @@ import axios from 'axios';
         }
       };
 
-
       return {
-        ruleForm: {
+        loginForm: {
           email: '',
           password: '',
         },
 
-        rules: {
+        loginRules: {
           email: [
             { validator: checkEmail, trigger: 'blur' }
           ],
@@ -49,11 +50,18 @@ import axios from 'axios';
           ],
         }
       };
-
-      mounted() {
-        axios.post('http://localhost:8088',{}),
-      },
     },
+
+    mounted:function() {
+        axios.post("https://localhost:8088/user/login",{
+            email: this.loginForm.email,
+            password: this.loginForm.email,
+        }).then(function(response){
+          console.log(response)
+        })
+      },
+
+
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
