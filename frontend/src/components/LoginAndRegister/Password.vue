@@ -1,0 +1,1 @@
+<el-input placeholder="Please enter password" v-model="input" show-password></el-input>
