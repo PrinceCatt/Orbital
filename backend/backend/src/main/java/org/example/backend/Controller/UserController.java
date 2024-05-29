@@ -1,4 +1,4 @@
-package Controllers;
+package org.example.backend.Controller;
 
 import entity.User;
 import org.springframework.web.bind.annotation.GetMapping;
