@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Nav> 1 </Nav>
     <img alt="Vue logo" src="./assets/logo.png">
     <router-link to="/discover">NUS today</router-link>
     <router-link to="/login">Login</router-link>
