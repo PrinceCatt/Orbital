@@ -14,7 +14,8 @@ import Nav from './components/Navigation/Nav.vue'
 export default {
   name: 'App',
   components: {
-    Login
+    Login,
+    Nav
   }
 }
 </script>
