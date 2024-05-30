@@ -1,7 +1,7 @@
 
 <template>
-  
-  <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="login-form">
+  <div>
+    <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="login-form">
     <el-form-item label="Email" prop="email">
     <el-input v-model.number="loginForm.email"></el-input>
   </el-form-item>
@@ -9,10 +9,12 @@
     <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
   </el-form-item>
   <el-form-item>
-    <el-button type="primary" @click="submitForm('loginForm')">Enter</el-button>
+    <el-button type="primary" @click="submitForm()">Enter</el-button>
     <el-button @click="resetForm('loginForm')">Reset</el-button>
   </el-form-item>
 </el-form>
+  </div>
+
 </template>
 
 
@@ -63,9 +65,16 @@ import axios from 'axios';
 
 
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+      submitForm() {
+        this.$refs.loginForm.validate((valid) => {
           if (valid) {
+
+            this.loading = true
+            this.$store.dispatch('user/login',this.loginForm)
+            .then(() => {
+              this.$router.push({path: '/discover'})
+
+            })
             alert('submit!');
           } else {
             console.log('error submit!!');

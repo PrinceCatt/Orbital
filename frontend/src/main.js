@@ -3,7 +3,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App.vue'
 import axios from 'axios'
-import router from './Router/Index'
+import router from './router/Index'
 
 axios.defaults.baseURL = "http://localhost:8088"
 Vue.prototype.$http = axios
