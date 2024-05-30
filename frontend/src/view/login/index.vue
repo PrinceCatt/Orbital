@@ -20,22 +20,26 @@
 
 
 <script>
-import axios from 'axios';
 
   export default {
-
+    name: 'Login',
     data() {
 
-      var checkEmail = (rule, value, callback) => {
+      const checkEmail = (rule, value, callback) => {
         if (!value) {
-          return callback(new Error('Email cannot be empty'));
+          callback(new Error('The email cannot be empty'));
+        } else {
+          callback()
         }
-      };
-      var checkPassword = (rule, value, callback) => {
+      }
+
+      const checkPassword = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('password cannot be empty'));
+          callback(new Error('The password cannot be empty'));
+        } else {
+          callback()
         }
-      };
+      }
 
       return {
         loginForm: {
@@ -54,34 +58,32 @@ import axios from 'axios';
       };
     },
 
-    mounted:function() {
-        axios.post("/user/login",{
-            email: this.loginForm.email,
-            password: this.loginForm.email,
-        }).then(function(response){
-          console.log(response)
-        })
-      },
+
 
 
     methods: {
       submitForm() {
         this.$refs.loginForm.validate((valid) => {
+          console.log("111")
           if (valid) {
-
+            console.log('222')
             this.loading = true
             this.$store.dispatch('user/login',this.loginForm)
             .then(() => {
+              console.log('333')
               this.$router.push({path: '/discover'})
-
+              this.loading = false
+            }).catch(() => {
+              this.loading = false
             })
             alert('submit!');
           } else {
             console.log('error submit!!');
-            return false;
+            return false
           }
-        });
+        })
       },
+
       resetForm(formName) {
         this.$refs[formName].resetFields();
       }
