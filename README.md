@@ -1,4 +1,4 @@
-NUSurf is a project under NUS CP2106 Independent Software Development Project (Orbital), by Ma Yitao (E1155521@u.nus.edu), current year 1 computer engineering, and Zhang Zhuoyu (), current year 1 mathematics in 2024 summer, of which all copyrights belong to NUS school of computing.
+NUSurf is a project under NUS CP2106 Independent Software Development Project (Orbital), by Ma Yitao (E1155521@u.nus.edu), current year 1 computer engineering, and Zhang Zhuoyu (E1156600@u.nus.edu), current year 1 mathematics in 2024 summer, of which all copyrights belong to NUS school of computing.
 
 NUSurf is an integrated web application that aims to provide a school forum for all NUS students.
 
