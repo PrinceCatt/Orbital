@@ -29,7 +29,7 @@ import axios from 'axios';
           return callback(new Error('Email cannot be empty'));
         }
       };
-      var validatePass = (rule, value, callback) => {
+      var checkPassword = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('password cannot be empty'));
         }
@@ -43,17 +43,17 @@ import axios from 'axios';
 
         loginRules: {
           email: [
-            { validator: checkEmail, trigger: 'blur' }
+            { required: true, validator: checkEmail, trigger: 'blur' }
           ],
           password: [
-            { validator: validatePass, trigger: 'blur' }
+            { required: true, validator: checkPassword, trigger: 'blur' }
           ],
         }
       };
     },
 
     mounted:function() {
-        axios.post("https://localhost:8088/user/login",{
+        axios.post("/user/login",{
             email: this.loginForm.email,
             password: this.loginForm.email,
         }).then(function(response){
