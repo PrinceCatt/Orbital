@@ -3,13 +3,23 @@
   <div>
     <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="login-form">
     <el-form-item label="Email" prop="email">
-    <el-input v-model.number="loginForm.email"></el-input>
+    <el-input 
+    v-model.number="loginForm.email"
+    name="username"
+    ></el-input>
   </el-form-item>
+
   <el-form-item label="Password" prop="password">
-    <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
+    <el-input 
+    type="password" 
+    name="password"
+    v-model="loginForm.password" 
+    autocomplete="off"
+    ></el-input>
   </el-form-item>
+
   <el-form-item>
-    <el-button type="primary" @click="submitForm()">Enter</el-button>
+    <el-button type="primary" @click="submitForm(loginForm)">Enter</el-button>
     <el-button @click="resetForm('loginForm')">Reset</el-button>
   </el-form-item>
 </el-form>
@@ -20,8 +30,6 @@
 
 
 <script>
-import axios from 'axios';
-
   export default {
 
     data() {
@@ -55,22 +63,20 @@ import axios from 'axios';
     },
 
     mounted:function() {
-        axios.post("/user/login",{
-            email: this.loginForm.email,
-            password: this.loginForm.email,
-        }).then(function(response){
-          console.log(response)
-        })
+      console.log("1111")
       },
 
 
     methods: {
-      submitForm() {
+      submitForm(loginForm) {
+        console.log("11111111111111")
         this.$refs.loginForm.validate((valid) => {
+          console.log("11111111111111")
           if (valid) {
 
             this.loading = true
             this.$store.dispatch('user/login',this.loginForm)
+            console.log("11111111111111")
             .then(() => {
               this.$router.push({path: '/discover'})
 
