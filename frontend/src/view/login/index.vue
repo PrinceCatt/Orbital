@@ -3,23 +3,13 @@
   <div>
     <el-form :model="loginForm" status-icon :rules="loginRules" ref="loginForm" label-width="100px" class="login-form">
     <el-form-item label="Email" prop="email">
-    <el-input 
-    v-model.number="loginForm.email"
-    name="username"
-    ></el-input>
+    <el-input v-model.number="loginForm.email"></el-input>
   </el-form-item>
-
   <el-form-item label="Password" prop="password">
-    <el-input 
-    type="password" 
-    name="password"
-    v-model="loginForm.password" 
-    autocomplete="off"
-    ></el-input>
+    <el-input type="password" v-model="loginForm.password" autocomplete="off"></el-input>
   </el-form-item>
-
   <el-form-item>
-    <el-button type="primary" @click="submitForm(loginForm)">Enter</el-button>
+    <el-button type="primary" @click="submitForm()">Enter</el-button>
     <el-button @click="resetForm('loginForm')">Reset</el-button>
   </el-form-item>
 </el-form>
@@ -30,10 +20,7 @@
 
 
 <script>
-<<<<<<< HEAD:frontend/src/view/login/Login.vue
-=======
 
->>>>>>> 5eb54b1f6cacb7e16859ad3a6e4373899a2c4e40:frontend/src/view/login/index.vue
   export default {
     name: 'Login',
     data() {
@@ -71,39 +58,17 @@
       };
     },
 
-<<<<<<< HEAD:frontend/src/view/login/Login.vue
-    mounted:function() {
-      console.log("1111")
-      },
-=======
 
->>>>>>> 5eb54b1f6cacb7e16859ad3a6e4373899a2c4e40:frontend/src/view/login/index.vue
 
 
     methods: {
-      submitForm(loginForm) {
-        console.log("11111111111111")
+      submitForm() {
         this.$refs.loginForm.validate((valid) => {
-<<<<<<< HEAD
-<<<<<<< HEAD:frontend/src/view/login/Login.vue
-          console.log("11111111111111")
-=======
-          console.log("111")
->>>>>>> 5eb54b1f6cacb7e16859ad3a6e4373899a2c4e40:frontend/src/view/login/index.vue
-=======
->>>>>>> a246edea3fe8dc0ee79109ac5c1dc896ed46346f
           if (valid) {
             console.log('222') // for debug
             this.loading = true
-<<<<<<< HEAD
-            this.$store.dispatch('user/login',this.loginForm)
-            console.log("11111111111111")
-            .then(() => {
-              console.log('333')
-=======
             this.$store.dispatch('user/login',this.loginForm).then(() => {
               console.log('333') // for debug
->>>>>>> a246edea3fe8dc0ee79109ac5c1dc896ed46346f
               this.$router.push({path: '/discover'})
               this.loading = false
             }).catch(() => {
