@@ -84,21 +84,30 @@
       submitForm(loginForm) {
         console.log("11111111111111")
         this.$refs.loginForm.validate((valid) => {
+<<<<<<< HEAD
 <<<<<<< HEAD:frontend/src/view/login/Login.vue
           console.log("11111111111111")
 =======
           console.log("111")
 >>>>>>> 5eb54b1f6cacb7e16859ad3a6e4373899a2c4e40:frontend/src/view/login/index.vue
+=======
+>>>>>>> a246edea3fe8dc0ee79109ac5c1dc896ed46346f
           if (valid) {
-            console.log('222')
+            console.log('222') // for debug
             this.loading = true
+<<<<<<< HEAD
             this.$store.dispatch('user/login',this.loginForm)
             console.log("11111111111111")
             .then(() => {
               console.log('333')
+=======
+            this.$store.dispatch('user/login',this.loginForm).then(() => {
+              console.log('333') // for debug
+>>>>>>> a246edea3fe8dc0ee79109ac5c1dc896ed46346f
               this.$router.push({path: '/discover'})
               this.loading = false
             }).catch(() => {
+              console.log('dispatch failed') // for debug
               this.loading = false
             })
             alert('submit!');
