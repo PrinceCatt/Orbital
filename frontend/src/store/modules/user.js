@@ -31,13 +31,16 @@ const actions = {
     // user Login
     login({ commit }, userInfo) {
         const { email, password} = userInfo
+        console.log('Till actions') // for debug
         return new Promise((resolve, reject) => {
             login({ email: email.trim(), password: password }).then(response =>{
                 const { data } = response
+                console.log('request success') // for debug
                 commit('SET_TOKEN', data.token)
                 setToken(data.token)
                 resolve()
             }).catch(error => {
+                console.log('request failed') // for debug
                 reject(error)
             })
         }) 
