@@ -1,6 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resolve } from 'core-js/fn/promise'
 
 
 const getDefaultState = () => {
@@ -78,4 +77,11 @@ const actions = {
             resolve()
         })
     }
+}
+
+export default {
+  namespaced: true,
+  state,
+  mutations,
+  actions
 }
