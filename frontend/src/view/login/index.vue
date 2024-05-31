@@ -65,14 +65,11 @@
       submitForm() {
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
-            console.log('222') // for debug
             this.loading = true
             this.$store.dispatch('user/login',this.loginForm).then(() => {
-              console.log('333') // for debug
               this.$router.push({path: '/discover'})
               this.loading = false
             }).catch(() => {
-              console.log('dispatch failed') // for debug
               this.loading = false
             })
             alert('submit!');

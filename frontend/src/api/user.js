@@ -6,7 +6,7 @@ import request from '@/utils/request'
 */
 export function login(data) {
   return request({
-    url: 'http://localhost:8088/user/login', // to be modified
+    url: '/user/login',
     method: 'post',
     data
   })
