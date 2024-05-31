@@ -1,21 +1,19 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <router-link to="/discover">NUS today</router-link>
-    <router-link to="/login">Login</router-link>
-    <router-link to="/logout">Logout</router-link>
-    <router-view></router-view>
+    <Home></Home>
+
   </div>
 </template>
 
 <script>
 import Login from './view/login/index.vue'
-import Nav from './components/Navigation/Nav.vue'
+import Home from './view/homepage'
 export default {
   name: 'App',
   components: {
     Login,
-    Nav
+    Home
   }
 }
 </script>
