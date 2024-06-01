@@ -1,4 +1,4 @@
-package org.example.backend.Utils;
+package org.example.backend.utils;
 
 import java.util.HashMap;
 import java.util.Map;

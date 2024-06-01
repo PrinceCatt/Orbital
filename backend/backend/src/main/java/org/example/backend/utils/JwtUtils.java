@@ -1,4 +1,4 @@
-package org.example.backend.Utils;
+package org.example.backend.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,12 +13,12 @@ public class JwtUtils {
     private static String secret = "abcdfghiabcdfghiabcdfghiabcdfghiabcdfghi";
 
     //Generate
-    public static String generateToken(String username) {
+    public static String generateToken(String email) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + 1000 * expire);
         return Jwts.builder()
                 .setHeaderParam("type","JWT")
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS512,secret)

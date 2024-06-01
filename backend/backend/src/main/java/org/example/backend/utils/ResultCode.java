@@ -1,4 +1,4 @@
-package org.example.backend.Utils;
+package org.example.backend.utils;
 
 public interface ResultCode {
 
