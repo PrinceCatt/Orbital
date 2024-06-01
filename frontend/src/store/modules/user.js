@@ -2,8 +2,10 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 
+
 const getDefaultState = () => {
     return {
+      email: '',
       token: getToken(),
       name: '',
       avatar: '',
@@ -24,6 +26,9 @@ const mutations = {
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
+    },
+    SET_EMAIL: (state, email) => {
+      state.email = email
     }
   }
 
@@ -31,7 +36,6 @@ const actions = {
     // user Login
     login({ commit }, userInfo) {
         const { email, password} = userInfo
-
         return new Promise((resolve, reject) => {
             login({ email: email, password: password }).then(response =>{
                 const { data } = response
@@ -44,6 +48,8 @@ const actions = {
         }) 
     },
 
+
+
     // get User Info
     getInfo({ commit, state }){
         return new Promise((resolve, reject) => {
@@ -55,7 +61,7 @@ const actions = {
                 }
 
                 const { name, avatar } = data
-
+                commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
                 commit('SET_AVATAR', avatar)
                 resolve(data)
