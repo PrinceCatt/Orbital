@@ -8,9 +8,8 @@ import request from '@/utils/request'
 
 
 export function login(data) {
-  console.log("at api")
   return request({
-    url: 'http://localhost:8088/user/login', // to be modified
+    url: '/user/login',
     method: 'post',
     data
   })

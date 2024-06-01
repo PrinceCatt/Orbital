@@ -31,7 +31,7 @@ public class UserController {
         return Result.ok().data("email", email).data("avatar", url);
     }
 
-    @PostMapping("/logout") // "token:xxx"
+    @PostMapping("/logout") // "remove token and all, see details in frontEnd src/// "
     public Result logout(){ return Result.ok(); }
 
 }

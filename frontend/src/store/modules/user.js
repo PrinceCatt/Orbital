@@ -31,16 +31,14 @@ const actions = {
     // user Login
     login({ commit }, userInfo) {
         const { email, password} = userInfo
-        console.log('Till actions') // for debug
+
         return new Promise((resolve, reject) => {
             login({ email: email, password: password }).then(response =>{
                 const { data } = response
-                console.log('request success') // for debug
                 commit('SET_TOKEN', data.token)
                 setToken(data.token)
                 resolve()
             }).catch(error => {
-                console.log('request failed') // for debug
                 reject(error)
             })
         }) 
@@ -67,10 +65,20 @@ const actions = {
         })
     },
 
-    // user Logout （not done yet!）
-    //logout({ commit, state }) {
-    //    return new Promise
-    //},
+    // user Logout 
+    logout({ commit, state }) {
+        return new Promise((resolve, reject) => {
+          logout(state.token).then(() => {
+            removeToken() // remove token first
+            router.push('/nav')
+            console.log('pushed router to nav') // problem
+            commit('RESET_STATE')
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        })
+    },
 
     // remove Token
     resetToken({ commit }) {
