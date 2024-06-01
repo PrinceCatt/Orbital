@@ -18,7 +18,11 @@
   </el-menu-item>
   <el-submenu index="2">
     <template slot="title">My</template>
-    <el-menu-item index="2-1">Profile</el-menu-item>
+
+    
+    <el-menu-item index="2-1"><el-button type="text" @click="profile">Profile
+
+    </el-button></el-menu-item>
     <el-menu-item index="2-2">History</el-menu-item>
     <el-menu-item index="2-3">Favorite</el-menu-item>
     <el-submenu index="2-4">
@@ -31,6 +35,9 @@
   <el-menu-item index="3">消息中心</el-menu-item>
   <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
 </el-menu>
+
+
+<h3>11111</h3>
 </div>
     </template>
 
@@ -51,7 +58,11 @@
       open(){
         console.log("pushed")
         this.$router.push({path: '/login'})
-      }
+      },
+
+      profile(){
+        this.$router.push({path: '/profile'})
     }
   }
+}
 </script>
