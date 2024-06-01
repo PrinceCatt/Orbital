@@ -43,7 +43,7 @@
 
       open(){
         console.log("pushed")
-        this.$router.reset({path: '/login'})
+        this.$router.replace({path: '/login'})
       },
         // For user to confirm logout
       logout() {
