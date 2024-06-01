@@ -46,7 +46,6 @@
     </template>
 
     <script>
-
     export default {
       methods: {
         // For user to confirm logout

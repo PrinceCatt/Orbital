@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user") // baseUrl: http:localhost:8088/user
 public class UserController {
 
     @PostMapping("/login")
@@ -31,7 +31,7 @@ public class UserController {
         return Result.ok().data("email", email).data("avatar", url);
     }
 
-    @PostMapping("/logout") // "remove token and all, see details in frontEnd src/// "
+    @PostMapping("/logout") // "remove token and all, see details in frontEnd "
     public Result logout(){ return Result.ok(); }
 
 }

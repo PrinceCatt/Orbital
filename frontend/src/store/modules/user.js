@@ -70,8 +70,6 @@ const actions = {
         return new Promise((resolve, reject) => {
           logout(state.token).then(() => {
             removeToken() // remove token first
-            router.push('/nav')
-            console.log('pushed router to nav') // problem
             commit('RESET_STATE')
             resolve()
           }).catch(error => {
