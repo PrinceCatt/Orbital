@@ -32,9 +32,9 @@
     data() {
       return {
         imageUrl: '',
-        email: this.$store.state.avatar,
-        avatar: this.$store.state.avatar,
-        name: this.$store.state.name,
+        email: this.$store.state.user.email,
+        avatar: this.$store.state.user.avatar,
+        name: this.$store.state.user.name,
         fits: ['fill'],
       }
     },

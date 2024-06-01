@@ -8,11 +8,11 @@ import java.util.Date;
 
 public class JwtUtils {
     //Expire in 7 days
-    private  static long expire = 604800;
+    private static long expire = 604800;
     //32 letters long secret key
     private static String secret = "abcdfghiabcdfghiabcdfghiabcdfghiabcdfghi";
 
-    //Generate
+    //Generate token
     public static String generateToken(String email) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + 1000 * expire);

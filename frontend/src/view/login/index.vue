@@ -65,7 +65,7 @@
           if (valid) {
             this.loading = true
             this.$store.dispatch('user/login',this.loginForm).then(() => {
-              this.$$store.dispatch('user/getInfo')
+              this.$store.dispatch('user/getInfo')
               this.$router.push({path: '/discover'})
               this.loading = false
             }).catch(() => {

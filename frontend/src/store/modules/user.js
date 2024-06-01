@@ -59,11 +59,12 @@ const actions = {
                 if (!data) {
                     return reject('Verification failed, please Login again')
                 }
-
-                const { name, avatar } = data
+                
+                const { email, name, avatar } = data
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
                 commit('SET_AVATAR', avatar)
+                console.log('userInfo set') // for debug
                 resolve(data)
             }).catch(error => {
                 reject(error)

@@ -38,7 +38,7 @@ public class UserController {
         User user = userMapper.findByEmail(email);
         String name = user.getName();
         String url = user.getAvatar();
-        return Result.ok().data("email", email).data("avatar", url).data("name", name); // more information to be added
+        return Result.ok().data("email", email).data("name", name).data("avatar", url); // more information to be added
     }
 
     @PostMapping("/logout") // "remove token and all, see details in frontEnd "
