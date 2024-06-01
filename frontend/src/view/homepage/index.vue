@@ -11,10 +11,8 @@
   active-text-color="#ffd04b">
   <el-menu-item index="1">
     
-    <template>
-  <el-button type="text" @click="open">Login</el-button>
-</template>
-    
+  <el-button type="text" @click="open">Login/Logout</el-button>
+
   </el-menu-item>
   <el-submenu index="2">
     <template slot="title">My</template>
@@ -29,8 +27,10 @@
     </el-submenu>
   </el-submenu>
   <el-menu-item index="3">消息中心</el-menu-item>
-  <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+  <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
 </el-menu>
+<hr>
+<router-view></router-view>
 </div>
     </template>
 
@@ -42,8 +42,7 @@
     },
 
       open(){
-        console.log("pushed")
-        this.$router.replace({path: '/login'})
+        this.$router.push({path: '/login'})
       },
         // For user to confirm logout
       logout() {
