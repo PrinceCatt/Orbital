@@ -22,9 +22,6 @@ public class UserController {
     public Result login(@RequestBody User user){
         String email = user.getEmail();
         String password = user.getPassword();
-//        if (email == null || password == null){
-//            return Result.error().message("Email or password cannot be empty");
-//        }
 
         User ActualUser = userMapper.findByEmail(email);
         if (!password.equals(ActualUser.getPassword())){
