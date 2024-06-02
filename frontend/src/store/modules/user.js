@@ -44,7 +44,9 @@ const actions = {
                 resolve()
             }).catch(error => {
                 reject(error)
-            })
+                return('Entered wrong email or password') // for debug
+                
+          })
         }) 
     },
 
@@ -64,7 +66,6 @@ const actions = {
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
                 commit('SET_AVATAR', avatar)
-                console.log('userInfo set') // for debug
                 resolve(data)
             }).catch(error => {
                 reject(error)
