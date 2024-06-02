@@ -1,21 +1,21 @@
 <template>
     <div>
 
-
-
   <el-col :span="6"><div class="grid-content bg-purple"></div><h1>Email:</h1>
         <h3>{{email}}</h3></el-col>
 
   <el-col :span="6"><div class="grid-content bg-purple"></div><h1>Username:</h1>
-        <el-button type="text" @click="changeName">changeName</el-button></el-col>
+    <h3>{{name}}</h3>
+    <el-button type="text" @click="changeName">changeName</el-button></el-col>
+
   <el-col :span="6"><div class="grid-content bg-purple"></div>  <div class="block" v-for="fit in fits" :key="fit">
     <h1>Avatar:</h1>
     <el-image
       style="width: 300px; height: 300px"
       :src= "avatar"
       :fit="fit"></el-image>
-      
   </div></el-col>
+  
   <el-col :span="6"><div class="grid-content bg-purple"></div><h3>Change Avatar</h3><el-upload
   class="avatar-uploader"
   action="https://jsonplaceholder.typicode.com/posts/"
