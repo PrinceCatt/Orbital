@@ -30,7 +30,11 @@
         <el-menu-item index="2-4-3">Liked me</el-menu-item>
       </el-submenu>
     </el-submenu>
-    <el-menu-item index="3">消息中心</el-menu-item>
+    <el-menu-item index="3">
+      
+      <el-button type="text" @click="register">Register</el-button>
+
+    </el-menu-item>
     <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
   </el-menu>
   <hr>
@@ -39,6 +43,10 @@
       </template>
   
   <script>
+import { register } from '@/api/user';
+import router from '@/router';
+
+
     export default {
       methods: {
         handleSelect(key, keyPath) {
@@ -95,7 +103,13 @@
             });          
           });
         },
+
+        register(){
+          this.$router.push({path: '/register'})
+        }
       }, 
+
+  
   
       data() {
         return {

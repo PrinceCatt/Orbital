@@ -11,14 +11,17 @@
   <el-form-item>
     <el-button type="primary" @click="submitForm()">Enter</el-button>
     <el-button @click="resetForm('loginForm')">Reset</el-button>
+    <el-button @click="register()">Register</el-button>
   </el-form-item>
 </el-form>
+<router-view></router-view>
   </div>
 </template>
 
 
 
 <script>
+
   export default {
     name: 'login',
     data() {
@@ -81,6 +84,10 @@
 
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+
+      register() {
+        this.$router.push({path: 'register'});
       }
     }
   }
