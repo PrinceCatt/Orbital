@@ -18,7 +18,7 @@
       <template slot="title">My</template>
       <el-menu-item index="2-1">
         
-        <el-button type="text" @click="openProfile">Profile</el-button>
+        <el-button type="text" @click="myProfile">Profile</el-button>
 
       </el-menu-item>
       <el-menu-item index="2-2">History</el-menu-item>
@@ -43,7 +43,15 @@
       methods: {
         handleSelect(key, keyPath) {
         console.log(key, keyPath);
-      },
+        },
+
+        myProfile(){
+          if(this.$store.state.user.name == ""){
+            alert('Please login first')
+            this.openLogin();
+          }
+          else{ this.openProfile(); }
+        },
 
         openProfile(){
           this.$router.push({path: '/profile'})
