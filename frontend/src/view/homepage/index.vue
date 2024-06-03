@@ -11,7 +11,7 @@
     active-text-color="#ffd04b">
     <el-menu-item index="1">
       
-    <el-button type="text" @click="openLogin">Login/Logout</el-button>
+    <el-button type="text" @click="open">Login/Logout</el-button>
   
     </el-menu-item>
     <el-submenu index="2">
@@ -48,13 +48,24 @@
         openProfile(){
           this.$router.push({path: '/profile'})
         },
+
+        open(){
+          if(this.$store.state.user.name == ""){
+            this.openLogin();
+          }
+          else{
+            this.openLogout();}
+        },
+
+        // For user to login
         openLogin(){
           this.$router.push({path: '/login'})
         },
-          // For user to confirm logout
-        logout() {
+
+        // For user to confirm logout
+        openLogout() {
           this.$confirm('Are you sure to logout?', {
-            confirmButtonText: 'Yes',
+            confirmButtonText: 'Confirm',
             cancelButtonText: 'No',
             type: 'warning'
           }).then(() => {

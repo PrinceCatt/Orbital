@@ -17,14 +17,17 @@ public class UserController {
     private UserMapper userMapper;
 
     @PostMapping("/login")
-    //json: {id,username,password,email}
+    //json: {email,password}
     //As the frontEnd sending data in json format, @RequestBody is needed
     public Result login(@RequestBody User user){
+        String email = user.getEmail();
+        String password = user.getPassword();
 
-        // need to be amended to compare to the email and password in database
-        if (user.getEmail() == null || user.getPassword() == null){
-            return Result.error();
+        User ActualUser = userMapper.findByEmail(email);
+        if (!password.equals(ActualUser.getPassword())){
+            return Result.error().message("Please enter the correct email and password");
         }
+
         String token = JwtUtils.generateToken((user.getEmail()));
         return Result.ok().data("token", token);
     }
