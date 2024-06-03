@@ -50,13 +50,10 @@
         },
 
         open(){
-          console.log("open!") // for debug
           if(this.$store.state.user.name == ""){
-            console.log("Prepare to login") // for debug
             this.openLogin();
           }
           else{
-            console.log("Prepare to logout") // for debug
             this.openLogout();}
         },
 
