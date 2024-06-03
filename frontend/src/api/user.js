@@ -4,7 +4,7 @@ import request from '@/utils/request'
     password:xxxxxx
 }
 */
-export function register() {
+export function register(data) {
   return request({
     url: '/user/register',
     method: 'post',

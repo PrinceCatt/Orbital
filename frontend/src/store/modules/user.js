@@ -65,7 +65,12 @@ const actions = {
                 const { email, name, avatar } = data
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
-                commit('SET_AVATAR', avatar)
+                if(avatar != ""){
+                  commit('SET_AVATAR', avatar)
+                }
+                else{ 
+                  // set default avatar
+                  commit('SET_AVATAR', 'https://img0.baidu.com/it/u=4265038421,1060934277&fm=253&fmt=auto&app=138&f=JPEG?w=380&h=380')}
                 resolve(data)
             }).catch(error => {
                 reject(error)

@@ -47,9 +47,12 @@ public class UserController {
     @PostMapping("/logout") // "remove token and all, see details in frontEnd "
     public Result logout(){ return Result.ok(); }
 
-    @GetMapping("/register")
+    @PostMapping("/register")
     public Result register(User user){
         int result = userMapper.insert(user);
-        return Result.ok();
+        if(result > 0){
+            return Result.ok();
+        }
+        return Result.error();
     }
 }
