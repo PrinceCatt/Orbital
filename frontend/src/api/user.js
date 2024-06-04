@@ -1,9 +1,6 @@
 import request from '@/utils/request'
-/* 
-{   email:123456
-    password:xxxxxx
-}
-*/
+
+// {name, email, password}
 export function register(data) {
   return request({
     url: '/user/register',
@@ -12,7 +9,7 @@ export function register(data) {
   })
 }
 
-
+// {email, password}
 export function login(data) {
   return request({
     url: '/user/login',
@@ -21,6 +18,7 @@ export function login(data) {
   })
 }
 
+// {token}
 export function getInfo(token) {
   return request({
     url: '/user/info',
@@ -36,6 +34,7 @@ export function logout() {
   })
 }
 
+// {name, token}
 export function updateName(data) {
   return request({
     url: '/user/updateName',
@@ -44,10 +43,11 @@ export function updateName(data) {
   })
 }
 
+// {avatar, token}
 export function updateAvatar(data) {
   return request({
     url: '/user/updateAvatar',
-    method: 'post',
+    method: 'put',
     data
   })
 }

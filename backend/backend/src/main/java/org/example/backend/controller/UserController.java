@@ -74,16 +74,16 @@ public class UserController {
         if (result > 0){
             return Result.ok();
         }
-        else { return Result.error().message("This name is not valid"); }
+        else { return Result.error().message("Invalid update"); }
     }
 
-    @PostMapping("/updateAvatar")
+    @PutMapping("/updateAvatar")
     public Result updateAvatar(String avatar, String token){
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         int result = userMapper.updateAvatar(email, avatar);
         if (result > 0){
             return Result.ok();
         }
-        else { return Result.error().message("This avatar is not valid"); }
+        else { return Result.error().message("Invalid update"); }
     }
 }

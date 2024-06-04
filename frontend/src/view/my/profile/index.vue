@@ -43,9 +43,9 @@
     },
 
     methods: {
-        handleAvatarSuccess(res, file) {
+      handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        this.$store.dispatch(updateAvatar(file))
+        this.$store.dispatch('/user/updateAvatar', file)
       },
 
       beforeAvatarUpload(file) {
@@ -61,17 +61,23 @@
         return isJPG && isLt2M;
       },
 
-        changeName(){
+      changeName(){
             this.$prompt('Please enter new username', 'Notice', {
           confirmButtonText: 'confirm',
           cancelButtonText: 'cancel',
         }).then(({ value }) => {
-          this.$message({
+          console.log('Trying dispatch action') // for debug
+          this.$store.dispatch('user/updateName', value).then(() => {
+            this.$message({
             type: 'success',
             message: 'Your new username is: ' + value,
-            
           });
-          this.$store.dispatch(updateName(value))
+          }).catch(() => {
+            this.$message({
+              type: 'warning',
+              message: 'Update failed',
+            })
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
