@@ -17,10 +17,10 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from t_user where email = #{email} and password = #{password}")
     User findByEmailAndPassword(String email, String password);
 
-    @Insert("insert into user values(#{email},#{password},#{name})")
+    @Insert("insert into t_user values(#{email},#{password},name=#{username})")
     int register(User user);
 
-    @Update("update t_user set name=#{username} where email=#{email}")
+    @Update("update t_user set name=#{name} where email=#{email}")
     int updateName(String email, String name);
 
     @Update("update t_user set avatar=#{avatar} where email=#{email}")

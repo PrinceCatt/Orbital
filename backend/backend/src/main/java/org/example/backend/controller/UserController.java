@@ -52,8 +52,14 @@ public class UserController {
     @PostMapping("/logout") // "remove token and all, see details in frontEnd "
     public Result logout(){ return Result.ok(); }
 
+    //json:{email,password,name}
     @PostMapping("/register")
-    public Result register(User user){
+    public Result register(@RequestBody User user){
+        String email = user.getEmail();
+        if (userMapper.findByEmail(email) != null){
+            return Result.error().message("This email has been registered");
+        }
+
         int result = userMapper.insert(user);
         if(result > 0){
             return Result.ok();

@@ -97,7 +97,7 @@
             if (valid) {
               this.loading = true
               this.$store.dispatch('user/register',this.registerForm).then(() => {
-
+                alert('You have registered a NUSurf account')
                 email,password = this.registerForm
                 this.$store.dispatch('user/login', {email, password})
                 console.log('tried login') // for debug
@@ -105,7 +105,6 @@
               }).catch(() => {
                 this.loading = false
               })
-              alert('submit!');
             } else {
               console.log('error submit!!');
               return false
