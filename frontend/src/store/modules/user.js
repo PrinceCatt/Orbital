@@ -1,5 +1,6 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, updateName } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+
 
 
 
@@ -49,6 +50,47 @@ const actions = {
           })
         }) 
     },
+
+
+    register({ commit }, userInfo) {
+      const { email, password, name} = userInfo
+      return new Promise((resolve, reject) => {
+          login({ email: email, password: password , name: name}).then(response =>{
+              const { data } = response
+              commit('SET_TOKEN', data.token)
+              setToken(data.token)
+              resolve()
+          }).catch(error => {
+              reject(error)
+              return('Invalid') // for debug
+              
+        })
+      }) 
+  },
+
+
+    updateName({ commit }, name){
+      return new Promise((resolve,reject) =>{
+        updateName({name: name}).then(resposne =>{
+          resolve()
+      }).catch(error => {
+        reject(error)
+        return('invalid change')
+      })
+      })
+    },
+
+    updateAvatar({ commit }, avatar){
+      return new Promise((resolve,reject) =>{
+        updateName({avatar: avatar}).then(resposne =>{
+          resolve()
+      }).catch(error => {
+        reject(error)
+        return('invalid change')
+      })
+      })
+    },
+
 
 
 

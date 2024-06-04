@@ -35,3 +35,19 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function updateName(data) {
+  return request({
+    url: '/user/updateName',
+    method: 'post',
+    data
+  })
+}
+
+export function updateAvatar(data) {
+  return request({
+    url: '/user/updateAvatar',
+    method: 'post',
+    data
+  })
+}

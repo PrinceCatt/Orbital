@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { updateAvatar } from '@/api/user';
+
 
   export default {
     data() {
@@ -45,6 +47,7 @@
     methods: {
         handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
+        this.$store.dispatch(updateAvatar(file))
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
@@ -58,6 +61,7 @@
         }
         return isJPG && isLt2M;
       },
+
         changeName(){
             this.$prompt('Please enter new username', 'Notice', {
           confirmButtonText: 'confirm',
@@ -66,7 +70,9 @@
           this.$message({
             type: 'success',
             message: 'Your new username is: ' + value,
+            
           });
+          this.$store.dispatch(updateName(value))
         }).catch(() => {
           this.$message({
             type: 'info',
