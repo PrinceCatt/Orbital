@@ -74,7 +74,6 @@
             }).catch(() => {
               this.loading = false
             })
-            alert('submit!');
           } else {
             console.log('error submit!!');
             return false
