@@ -85,6 +85,7 @@
             type: 'warning'
           }).then(() => {
               this.$store.dispatch('user/logout').then(() => {
+            this.$router.push({path: '/discovery'})
             this.$message({
               type: 'success',
               message: 'successfully logout',
@@ -104,9 +105,6 @@
         },
 
 
-        discovery(){
-          this.$router.push({path: '/discovery'})
-      }, 
     },
   
   
