@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+
 @RestController
 @RequestMapping("/user") // baseUrl: http:localhost:8088/user
 public class UserController {
@@ -24,6 +25,10 @@ public class UserController {
         String password = user.getPassword();
 
         User ActualUser = userMapper.findByEmail(email);
+        if (ActualUser == null){
+            return Result.error().message("This email has not been registered");
+        }
+
         if (!password.equals(ActualUser.getPassword())){
             return Result.error().message("Please enter the correct email and password");
         }
@@ -54,5 +59,25 @@ public class UserController {
             return Result.ok();
         }
         return Result.error();
+    }
+
+    @PostMapping("/updateName")
+    public Result updateName(String name, String token){
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int result = userMapper.updateName(email, name);
+        if (result > 0){
+            return Result.ok();
+        }
+        else { return Result.error().message("This name is not valid"); }
+    }
+
+    @PostMapping("/updateAvatar")
+    public Result updateAvatar(String avatar, String token){
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int result = userMapper.updateAvatar(email, avatar);
+        if (result > 0){
+            return Result.ok();
+        }
+        else { return Result.error().message("This avatar is not valid"); }
     }
 }
