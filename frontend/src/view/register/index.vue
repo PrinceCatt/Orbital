@@ -12,7 +12,7 @@
       <el-input type="confirmPassword" v-model="registerForm.confirmPassword" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item label="Username" prop="username">
-      <el-input type="username" v-model="registerForm.username" autocomplete="off"></el-input>
+      <el-input type="username" v-model="registerForm.name" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm()">Enter</el-button>
@@ -55,9 +55,9 @@
             }
         }
 
-        const checkUsername = (rule, value, callback) => {
+        const checkName = (rule, value, callback) => {
           if (value == '') {
-            callback(new Error('The password cannot be empty'));
+            callback(new Error('The username cannot be empty'));
           } else {
             callback()
           }
@@ -68,7 +68,7 @@
             email: '',
             password: '',
             confirmPassword: '',
-            username: ''
+            name: ''
           },
   
           registerRules: {
@@ -81,8 +81,8 @@
             confirmPassword: [
               { required: true, validator: confirmPassword, trigger: 'blur'}
             ],
-            username: [
-              { required: true, validator: checkUsername, trigger: 'blur' }
+            name: [
+              { required: true, validator: checkName, trigger: 'blur' }
             ]
           }
         };
@@ -97,15 +97,15 @@
             if (valid) {
               this.loading = true
               this.$store.dispatch('user/register',this.registerForm).then(() => {
-
-                email,password = this.registerForm
+                alert('You have successfully registered a NUSurf account')
+                email = this.registerForm.email
+                password = this.registerForm.password
                 this.$store.dispatch('user/login', {email, password})
                 console.log('tried login') // for debug
                 this.loading = false
               }).catch(() => {
                 this.loading = false
               })
-              alert('submit!');
             } else {
               console.log('error submit!!');
               return false

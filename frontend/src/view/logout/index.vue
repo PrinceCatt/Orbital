@@ -3,6 +3,7 @@
   </template>
 
 <script>
+
 export default {
     name: 'Logout',
     methods:{
@@ -22,9 +23,10 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: 'logoutfailed',
+            message: 'logout failed',
           })
         });
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -33,12 +35,6 @@ export default {
         });
       }
     },
-
-        logout(){
-            this.$store.dispatch('user/logout').then(() => {
-                alert('!')
-            })
-        }
 }
 
 </script>

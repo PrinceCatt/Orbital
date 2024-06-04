@@ -1,4 +1,4 @@
-import { register, login, logout, getInfo, updateName } from '@/api/user'
+import { register, login, logout, getInfo, updateName, updateAvatar } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 
@@ -34,8 +34,8 @@ const mutations = {
   }
 
 const actions = {
-    // user Login
-    login({ commit }, userInfo) {
+
+  login({ commit }, userInfo) {
         const { email, password} = userInfo
         return new Promise((resolve, reject) => {
             login({ email: email, password: password }).then(response =>{
@@ -56,6 +56,7 @@ const actions = {
       const { email, password, name} = userInfo
       return new Promise((resolve, reject) => {
           register({ email: email, password: password , name: name}).then(response =>{
+              commit('SET_NAME', name)
               resolve()
           }).catch(error => {
               reject(error)
@@ -67,8 +68,12 @@ const actions = {
 
 
     updateName({ commit }, name){
-      return new Promise((resolve,reject) =>{
-        updateName({name: name}).then(resposne =>{
+      const token = store.state.token
+      console.log('updating name') // for debug
+      return new Promise((resolve,reject) => {
+        updateName({name:name, token:token}).then(response =>{
+          console.log('axios requesting') // for debug
+          commit('SET_NAME', name)
           resolve()
       }).catch(error => {
         reject(error)
@@ -78,8 +83,10 @@ const actions = {
     },
 
     updateAvatar({ commit }, avatar){
-      return new Promise((resolve,reject) =>{
-        updateName({avatar: avatar}).then(resposne =>{
+      const token = store.state.token
+      return new Promise((resolve,reject) => {
+        updateAvatar({avatar: avatar, token:token}).then(response =>{
+          commit('SET_AVATAR', avatar)
           resolve()
       }).catch(error => {
         reject(error)

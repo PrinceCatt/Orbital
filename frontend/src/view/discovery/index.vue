@@ -1,4 +1,5 @@
 <template>
+
 <el-container style="height: 500px; border: 1px solid #eee">
     <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
       <el-menu :default-openeds="['1', '3']">
@@ -106,3 +107,7 @@
       }
     };
   </script>
+=======
+    <h1>NUS TODAY</h1>
+</template>
+>>>>>>> 942f016483c063968aa2ccaa05689e12248b7d72
