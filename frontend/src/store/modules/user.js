@@ -55,7 +55,7 @@ const actions = {
     register({ commit }, userInfo) {
       const { email, password, name} = userInfo
       return new Promise((resolve, reject) => {
-          login({ email: email, password: password , name: name}).then(response =>{
+          register({ email: email, password: password , name: name}).then(response =>{
               const { data } = response
               commit('SET_TOKEN', data.token)
               setToken(data.token)
@@ -71,7 +71,7 @@ const actions = {
 
     updateName({ commit }, name){
       return new Promise((resolve,reject) =>{
-        updateName({name: name}).then(resposne =>{
+        updateName({token: this.$store.state.token, name: name}).then(resposne =>{
           resolve()
       }).catch(error => {
         reject(error)
@@ -82,7 +82,7 @@ const actions = {
 
     updateAvatar({ commit }, avatar){
       return new Promise((resolve,reject) =>{
-        updateName({avatar: avatar}).then(resposne =>{
+        updateName({token: this.$store.state.token, avatar: avatar}).then(resposne =>{
           resolve()
       }).catch(error => {
         reject(error)
@@ -90,8 +90,6 @@ const actions = {
       })
       })
     },
-
-
 
 
     // get User Info
