@@ -1,4 +1,4 @@
-import { login, logout, getInfo, updateName, updateAvatar, register} from '@/api/user'
+import { register, login, logout, getInfo, updateName } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 
@@ -56,9 +56,6 @@ const actions = {
       const { email, password, name} = userInfo
       return new Promise((resolve, reject) => {
           register({ email: email, password: password , name: name}).then(response =>{
-              const { data } = response
-              commit('SET_TOKEN', data.token)
-              setToken(data.token)
               resolve()
           }).catch(error => {
               reject(error)
@@ -71,7 +68,7 @@ const actions = {
 
     updateName({ commit }, name){
       return new Promise((resolve,reject) =>{
-        updateName({token: this.$store.state.token, name: name}).then(resposne =>{
+        updateName({name: name}).then(resposne =>{
           resolve()
       }).catch(error => {
         reject(error)
@@ -82,7 +79,7 @@ const actions = {
 
     updateAvatar({ commit }, avatar){
       return new Promise((resolve,reject) =>{
-        updateAvatar({token: this.$store.state.token, avatar: avatar}).then(resposne =>{
+        updateName({avatar: avatar}).then(resposne =>{
           resolve()
       }).catch(error => {
         reject(error)
@@ -90,6 +87,8 @@ const actions = {
       })
       })
     },
+
+
 
 
     // get User Info

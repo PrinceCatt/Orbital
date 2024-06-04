@@ -97,8 +97,10 @@
             if (valid) {
               this.loading = true
               this.$store.dispatch('user/register',this.registerForm).then(() => {
-                this.$store.dispatch('user/getInfo')
-                this.$router.push({path: '/discover'})
+
+                email,password = this.registerForm
+                this.$store.dispatch('user/login', {email, password})
+                console.log('tried login') // for debug
                 this.loading = false
               }).catch(() => {
                 this.loading = false
