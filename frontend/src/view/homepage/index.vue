@@ -32,7 +32,7 @@
     </el-submenu>
     <el-menu-item index="3">
       
-      <el-button type="text" @click="register">Register</el-button>
+      <el-button type="text" @click="discovery()">Discovery</el-button>
 
     </el-menu-item>
     <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
@@ -43,8 +43,6 @@
       </template>
   
   <script>
-import { register } from '@/api/user';
-import router from '@/router';
 
 
     export default {
@@ -104,11 +102,10 @@ import router from '@/router';
           });
         },
 
-        register(){
-          this.$router.push({path: '/register'})
-        }
+        discovery(){
+          this.$router.push({path: '/discovery'})
       }, 
-
+    },
   
   
       data() {
