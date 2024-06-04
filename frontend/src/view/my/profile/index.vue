@@ -30,8 +30,6 @@
 </template>
 
 <script>
-import { updateAvatar } from '@/api/user';
-
 
   export default {
     data() {
@@ -49,6 +47,7 @@ import { updateAvatar } from '@/api/user';
         this.imageUrl = URL.createObjectURL(file.raw);
         this.$store.dispatch(updateAvatar(file))
       },
+
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
