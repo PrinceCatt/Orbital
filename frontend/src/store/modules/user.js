@@ -1,4 +1,4 @@
-import { login, logout, getInfo, updateName } from '@/api/user'
+import { login, logout, getInfo, updateName, updateAvatar, register} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 
@@ -82,7 +82,7 @@ const actions = {
 
     updateAvatar({ commit }, avatar){
       return new Promise((resolve,reject) =>{
-        updateName({token: this.$store.state.token, avatar: avatar}).then(resposne =>{
+        updateAvatar({token: this.$store.state.token, avatar: avatar}).then(resposne =>{
           resolve()
       }).catch(error => {
         reject(error)
