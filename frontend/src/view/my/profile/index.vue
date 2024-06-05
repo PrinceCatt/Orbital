@@ -66,18 +66,11 @@
           confirmButtonText: 'confirm',
           cancelButtonText: 'cancel',
         }).then(({ value }) => {
-
-
-          console.log('Trying dispatch action') // for debug
-
-          
           this.$store.dispatch('user/updateName', value).then(() => {
             this.$message({
             type: 'success',
             message: 'Your new username is: ' + value,
           });
-
-
           }).catch(() => {
             this.$message({
               type: 'warning',

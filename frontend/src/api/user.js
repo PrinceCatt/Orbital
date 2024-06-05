@@ -34,12 +34,12 @@ export function logout() {
   })
 }
 
-// {name, token}
-export function updateName(data) {
+// {name}
+export function updateName(name) {
   return request({
     url: '/user/updateName',
     method: 'post',
-    data
+    params: { name }
   })
 }
 

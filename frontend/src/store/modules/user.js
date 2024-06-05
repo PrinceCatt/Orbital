@@ -65,11 +65,11 @@ const actions = {
       }) 
     },
 
-    updateName({ commit, state }, name){
+    updateName({ commit }, name){
       console.log('updating name') // for debug
       return new Promise((resolve,reject) => {
         console.log('before requesting') // for debug
-        updateName({name:name, token: state.token}).then(response =>{
+        updateName(name).then(response =>{
           console.log('axios requesting') // for debug
           commit('SET_NAME', name)
           resolve()
@@ -93,9 +93,6 @@ const actions = {
       })
       })
     },
-
-
-
 
     // get User Info
     getInfo({ commit, state }){

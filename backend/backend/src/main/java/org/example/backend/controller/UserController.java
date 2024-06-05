@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 
+import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.utils.JwtUtils;
@@ -8,6 +9,7 @@ import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -68,7 +70,9 @@ public class UserController {
     }
 
     @PostMapping("/updateName")
-    public Result updateName(String name, String token){
+    public Result updateName(String name, HttpServletRequest request){
+
+        String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         int result = userMapper.updateName(email, name);
         if (result > 0){
@@ -78,7 +82,9 @@ public class UserController {
     }
 
     @PutMapping("/updateAvatar")
-    public Result updateAvatar(String avatar, String token){
+    public Result updateAvatar(String avatar, HttpServletRequest request){
+
+        String token = request.getHeader("token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         int result = userMapper.updateAvatar(email, avatar);
         if (result > 0){
