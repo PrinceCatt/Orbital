@@ -32,7 +32,8 @@
     </el-submenu>
     <el-menu-item index="3">
       
-      <el-button type="text" @click="discover">Discover</el-button>
+      <el-button type="text" @click="discovery()">Discovery</el-button>
+
 
     </el-menu-item>
     <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
@@ -84,6 +85,7 @@
             type: 'warning'
           }).then(() => {
               this.$store.dispatch('user/logout').then(() => {
+            this.$router.push({path: '/discovery'})
             this.$message({
               type: 'success',
               message: 'successfully logout',
@@ -102,11 +104,8 @@
           });
         },
 
-        discover(){
-          this.$router.push({path: '/discover'})
-        }
-      }, 
 
+    },
   
   
       data() {

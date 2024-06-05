@@ -63,14 +63,13 @@ const actions = {
               
         })
       }) 
-  },
+    },
 
-
-    updateName({ commit }, name){
-      const token = store.state.token
+    updateName({ commit, state }, name){
       console.log('updating name') // for debug
       return new Promise((resolve,reject) => {
-        updateName({name:name, token:token}).then(response =>{
+        console.log('before requesting') // for debug
+        updateName({name:name, token: state.token}).then(response =>{
           console.log('axios requesting') // for debug
           commit('SET_NAME', name)
           resolve()
@@ -85,6 +84,7 @@ const actions = {
       const token = store.state.token
       return new Promise((resolve,reject) => {
         updateAvatar({avatar: avatar, token:token}).then(response =>{
+          console.log('axios requesting')
           commit('SET_AVATAR', avatar)
           resolve()
       }).catch(error => {
