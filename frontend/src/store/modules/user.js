@@ -66,11 +66,8 @@ const actions = {
     },
 
     updateName({ commit }, name){
-      console.log('updating name') // for debug
       return new Promise((resolve,reject) => {
-        console.log('before requesting') // for debug
         updateName(name).then(response =>{
-          console.log('axios requesting') // for debug
           commit('SET_NAME', name)
           resolve()
       }).catch(error => {

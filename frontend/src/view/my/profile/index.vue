@@ -45,7 +45,7 @@
     methods: {
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        this.$store.dispatch('/user/updateAvatar', file)
+        this.$store.dispatch('user/updateAvatar', file)
       },
 
       beforeAvatarUpload(file) {
