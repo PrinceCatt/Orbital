@@ -3,7 +3,9 @@ package org.example.backend.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public class JwtUtils {
@@ -32,4 +34,54 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    //Verify token by token
+    public static boolean validateToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            return false;
+        }
+        try {
+            // verifying token
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    //Verify token by request
+    public static boolean validateToken(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("X-Token");
+            if (StringUtils.isBlank(token)) {
+                return false;
+            }
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
