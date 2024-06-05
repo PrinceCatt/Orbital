@@ -68,10 +68,11 @@
         }).then(({ value }) => {
           console.log('Trying dispatch action') // for debug
           this.$store.dispatch('user/updateName', value).then(() => {
+            console.log(' dispatched ') // for debug
             this.$message({
-            type: 'success',
-            message: 'Your new username is: ' + value,
-          });
+              type: 'success',
+              message: 'Your new username is: ' + value,
+            });
           }).catch(() => {
             this.$message({
               type: 'warning',

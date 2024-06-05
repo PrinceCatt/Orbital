@@ -35,7 +35,7 @@ const mutations = {
 
 const actions = {
 
-  login({ commit }, userInfo) {
+    login({ commit }, userInfo) {
         const { email, password} = userInfo
         return new Promise((resolve, reject) => {
             login({ email: email, password: password }).then(response =>{
@@ -46,7 +46,6 @@ const actions = {
             }).catch(error => {
                 reject(error)
                 return('Entered wrong email or password') // for debug
-                
           })
         }) 
     },
