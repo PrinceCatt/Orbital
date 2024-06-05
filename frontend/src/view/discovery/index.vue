@@ -77,7 +77,7 @@
 
       methods: {
         open(id){
-          this.$router.push({path: '/discovery/page'})
+          this.$router.push({path: '/discovery/page/2'})
         }
       },
     };

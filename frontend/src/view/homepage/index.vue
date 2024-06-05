@@ -34,7 +34,6 @@
       
       <el-button type="text" @click="discovery()">Discovery</el-button>
 
-
     </el-menu-item>
     <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
   </el-menu>
@@ -79,33 +78,14 @@
 
         // For user to confirm logout
         openLogout() {
-          this.$confirm('Are you sure to logout?', {
-            confirmButtonText: 'Confirm',
-            cancelButtonText: 'No',
-            type: 'warning'
-          }).then(() => {
-              this.$store.dispatch('user/logout').then(() => {
-            this.$router.push({path: '/discovery'})
-            this.$message({
-              type: 'success',
-              message: 'successfully logout',
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: 'logoutfailed',
-            })
-          });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: 'logout canceled'
-            });          
-          });
+          this.$router.push({path: '/logout'})
         },
 
+        discovery(){
+          this.$router.push({path: '/discovery'})
+        }
+      }, 
 
-    },
   
   
       data() {

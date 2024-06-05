@@ -12,14 +12,18 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
     routes:[
-        {path:'/', redirect: '/discover'},
+        {path:'/', redirect: '/discovery'},
         {path:'/register', component: Register},
         {path:'/profile', component: Profile},
         {path:'/login',  component: Login},
         {path:'/logout', component: Logout},
         {path:'/discovery', component: Discovery,
             children: [
-                {path: "page", component: Page}
+                {path: "page", component: Page, 
+                children: [
+                    {path :":id", component: Page, props: true}
+                ]
+            }
             ]
         },
     ]
