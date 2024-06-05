@@ -74,6 +74,11 @@ public class UserController {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        if(user.getName().equals(name)){
+            return Result.error().message("Please enter a new name");
+        }
+        
         int result = userMapper.updateName(email, name);
         if (result > 0){
             return Result.ok();
