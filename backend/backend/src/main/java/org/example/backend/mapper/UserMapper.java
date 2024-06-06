@@ -3,7 +3,7 @@ package org.example.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 import org.example.backend.entity.User;
-import org.example.backend.utils.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
@@ -18,6 +18,6 @@ public interface UserMapper extends BaseMapper<User> {
     int updateName(@Param("email") String email, @Param("name") String name);
 
     @Update("update t_user set avatar=#{avatar} where email=#{email}")
-    int updateAvatar(String email, String avatar);
+    int updateAvatar(@Param("email")String email, @Param("avatar") MultipartFile avatar);
 
 }

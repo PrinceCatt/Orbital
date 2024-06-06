@@ -4,8 +4,8 @@ package org.example.backend.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
 
 @TableName("t_user")
 public class User {
@@ -14,7 +14,7 @@ public class User {
     private Integer id;
     private String name = "";
     private String email = "";
-    private String avatar = "";
+    private MultipartFile avatar;
     private String password = "";
 
 // private    char[] biography = new char[100];
@@ -30,7 +30,6 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", avatar=" + avatar +
                 '}';
     }
 //    public void setBiography(char[] biography) {
@@ -69,11 +68,11 @@ public class User {
         this.password = password;
     }
 
-    public String getAvatar() {
+    public MultipartFile getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(MultipartFile avatar) {
         this.avatar = avatar;
     }
 }

@@ -1,22 +1,19 @@
 package org.example.backend.entity;
 
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("t_post")
 public class Post {
+
+    @TableId(type = IdType.AUTO)
     private int id;
     private String title;
-    private String content;
-    private String author;
+    private String contentText;
+    private User author;
     private String time;
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", author='" + author + '\'' +
-                ", time='" + time + '\'' +
-                '}';
-    }
 
     public int getId() {
         return id;
@@ -24,6 +21,17 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", contentText='" + contentText + '\'' +
+                ", author='" + author + '\'' +
+                ", time='" + time + '\'' +
+                '}';
     }
 
     public String getTitle() {
@@ -34,19 +42,19 @@ public class Post {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public String getContentText() {
+        return contentText;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContentText(String contentText) {
+        this.contentText = contentText;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -57,4 +65,5 @@ public class Post {
     public void setTime(String time) {
         this.time = time;
     }
+
 }

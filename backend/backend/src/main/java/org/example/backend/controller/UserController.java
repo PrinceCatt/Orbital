@@ -8,6 +8,7 @@ import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,8 +48,8 @@ public class UserController {
         // find user's information
         User user = userMapper.findByEmail(email);
         String name = user.getName();
-        String url = user.getAvatar();
-        return Result.ok().data("email", email).data("name", name).data("avatar", url); // more information to be added
+        MultipartFile avatar = user.getAvatar();
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatar); // more information to be added
     }
 
     @PostMapping("/logout") // "remove token and all, see details in frontEnd "
@@ -87,9 +88,9 @@ public class UserController {
     }
 
     @PutMapping("/updateAvatar")
-    public Result updateAvatar(String avatar, HttpServletRequest request){
+    public Result updateAvatar(MultipartFile avatar, HttpServletRequest request){
 
-        String token = request.getHeader("token");
+        String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         int result = userMapper.updateAvatar(email, avatar);
         if (result > 0){

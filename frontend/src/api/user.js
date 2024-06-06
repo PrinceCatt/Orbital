@@ -34,7 +34,7 @@ export function logout() {
   })
 }
 
-// {name}
+// {newName}
 export function updateName(name) {
   return request({
     url: '/user/updateName',
