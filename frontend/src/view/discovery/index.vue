@@ -10,11 +10,17 @@
           <template slot="title">ACGN</template>
           <el-menu-item-group>
             <el-menu-item index="1-1">
-              <el-button @click="open(1)">Anime</el-button>
+              <el-button @click="openPage('Anime')">Anime</el-button>
             </el-menu-item>
-            <el-menu-item index="1-2">Comics</el-menu-item>
-            <el-menu-item index="1-3">Gaming</el-menu-item>
-            <el-menu-item index="1-4">Light Novel</el-menu-item>
+            <el-menu-item index="1-2">
+              <el-button @click="openPage('Comics')">Comics</el-button>
+            </el-menu-item>
+            <el-menu-item index="1-3">
+              <el-button @click="openPage('Gaming')">Gaming</el-button>
+            </el-menu-item>
+            <el-menu-item index="1-4">
+              <el-button @click="openPage('LightNovel')">LightNovel</el-button>
+            </el-menu-item>
 
           </el-menu-item-group>
         </el-submenu>
@@ -76,8 +82,8 @@
       },
 
       methods: {
-        open(id){
-          this.$router.push({path: '/discovery/page/2'})
+        openPage(id){
+          this.$router.push({path: `/discovery/page/${id}`})
         }
       },
     };

@@ -2,6 +2,7 @@
     
     <div>
         <h3>Page{{ $route.params.id }}</h3>
+        <h3></h3>
 
         <el-button @click="open($route.params.id)"> Open </el-button>
     </div>
@@ -20,6 +21,9 @@ export default {
             else {
                 alert("not 1")
             }
+
+            this.$store.dispatch(getPost(id))
+            
         }
       }
 }
