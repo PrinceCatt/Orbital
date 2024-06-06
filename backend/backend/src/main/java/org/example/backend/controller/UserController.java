@@ -1,7 +1,5 @@
 package org.example.backend.controller;
 
-
-import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.utils.JwtUtils;
@@ -88,7 +86,7 @@ public class UserController {
     }
 
     @PutMapping("/updateAvatar")
-    public Result updateAvatar(MultipartFile avatar, HttpServletRequest request){
+    public Result updateAvatar(@RequestPart MultipartFile avatar, HttpServletRequest request){
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
