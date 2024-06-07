@@ -12,16 +12,18 @@
     <h1>Avatar:</h1>
     <el-image
       style="width: 300px; height: 300px"
-      :src= "avatar"
+      :src= avatar
       :fit="fit"></el-image>
   </div></el-col>
   
   <el-col :span="6"><div class="grid-content bg-purple"></div><h3>Change Avatar</h3><el-upload
   class="avatar-uploader"
-  action="https://jsonplaceholder.typicode.com/posts/"
+  name="avatar"
+  action="http://localhost:8088/user/updateAvatar"
   :show-file-list="false"
-  :on-success="handleAvatarSuccess"
-  :before-upload="beforeAvatarUpload">
+  :on-success="handleAvatarUpload"
+  :before-upload="beforeAvatarUpload"
+  :headers="{'X-Token': token }">
   <img v-if="imageUrl" :src="imageUrl" class="avatar">
   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 </el-upload></el-col>
@@ -39,13 +41,14 @@
         avatar: this.$store.state.user.avatar,
         name: this.$store.state.user.name,
         fits: ['fill'],
+        token: this.$store.state.user.token,
       }
     },
 
     methods: {
-      handleAvatarSuccess(res, file) {
+
+      handleAvatarUpload(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        this.$store.dispatch('user/updateAvatar', file)
       },
 
       beforeAvatarUpload(file) {

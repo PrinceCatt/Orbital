@@ -14,7 +14,7 @@ public class User {
     private Integer id;
     private String name = "";
     private String email = "";
-    private MultipartFile avatar;
+    private String avatarPath;
     private String password = "";
 
 // private    char[] biography = new char[100];
@@ -68,11 +68,11 @@ public class User {
         this.password = password;
     }
 
-    public MultipartFile getAvatar() {
-        return avatar;
+    public String  getAvatarPath() {
+        return avatarPath;
     }
 
-    public void setAvatar(MultipartFile avatar) {
-        this.avatar = avatar;
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 }

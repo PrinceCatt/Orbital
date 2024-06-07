@@ -17,7 +17,7 @@ public interface UserMapper extends BaseMapper<User> {
     @Update("update t_user set name=#{name} where email=#{email}")
     int updateName(@Param("email") String email, @Param("name") String name);
 
-    @Update("update t_user set avatar=#{avatar} where email=#{email}")
-    int updateAvatar(@Param("email")String email, @Param("avatar") MultipartFile avatar);
+    @Update("update t_user set avatarPath=#{avatarPath} where email=#{email}")
+    int updateAvatar(@Param("email")String email, @Param("avatarPath") String avatarPath);
 
 }

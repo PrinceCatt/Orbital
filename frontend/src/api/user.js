@@ -43,11 +43,12 @@ export function updateName(name) {
   })
 }
 
-// {avatar, token}
-export function updateAvatar(data) {
+// {newAvatar}
+// Not using for user's updating avatar
+export function updateAvatar(avatar) {
   return request({
     url: '/user/updateAvatar',
-    method: 'put',
-    data
+    method: 'post',
+    params: {avatar}
   })
 }

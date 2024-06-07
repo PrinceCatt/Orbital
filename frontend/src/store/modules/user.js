@@ -78,10 +78,8 @@ const actions = {
     },
 
     updateAvatar({ commit }, avatar){
-      const token = store.state.token
       return new Promise((resolve,reject) => {
-        updateAvatar({avatar: avatar, token:token}).then(response =>{
-          console.log('axios requesting')
+        updateAvatar(avatar).then(response =>{
           commit('SET_AVATAR', avatar)
           resolve()
       }).catch(error => {
@@ -102,14 +100,12 @@ const actions = {
                 }
                 
                 const { email, name, avatar } = data
+                const blob = new Blob([avatar])
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
                 if(avatar != null){
-                  commit('SET_AVATAR', avatar)
+                  commit('SET_AVATAR', blob)
                 }
-//                else{ 
-//                  // set default avatar
-//                  commit('SET_AVATAR', defaultAvatar)}
                 resolve(data)
             }).catch(error => {
                 reject(error)

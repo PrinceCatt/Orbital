@@ -59,6 +59,7 @@
         },
 
         openProfile(){
+          this.$store.dispatch('user/getInfo', this.$store.state.user.token)
           this.$router.push({path: '/profile'})
         },
 
