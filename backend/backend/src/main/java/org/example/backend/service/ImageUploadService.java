@@ -1,6 +1,5 @@
 package org.example.backend.service;
 
-import org.apache.ibatis.annotations.Param;
 import org.example.backend.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +9,7 @@ public class ImageUploadService {
     @Autowired
     private UserMapper userMapper;
 
-    public String imageUpload(String avatarPath, String email) {
-        int result = userMapper.updateAvatar(email, avatarPath);
-        if (result > 0) {
-            return "Upload success";
-        }
-        return "Upload failed";
+    public int imageUpload(String avatarPath, String email) {
+        return userMapper.updateAvatar(email, avatarPath);
     }
 }

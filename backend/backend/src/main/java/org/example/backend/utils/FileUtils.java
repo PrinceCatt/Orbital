@@ -11,6 +11,7 @@ import java.util.UUID;
 public class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
+    // For user to upload file and store it in designated path
     public static void upload(MultipartFile file,String destPath, String fileName) {
         File dest = new File(destPath + File.separator + fileName);
         // Check whether parent file exists

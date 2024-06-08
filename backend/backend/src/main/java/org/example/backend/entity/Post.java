@@ -2,9 +2,14 @@ package org.example.backend.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @TableName("t_post")
 public class Post {
 
@@ -12,16 +17,11 @@ public class Post {
     private int id;
     private String title;
     private String contentText;
-    private User author;
     private String time;
+    private int uid;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @TableField(exist = false)
+    private User author;
 
     @Override
     public String toString() {
@@ -29,41 +29,10 @@ public class Post {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", contentText='" + contentText + '\'' +
-                ", author='" + author + '\'' +
                 ", time='" + time + '\'' +
+                ", uid=" + uid +
+                ", author=" + author.getName() +
                 '}';
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContentText() {
-        return contentText;
-    }
-
-    public void setContentText(String contentText) {
-        this.contentText = contentText;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
 }

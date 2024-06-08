@@ -45,7 +45,7 @@ const actions = {
                 resolve()
             }).catch(error => {
                 reject(error)
-                return('Entered wrong email or password') // for debug
+                return('Entered wrong email or password')
           })
         }) 
     },
@@ -59,7 +59,7 @@ const actions = {
               resolve()
           }).catch(error => {
               reject(error)
-              return('Invalid') // for debug
+              return('Invalid')
               
         })
       }) 
@@ -100,11 +100,10 @@ const actions = {
                 }
                 
                 const { email, name, avatar } = data
-                const blob = new Blob([avatar])
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
                 if(avatar != null){
-                  commit('SET_AVATAR', blob)
+                  commit('SET_AVATAR', avatar)
                 }
                 resolve(data)
             }).catch(error => {

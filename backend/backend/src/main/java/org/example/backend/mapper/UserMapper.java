@@ -2,8 +2,12 @@ package org.example.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
+import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
@@ -20,4 +24,16 @@ public interface UserMapper extends BaseMapper<User> {
     @Update("update t_user set avatarPath=#{avatarPath} where email=#{email}")
     int updateAvatar(@Param("email")String email, @Param("avatarPath") String avatarPath);
 
+    @Select("select * from t_user where email = #{email}")
+    @Results(
+            {
+                    @Result(column = "id",property = "id"),
+                    @Result(column = "name",property = "name"),
+                    @Result(column = "avatarPath",property = "avatarPath"),
+                    @Result(column = "id",property = "posts",javaType= List.class,
+                            many = @Many(select = "org.example.backend.mapper.PostMapper.selectByUid")
+                    )
+            }
+    )
+    List<Post> findPostsByEmail(String email);
 }

@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 import org.apache.ibatis.annotations.Param;
+import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.ImageUploadService;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.List;
 
 
 @RestController
@@ -25,6 +27,7 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
+    // For login function
     @PostMapping("/login")
     //json: {email,password}
     //As the frontEnd sending data in json format, @RequestBody is needed
@@ -45,8 +48,12 @@ public class UserController {
         return Result.ok().data("token", token);
     }
 
+    // To get user info
     @GetMapping("/info") // "token:xxx“
     public Result info(String token){
+        if (!JwtUtils.validateToken(token)){
+            return Result.error().message("Invalid token");
+        }
         // find user's email by token
         String email = JwtUtils.getClaimsByToken(token).getSubject();
 
@@ -54,12 +61,14 @@ public class UserController {
         User user = userMapper.findByEmail(email);
         String name = user.getName();
         String avatarPath = user.getAvatarPath();
-        return Result.ok().data("email", email).data("name", name).data("avatar", null ); // Avatar path to be changed
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath ); // Avatar path to be changed
     }
 
+    // For logout function
     @PostMapping("/logout") // "remove token and all, see details in frontEnd "
     public Result logout(){ return Result.ok(); }
 
+    // For new user to register
     //json:{email,password,name}
     @PostMapping("/register")
     public Result register(@RequestBody User user){
@@ -75,6 +84,7 @@ public class UserController {
         return Result.error();
     }
 
+    // For user to change name
     @PostMapping("/updateName")
     public Result updateName(String name, HttpServletRequest request){
 
@@ -92,6 +102,7 @@ public class UserController {
         else { return Result.error().message("Invalid update"); }
     }
 
+    // For user to update avatar
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -100,9 +111,6 @@ public class UserController {
     @Value("${web.upload-path}")
     private String path;
 
-    @Value("${server.port}")
-    private String port;
-
     @PostMapping("/updateAvatar")
     public Result updateAvatar(@RequestParam("avatar") MultipartFile avatar, HttpServletRequest request){
         if (avatar.isEmpty()) {
@@ -110,6 +118,16 @@ public class UserController {
         }
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        String avatarPath = user.getAvatarPath();
+        File file = new File(avatarPath);
+
+        // Not completed yet, some problem with detecting old avatar
+        if (file.exists()){
+            file.delete();
+            return Result.error().message("Avatar not deleted");
+        }
+        else {System.out.println("Old avatar does not exist");}
 
         String contentType = avatar.getContentType();
         String fileName = avatar.getOriginalFilename();
@@ -121,14 +139,24 @@ public class UserController {
             System.out.println("Upload avatar exception: " + e.getMessage());
         }
 
-        return Result.ok().message("Avatar updated successfully. Link stored: " + imageUploadService.imageUpload(path + File.separator + newRandomFileName, email));
+        String resourceHandlerPath = "http://localhost:8088/user/avatar/";
+
+        int result = imageUploadService.imageUpload(resourceHandlerPath + newRandomFileName, email);
+        if (result > 0) {
+            return Result.ok().message("Avatar updated successfully. Path stored.");
+        }
+        return Result.error().message("Avatar update failed");
     }
 
+    // To get the user's own posts
+    @GetMapping("/user/posts")
+    public List<Post> findPostsOfUser(HttpServletRequest request) {
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
 
-
-
-
-
-
+        List<Post> list = userMapper.findPostsByEmail(email);
+        System.out.println(list);
+        return list;
+    }
 
 }

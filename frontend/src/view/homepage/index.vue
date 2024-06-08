@@ -51,16 +51,12 @@
         },
 
         myProfile(){
-          if(this.$store.state.user.name == ""){
-            alert('Please login first')
-            this.openLogin();
-          }
-          else{ this.openProfile(); }
-        },
-
-        openProfile(){
-          this.$store.dispatch('user/getInfo', this.$store.state.user.token)
-          this.$router.push({path: '/profile'})
+          this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+            this.$router.push({path: '/profile'})
+          }).catch(() => {
+            alert("Please login first")
+            this.openLogin()
+          })
         },
 
         open(){

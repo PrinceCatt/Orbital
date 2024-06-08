@@ -49,6 +49,7 @@
 
       handleAvatarUpload(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
+        this.$router.replace('/profile')
       },
 
       beforeAvatarUpload(file) {
