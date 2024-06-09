@@ -3,6 +3,7 @@ package org.example.backend.controller;
 import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
+import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.ImageUploadService;
 import org.example.backend.utils.FileUtils;
@@ -26,6 +27,8 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PostMapper postMapper;
 
     // For login function
     @PostMapping("/login")
@@ -120,12 +123,16 @@ public class UserController {
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         String avatarPath = user.getAvatarPath();
-        File file = new File(avatarPath);
+        File tempFile = new File(avatarPath);
+        String oldFileName = tempFile.getName();
+
+        String realAvatarPath = path + File.separator + oldFileName;
+        File file = new File(realAvatarPath);
 
         // Not completed yet, some problem with detecting old avatar
         if (file.exists()){
-            file.delete();
-            return Result.error().message("Avatar not deleted");
+            boolean deleted = file.delete();
+            System.out.println("Avatar deleted = " + deleted);
         }
         else {System.out.println("Old avatar does not exist");}
 
@@ -149,14 +156,70 @@ public class UserController {
     }
 
     // To get the user's own posts
-    @GetMapping("/user/posts")
+    @GetMapping("/post")
     public List<Post> findPostsOfUser(HttpServletRequest request) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
 
-        List<Post> list = userMapper.findPostsByEmail(email);
-        System.out.println(list);
-        return list;
+        User user = userMapper.findPostsByEmail(email);
+        System.out.println(user);
+        return user.getPosts();
+    }
+
+    // For user to create one post of his own
+    @PostMapping("/post/add")
+    public Result add(@RequestBody Post post, HttpServletRequest request) {
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int uid = userMapper.findByEmail(email).getId();
+
+        post.setUid(uid);
+        int result = postMapper.insert(post);
+        if(result > 0){
+            return Result.ok();
+        }
+        return Result.error().message("Post add failed");
+    }
+
+    // For user to delete one post of his own
+    @DeleteMapping("/post/delete")
+    public Result delete(@RequestBody Post post, HttpServletRequest request) {
+        // check whether this is the user's own post
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findPostsByEmail(email);
+        int uid = user.getId();
+        int id = post.getId();
+        int postUid = postMapper.selectById(id).getUid();
+        if (postUid != uid) {
+            return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
+        }
+
+        int result = postMapper.deleteById(id);
+        if(result > 0){
+            return Result.ok();
+        }
+        return Result.error().message("Post delete failed");
+    }
+
+    @PostMapping("/post/update")
+    public Result update(@RequestBody Post post, HttpServletRequest request) {
+        // check whether this is the user's own post
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findPostsByEmail(email);
+        int uid = user.getId();
+        int id = post.getId();
+        int postUid = postMapper.selectById(id).getUid();
+        if (postUid != uid) {
+            return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
+        }
+
+        int result = postMapper.updateById(post);
+        if(result > 0){
+            return Result.ok();
+        }
+        return Result.error().message("Post update failed");
     }
 
 }

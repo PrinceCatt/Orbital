@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,12 +26,6 @@ public class User {
     @TableField(exist = false)
     private List<Post> posts;
 
-// private    char[] biography = new char[100];
-
-//    public char[] getBiography() {
-//        return biography;
-//    }
-//
 
     @Override
     public String toString() {
@@ -42,8 +35,6 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
-//    public void setBiography(char[] biography) {
-//        this.biography = biography;
-//    }
+
 
 }

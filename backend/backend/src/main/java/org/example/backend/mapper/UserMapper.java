@@ -2,10 +2,7 @@ package org.example.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
-import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,5 +32,5 @@ public interface UserMapper extends BaseMapper<User> {
                     )
             }
     )
-    List<Post> findPostsByEmail(String email);
+    User findPostsByEmail(String email);
 }

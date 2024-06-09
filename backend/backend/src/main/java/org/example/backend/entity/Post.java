@@ -16,7 +16,7 @@ public class Post {
     @TableId(type = IdType.AUTO)
     private int id;
     private String title;
-    private String contentText;
+    private String content;
     private String time;
     private int uid;
 
@@ -28,10 +28,9 @@ public class Post {
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", contentText='" + contentText + '\'' +
+                ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
                 ", uid=" + uid +
-                ", author=" + author.getName() +
                 '}';
     }
 
