@@ -1,11 +1,27 @@
 package org.example.backend.entity;
 
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@TableName("t_post")
 public class Post {
+
+    @TableId(type = IdType.AUTO)
     private int id;
     private String title;
     private String content;
-    private String author;
     private String time;
+    private int uid;
+
+    @TableField(exist = false)
+    private User author;
 
     @Override
     public String toString() {
@@ -13,48 +29,9 @@ public class Post {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", author='" + author + '\'' +
                 ", time='" + time + '\'' +
+                ", uid=" + uid +
                 '}';
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 }

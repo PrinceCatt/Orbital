@@ -44,7 +44,6 @@
   
   <script>
 
-
     export default {
       methods: {
         handleSelect(key, keyPath) {
@@ -52,15 +51,12 @@
         },
 
         myProfile(){
-          if(this.$store.state.user.name == ""){
-            alert('Please login first')
-            this.openLogin();
-          }
-          else{ this.openProfile(); }
-        },
-
-        openProfile(){
-          this.$router.push({path: '/profile'})
+          this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+            this.$router.push({path: '/profile'})
+          }).catch(() => {
+            alert("Please login first")
+            this.openLogin()
+          })
         },
 
         open(){
@@ -78,8 +74,30 @@
 
         // For user to confirm logout
         openLogout() {
-          this.$router.push({path: '/logout'})
-        },
+        this.$confirm('Are you sure to logout?', {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          type: 'warning'
+        }).then(() => {
+            this.$store.dispatch('user/logout').then(() => {
+                this.$router.push({path: '/discovery'})
+          this.$message({
+            type: 'success',
+            message: 'successfully logout',
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'logout failed',
+          })
+        });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'logout canceled'
+          });          
+        });
+      },
 
         discovery(){
           this.$router.push({path: '/discovery'})

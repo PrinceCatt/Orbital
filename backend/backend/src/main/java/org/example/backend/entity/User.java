@@ -2,11 +2,17 @@ package org.example.backend.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.net.URL;
+import java.util.List;
 
+
+@Setter
+@Getter
 @TableName("t_user")
 public class User {
 
@@ -14,15 +20,12 @@ public class User {
     private Integer id;
     private String name = "";
     private String email = "";
-    private String avatar = "";
+    private String avatarPath;
     private String password = "";
 
-// private    char[] biography = new char[100];
+    @TableField(exist = false)
+    private List<Post> posts;
 
-//    public char[] getBiography() {
-//        return biography;
-//    }
-//
 
     @Override
     public String toString() {
@@ -30,50 +33,8 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", avatar=" + avatar +
                 '}';
     }
-//    public void setBiography(char[] biography) {
-//        this.biography = biography;
-//    }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 }

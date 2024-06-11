@@ -1,6 +1,6 @@
 import { register, login, logout, getInfo, updateName, updateAvatar } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
+// import defaultAvatar from '@/assets/defaultAvatar'
 
 
 
@@ -45,7 +45,7 @@ const actions = {
                 resolve()
             }).catch(error => {
                 reject(error)
-                return('Entered wrong email or password') // for debug
+                return('Entered wrong email or password')
           })
         }) 
     },
@@ -59,7 +59,7 @@ const actions = {
               resolve()
           }).catch(error => {
               reject(error)
-              return('Invalid') // for debug
+              return('Invalid')
               
         })
       }) 
@@ -78,10 +78,8 @@ const actions = {
     },
 
     updateAvatar({ commit }, avatar){
-      const token = store.state.token
       return new Promise((resolve,reject) => {
-        updateAvatar({avatar: avatar, token:token}).then(response =>{
-          console.log('axios requesting')
+        updateAvatar(avatar).then(response =>{
           commit('SET_AVATAR', avatar)
           resolve()
       }).catch(error => {
@@ -104,12 +102,9 @@ const actions = {
                 const { email, name, avatar } = data
                 commit('SET_EMAIL', email)
                 commit('SET_NAME', name)
-                if(avatar != ""){
+                if(avatar != null){
                   commit('SET_AVATAR', avatar)
                 }
-                else{ 
-                  // set default avatar
-                  commit('SET_AVATAR', 'https://img0.baidu.com/it/u=4265038421,1060934277&fm=253&fmt=auto&app=138&f=JPEG?w=380&h=380')}
                 resolve(data)
             }).catch(error => {
                 reject(error)

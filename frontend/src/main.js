@@ -12,6 +12,7 @@ Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.prototype.$confirm = ElementUI.MessageBox.confirm
 Vue.use(Vuex)
 
 new Vue({
