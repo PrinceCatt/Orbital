@@ -15,6 +15,7 @@ public class Post {
 
     @TableId(type = IdType.AUTO)
     private int id;
+    private String section;
     private String title;
     private String content;
     private String time;
@@ -27,6 +28,7 @@ public class Post {
     public String toString() {
         return "Post{" +
                 "id=" + id +
+                ", section='" + section + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
