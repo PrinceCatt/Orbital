@@ -1,5 +1,8 @@
 package org.example.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
@@ -155,15 +158,17 @@ public class UserController {
         return Result.error().message("Avatar update failed");
     }
 
-    // To get the user's own posts
+    // To get the user's own posts (by page)
     @GetMapping("/post")
-    public List<Post> findPostsOfUser(HttpServletRequest request) {
+    public IPage findPostsOfUser(HttpServletRequest request) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
+        QueryWrapper<Post> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
 
-        User user = userMapper.findPostsByEmail(email);
-        System.out.println(user);
-        return user.getPosts();
+        Page<Post> page = new Page<>(0,10);
+        IPage ipage = postMapper.selectPage(page, queryWrapper);
+        return ipage;
     }
 
     // For user to create one post of his own

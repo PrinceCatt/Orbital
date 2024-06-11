@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
                 System.out.println("Interceptor preHandle");
                 // exclude all OPTIONS requests
-                if(request.getMethod().toUpperCase().equals("OPTIONS")) {
+                if(request.getMethod().equalsIgnoreCase("OPTIONS")) {
                     return true;
                 }
             return true;
