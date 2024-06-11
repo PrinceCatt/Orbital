@@ -5,11 +5,14 @@
         <h3></h3>
 
         <el-button @click="open($route.params.id)"> Open </el-button>
+        <el-button @click="newPost()"> New Post </el-button>
     </div>
 </template>
 
 
 <script>
+
+
 
 export default {
 
@@ -24,6 +27,10 @@ export default {
 
             this.$store.dispatch(getPost(id))
             
+        },
+
+        newPost(){
+            this.$router.push({path: '/login'})
         }
       }
 }

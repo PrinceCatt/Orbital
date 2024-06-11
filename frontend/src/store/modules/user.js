@@ -36,7 +36,7 @@ const mutations = {
 const actions = {
 
     login({ commit }, userInfo) {
-        const { email, password} = userInfo
+        const { email, password } = userInfo
         return new Promise((resolve, reject) => {
             login({ email: email, password: password }).then(response =>{
                 const { data } = response
@@ -52,7 +52,7 @@ const actions = {
 
 
     register({ commit }, userInfo) {
-      const { email, password, name} = userInfo
+      const { email, password, name } = userInfo
       return new Promise((resolve, reject) => {
           register({ email: email, password: password , name: name}).then(response =>{
               commit('SET_NAME', name)
