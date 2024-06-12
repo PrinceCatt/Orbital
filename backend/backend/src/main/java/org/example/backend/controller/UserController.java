@@ -3,6 +3,8 @@ package org.example.backend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
@@ -160,15 +162,16 @@ public class UserController {
 
     // To get the user's own posts (by page)
     @GetMapping("/post")
-    public IPage findPostsOfUser(HttpServletRequest request) {
+    public PageInfo<Post> findPostsOfUser(HttpServletRequest request,
+                                          @RequestParam(defaultValue = "1") int pageNum) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         QueryWrapper<Post> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", email);
 
-        Page<Post> page = new Page<>(0,10);
-        IPage ipage = postMapper.selectPage(page, queryWrapper);
-        return ipage;
+        PageHelper.startPage(pageNum, 10);
+        List<Post> posts = postMapper.selectList(queryWrapper);
+        return new PageInfo<>(posts);
     }
 
     // For user to create one post of his own

@@ -18,14 +18,17 @@ public class PostController {
     private PostMapper postMapper;
 
     @GetMapping("/find/uid")
-    public List<Post> getPostsOfUser(@RequestParam int uid) {
-        return postMapper.selectByUid(uid);
+    public PageInfo<Post> getPostsOfUser(@RequestParam int uid,
+                                         @RequestParam(defaultValue = "1") int pageNum) {
+        PageHelper.startPage(pageNum, 10);
+        List<Post> posts = postMapper.selectByUid(uid);
+        return new PageInfo<>(posts);
     }
 
     // Find all posts (by page)
     @GetMapping("/find")
     public PageInfo<Post> findPosts(@RequestParam(defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, 2);
+        PageHelper.startPage(pageNum, 10);
         List<Post> posts = postMapper.selectList(null);
         return new PageInfo<>(posts);
     }
@@ -33,7 +36,7 @@ public class PostController {
     @GetMapping("/section/find")
     public PageInfo<Post> findPostsBySection(@RequestParam String section,
                                              @RequestParam(defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, 2);
+        PageHelper.startPage(pageNum, 10);
         List<Post> posts = postMapper.selectBySection(section);
         return new PageInfo<>(posts);
     }
