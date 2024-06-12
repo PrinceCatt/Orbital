@@ -2,7 +2,7 @@
 <div>
 
   <h3>L'homme n'est qu'un roseau, le plus faible de la nature; mais c'est un roseau pensant.</h3>
-<el-container style="height: 500px; border: 1px solid #eee">
+<el-container style="height: 940px; border: 1px solid #eee">
     <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
       <el-menu :default-openeds="['1', '3']">
 

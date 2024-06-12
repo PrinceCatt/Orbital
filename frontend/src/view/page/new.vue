@@ -2,21 +2,21 @@
 <template>
 <div>
 
-    <el-input placeholder="请输入内容" v-model="input1">
-      <template slot="prepend">Http://</template>
-    </el-input>
-    <el-input placeholder="请输入内容" v-model="input2">
-      <template slot="append">.com</template>
-    </el-input>
-
-    <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
-      <el-select v-model="select" slot="prepend" placeholder="请选择">
-        <el-option label="餐厅名" value="1"></el-option>
-        <el-option label="订单号" value="2"></el-option>
-        <el-option label="用户电话" value="3"></el-option>
+  
+    <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
+      <el-select v-model="select" slot="prepend" placeholder="Section">
+        <el-option label="ACGN" value="ACGN"></el-option>
+        <el-option label="Music" value="Music"></el-option>
+        <el-button @click="submit()"> Post </el-button>
+       
       </el-select>
       <el-button slot="append" icon="el-icon-search"></el-button>
     </el-input>
+
+    <el-input placeholder="Post Body"  type="textarea" :autosize="{ minRows: 1, maxRows: 100}" v-model="body">
+    </el-input>
+<el-button @click="submit()"> Post </el-button>
+    
 
 </div>
     
@@ -33,14 +33,26 @@
   </style>
   
   <script>
+import { newPost } from '@/api/post';
+
   export default {
     data() {
       return {
-        input1: '',
-        input2: '',
-        input3: '',
+        title: '',
+        body: '',
         select: ''
       }
+    },
+    methods:{
+      submit(){
+        if(this.$store.state.user.name == ""){
+            alert('Please login first')
+            this.$router.push({path: '/login'})
+      }
+      else{
+        newPost({title: this.title, body: this.body, author: this.$store.state.user.name})
+    }
     }
   }
+}
   </script>
