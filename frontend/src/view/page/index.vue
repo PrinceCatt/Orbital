@@ -1,19 +1,18 @@
 <template>
     
     <div>
-        <h3>Page{{ $route.params.id }}</h3>
-        <h3></h3>
-
-        <el-button @click="open($route.params.id)"> Open </el-button>
+        <h3>{{ $route.params.id }}</h3>
         <el-button @click="newPost()"> New Post </el-button>
 
-<el-row>
-  <el-col :span="24"><div class="grid-content bg-purple-dark"><el-button @click="open($route.params.id, 1)"> Post 1 </el-button></div></el-col>
-</el-row>
+
 <el-row>
   <el-col :span="24"><div class="grid-content bg-purple-dark">
     
-   
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <h3>{{post.title}}</h3>
+      </li>
+    </ul>
 
   </div></el-col>
 </el-row>
@@ -22,18 +21,15 @@
     </div>
 </template>
 
-
-
-
 <script>
 
-import {newPost, getPost} from '@/api/post'
+import {getPost} from '@/api/post'
 
 export default {
-  props:["posts","pageId"],
+  props:['posts','pageId'],
 
     created(){
-      new Promise((resolve, reject) => {getPost(this.$route.params.id, pageId).then(response => {
+      Promise((resolve, reject) => {getPost(this.$route.params.id, pageId).then(response => {
                 posts = response
                 resolve()
             }).catch(error => {
@@ -83,3 +79,4 @@ export default {
     background-color: #f9fafc;
   }
 </style>
+
