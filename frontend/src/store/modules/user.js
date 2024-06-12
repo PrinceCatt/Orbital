@@ -1,7 +1,5 @@
 import { register, login, logout, getInfo, updateName, updateAvatar } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-// import defaultAvatar from '@/assets/defaultAvatar'
-
 
 
 const getDefaultState = () => {

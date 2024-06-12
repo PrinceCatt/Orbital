@@ -36,7 +36,6 @@ export default {
                 reject(error)
                 return('Error in loading posts')
           })
-
       })
     },
     methods: {
@@ -45,7 +44,7 @@ export default {
         },
 
         newPost(){
-            this.$router.push({path: '/newpost'})
+          this.$router.push({path: '/newpost'})
         }
       }
 }

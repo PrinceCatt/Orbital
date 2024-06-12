@@ -33,7 +33,7 @@ public class PostController {
         return new PageInfo<>(posts);
     }
 
-    @GetMapping("/section/find")
+    @GetMapping("/section")
     public PageInfo<Post> findPostsBySection(@RequestParam String section,
                                              @RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);

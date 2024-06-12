@@ -18,8 +18,6 @@
   </div>
 </template>
 
-
-
 <script>
 
   export default {

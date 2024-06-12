@@ -175,13 +175,13 @@ public class UserController {
     }
 
     // For user to create one post of his own
-    @PostMapping("/post/add")
+    @PostMapping("/post/new")
     public Result add(@RequestBody Post post, HttpServletRequest request) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         int uid = userMapper.findByEmail(email).getId();
-
         post.setUid(uid);
+
         int result = postMapper.insert(post);
         if(result > 0){
             return Result.ok();
