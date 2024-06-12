@@ -13,11 +13,7 @@
 <el-row>
   <el-col :span="24"><div class="grid-content bg-purple-dark">
     
-    <ul>
-      <li v-for="post in posts" :key="post.id">
-        <h3>{{post.title}}</h3>
-      </li>
-    </ul>
+   
 
   </div></el-col>
 </el-row>

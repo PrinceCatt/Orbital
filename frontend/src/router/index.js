@@ -5,7 +5,7 @@ import Profile from '@/view/my/profile'
 import Register from '@/view/register'
 import Discovery from '@/view/discovery'
 import Page from '@/view/page'
-
+import Newpost from '@/view/page/new.vue'
 
 Vue.use(VueRouter)
 
@@ -24,6 +24,7 @@ const router = new VueRouter({
             }
             ]
         },
+        {path:'/newpost', component: Newpost},
     ]
 })
 
