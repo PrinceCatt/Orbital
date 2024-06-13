@@ -14,7 +14,7 @@ const router = new VueRouter({
         {path:'/', redirect: '/discovery'},
         {path:'/register', component: Register},
         {path:'/profile', component: Profile},
-        {path:'/login',  component: Login},
+        {path:'/login', name:"login", component: Login},
         {path:'/discovery', component: Discovery,
             children: [
                 {path: "page", component: Page, 
@@ -24,7 +24,8 @@ const router = new VueRouter({
             }
             ]
         },
-        {path:'/newpost', component: Newpost},
+        {path:'/newpost', component: Newpost, meta: {
+            needLogin: true }},
     ]
 })
 

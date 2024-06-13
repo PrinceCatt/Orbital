@@ -21,8 +21,36 @@
     </div>
 </template>
 
+<script>
 
-<style>
+import {getPost} from '@/api/post'
+
+export default {
+  props:['posts','pageId'],
+
+    created(){
+      Promise((resolve, reject) => {getPost(this.$route.params.id, pageId).then(response => {
+                posts = response
+                resolve()
+            }).catch(error => {
+                reject(error)
+                return('Error in loading posts')
+          })
+      })
+    },
+    methods: {
+        open(sectionId, postId) {          
+
+        },
+
+        newPost(){
+          this.$router.push({path: '/newpost'})
+        }
+      }
+}
+</script>
+
+<style lang="less" scoped>
   .el-row {
     margin-bottom: 20px;
     &:last-child {
@@ -51,32 +79,3 @@
   }
 </style>
 
-<script>
-
-import {getPost} from '@/api/post'
-
-export default {
-  props:['posts','pageId'],
-
-    created(){
-      Promise((resolve, reject) => {getPost(this.$route.params.id, pageId).then(response => {
-                posts = response
-                resolve()
-            }).catch(error => {
-                reject(error)
-                return('Error in loading posts')
-          })
-
-      })
-    },
-    methods: {
-        open(sectionId, postId) {          
-
-        },
-
-        newPost(){
-            this.$router.push({path: '/newpost'})
-        }
-      }
-}
-</script>

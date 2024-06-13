@@ -101,7 +101,6 @@
                 email = this.registerForm.email
                 password = this.registerForm.password
                 this.$store.dispatch('user/login', {email, password})
-                console.log('tried login') // for debug
                 this.loading = false
               }).catch(() => {
                 this.loading = false

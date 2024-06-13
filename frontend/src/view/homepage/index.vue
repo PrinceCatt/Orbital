@@ -60,11 +60,11 @@
         },
 
         open(){
-          if(this.$store.state.user.name == ""){
-            this.openLogin();
+          if (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null) {
+            this.openLogin()
+          } else {
+            this.openLogout()
           }
-          else{
-            this.openLogout();}
         },
 
         // For user to login
