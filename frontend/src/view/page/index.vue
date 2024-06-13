@@ -13,7 +13,11 @@
         <h3>{{post.title}}</h3>
       </li>
     </ul>
-
+    <el-pagination
+  background
+  layout="prev, pager, next"
+  :total="100">
+</el-pagination>
   </div></el-col>
 </el-row>
 
@@ -50,7 +54,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
   .el-row {
     margin-bottom: 20px;
     &:last-child {
