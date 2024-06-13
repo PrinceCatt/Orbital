@@ -1,50 +1,63 @@
 <template>
+    
   <div>
-    <h3>{{ $route.params.id }}</h3>
-    <el-button @click="newPost()"> New Post </el-button>
+      <h3>{{ $route.params.id }}</h3>
+      <el-button @click="newPost()"> New Post </el-button>
 
-    <el-row>
-      <el-col :span="24"
-        ><div class="grid-content bg-purple-dark">
-          <ul>
-            <li v-for="post in posts" :key="post.id">
-              <h3>{{ post.title }}</h3>
-            </li>
-          </ul>
-          <el-pagination background layout="prev, pager, next" :total="100">
-          </el-pagination></div
-      ></el-col>
-    </el-row>
+
+<el-row>
+<el-col :span="24"><div class="grid-content bg-purple-dark">
+  
+  <ul>
+    <li v-for="post in posts" :key="post.id">
+      <h3>{{post.title}}</h3>
+    </li>
+  </ul>
+  <el-pagination
+background
+layout="prev, pager, next"
+:total="100">
+</el-pagination>
+</div></el-col>
+</el-row>
+
+
   </div>
 </template>
 
 <script>
-import { getPost } from "@/api/post";
+
+import {getPost} from '@/api/post'
 
 export default {
-  props: ["posts", "pageId"],
+props:['posts','pageId'],
 
-  created() {
-    new Promise((resolve, reject) => {
-      getPost(this.$route.params.id, pageId)
-        .then((response) => {
-          posts = response;
-          resolve();
+  created(){
+    new Promise((resolve, reject) => {getPost(this.$route.params.id).then(
+      
+      console.log("before resolve"),
+      response => {
+              posts = response
+              console.log("at resolve")
+              resolve()
+          }).catch(error => {
+            console.log("at reject")
+            reject(error)
+            return('Error in loading posts')
         })
-        .catch((error) => {
-          reject(error);
-          return "Error in loading posts";
-        });
-    });
+    })
   },
+  
   methods: {
-    open(sectionId, postId) {},
+      open(sectionId, postId) {          
 
-    newPost() {
-      this.$router.push({ path: "/newpost" });
-    },
-  },
-};
+      },
+
+      newPost(){
+        this.$router.push({path: '/newpost'})
+      }
+    }
+}
 </script>
 
 <style lang="less" scoped>
@@ -75,4 +88,3 @@ export default {
   background-color: #f9fafc;
 }
 </style>
-
