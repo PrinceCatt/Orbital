@@ -33,20 +33,11 @@ import { newPost } from '@/api/post';
         select: ''
       }
     },
+
     methods:{
       submit(){
-<<<<<<< HEAD
-        if(this.$store.state.user.name == ""){
-            alert('Please login first')
-            this.$router.push({path: '/login'})
-      }
-      else{
-        const currentTime = Date.now()
-        newPost({title: this.title, body: this.body, section: this.select, time: currentTime})
-    }
-=======
+        time = new Date()
         newPost({title: this.title, content: this.content, section:this.select})
->>>>>>> 72fd0e0e118f4c2b308f9be2aebda0995ee8aad7
     }
   }
 }
