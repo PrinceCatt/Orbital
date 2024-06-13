@@ -73,7 +73,7 @@ public class UserController {
     }
 
     // For logout function
-    @PostMapping("/logout") // "remove token and all, see details in frontEnd "
+    @PostMapping("/logout") // "remove token and all, see details in front end "
     public Result logout(){ return Result.ok(); }
 
     // For new user to register
@@ -83,6 +83,9 @@ public class UserController {
         String email = user.getEmail();
         if (userMapper.findByEmail(email) != null){
             return Result.error().message("This email has been registered");
+        }
+        if (user.getPassword().length() < 6){
+            return Result.error().message("Password must be at least 6 characters long");
         }
 
         int result = userMapper.insert(user);
@@ -108,6 +111,25 @@ public class UserController {
             return Result.ok();
         }
         else { return Result.error().message("Invalid update"); }
+    }
+
+    // For user to change password
+    @PostMapping("/changePassword")
+    public Result changePassword(String oldPassword, String newPassword, HttpServletRequest request){
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        if(!user.getPassword().equals(oldPassword)){
+            return Result.error().message("Please enter the correct old password");
+        } else if (newPassword.length() < 6){
+            return Result.error().message("Password must be at least 6 characters long");
+        } else {
+            int result = userMapper.changePassword(email, newPassword);
+            if (result > 0){
+                return Result.ok();
+            }
+            return Result.error().message("Invalid update");
+        }
     }
 
     // For user to update avatar

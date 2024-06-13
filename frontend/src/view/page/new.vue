@@ -40,8 +40,6 @@ import { newPost } from '@/api/post';
       submit(){
         var date = new Date();
     var year = date.getFullYear(); //月份从0~11，所以加一
-    let month = date.getMonth();
-    console.log("month",month);
     var dateArr = [
         date.getMonth() + 1,
         date.getDate(),
@@ -58,9 +56,9 @@ import { newPost } from '@/api/post';
 
     var strDate =
         year +
-        "/" +
+        "-" +
         dateArr[0] +
-        "/" +
+        "-" +
         dateArr[1] +
         " " +
         dateArr[2] +
@@ -68,7 +66,6 @@ import { newPost } from '@/api/post';
         dateArr[3] +
         ":" +
         dateArr[4];
-
 
       console.log("strDate",strDate);
         newPost({title: this.title, content: this.content, section: this.select, time: strDate})
