@@ -33,7 +33,7 @@ export default {
   props:['posts','pageId'],
 
     created(){
-      Promise((resolve, reject) => {getPost(this.$route.params.id, pageId).then(response => {
+      new Promise((resolve, reject) => {getPost(this.$route.params.id).then(response => {
                 posts = response
                 resolve()
             }).catch(error => {
@@ -42,6 +42,7 @@ export default {
           })
       })
     },
+    
     methods: {
         open(sectionId, postId) {          
 
@@ -54,7 +55,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .el-row {
     margin-bottom: 20px;
     &:last-child {

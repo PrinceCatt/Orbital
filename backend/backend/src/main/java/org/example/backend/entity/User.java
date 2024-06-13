@@ -23,6 +23,13 @@ public class User {
     private String avatarPath;
     private String password = "";
 
+    // Personal info not done yet:
+//    private String birthday = "2000-01-01";
+//    // 0 = male, 1 = female
+//    private int sex = 0;
+//    private String major = "";
+//    private String hobbies = "";
+
     @TableField(exist = false)
     private List<Post> posts;
 
