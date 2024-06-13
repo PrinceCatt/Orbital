@@ -44,8 +44,6 @@ import { newPost } from '@/api/post';
         const currentTime = Date.now()
         newPost({title: this.title, content: this.content, section: this.select, time: currentTime})
     }
-        newPost({title: this.title, content: this.content, section:this.select})
-
     }
   }
 }
