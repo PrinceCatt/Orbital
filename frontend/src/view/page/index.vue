@@ -37,8 +37,8 @@ export default {
                 posts = response
                 resolve()
             }).catch(error => {
-                reject(error)
-                return('Error in loading posts')
+              reject(error)
+              return('Error in loading posts')
           })
       })
     },
