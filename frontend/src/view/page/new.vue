@@ -50,7 +50,8 @@ import { newPost } from '@/api/post';
             this.$router.push({path: '/login'})
       }
       else{
-        newPost({title: this.title, body: this.body, author: this.$store.state.user.name})
+        const currentTime = Date.now()
+        newPost({title: this.title, body: this.body, section: this.select, time: currentTime})
     }
     }
   }
