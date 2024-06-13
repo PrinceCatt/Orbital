@@ -1,84 +1,78 @@
-
 <template>
   <div>
-  
-    
-      <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="Section">
-          <el-option label="ACGN" value="ACGN"></el-option>
-          <el-option label="Music" value="Music"></el-option>
-          <el-button @click="submit()"> Post </el-button>
-         
-        </el-select>
-        <el-button slot="append" icon="el-icon-search"></el-button>
-      </el-input>
-  
-      <el-input placeholder="Post Body"  type="textarea" :autosize="{ minRows: 1, maxRows: 100}" v-model="content">
-      </el-input>
-  <el-button @click="submit()"> Post </el-button>
-      
-  
+    <h3>{{ $route.params.id }}</h3>
+    <el-button @click="newPost()"> New Post </el-button>
+
+    <el-row>
+      <el-col :span="24"
+        ><div class="grid-content bg-purple-dark">
+          <ul>
+            <li v-for="post in posts" :key="post.id">
+              <h3>{{ post.title }}</h3>
+            </li>
+          </ul>
+          <el-pagination background layout="prev, pager, next" :total="100">
+          </el-pagination></div
+      ></el-col>
+    </el-row>
   </div>
-      
-  </template>
-    
-  <script>
-  
-  import { newPost } from '@/api/post';
-  
-    export default {
-  
-      data() {
-        return {
-          title: '',
-          content: '',
-          select: ''
-        }
-      },
-  
-      methods:{
-        submit(){
-          var date = new Date();
-      var year = date.getFullYear(); //月份从0~11，所以加一
-      var dateArr = [
-          date.getMonth() + 1,
-          date.getDate(),
-          date.getHours(),
-          date.getMinutes(),
-          date.getSeconds(),
-      ];
-  
-      for (var i = 0; i < dateArr.length; i++) {
-          if (dateArr[i] >= 1 && dateArr[i] <= 9) {
-              dateArr[i] = "0" + dateArr[i];
-          }
-      }
-  
-      var strDate =
-          year +
-          "-" +
-          dateArr[0] +
-          "-" +
-          dateArr[1] +
-          " " +
-          dateArr[2] +
-          ":" +
-          dateArr[3] +
-          ":" +
-          dateArr[4];
-  
-        console.log("strDate",strDate);
-          newPost({title: this.title, content: this.content, section: this.select, time: strDate})
-        }
-      }
-    }
-  </script>
-  
-  <style>
-      .el-select .el-input {
-        width: 130px;
-      }
-      .input-with-select .el-input-group__prepend {
-        background-color: #fff;
-      }
-  </style>
+</template>
+
+<script>
+import { getPost } from "@/api/post";
+
+export default {
+  props: ["posts", "pageId"],
+
+  created() {
+    new Promise((resolve, reject) => {
+      getPost(this.$route.params.id, pageId)
+        .then((response) => {
+          posts = response;
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+          return "Error in loading posts";
+        });
+    });
+  },
+  methods: {
+    open(sectionId, postId) {},
+
+    newPost() {
+      this.$router.push({ path: "/newpost" });
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.el-row {
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.el-col {
+  border-radius: 4px;
+}
+.bg-purple-dark {
+  background: #99a9bf;
+}
+.bg-purple {
+  background: #d3dce6;
+}
+.bg-purple-light {
+  background: #e5e9f2;
+}
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+.row-bg {
+  padding: 10px 0;
+  background-color: #f9fafc;
+}
+</style>
+
