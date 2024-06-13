@@ -23,9 +23,11 @@
 </template>
   
 <script>
+
 import { newPost } from '@/api/post';
 
   export default {
+
     data() {
       return {
         title: '',
@@ -36,8 +38,40 @@ import { newPost } from '@/api/post';
 
     methods:{
       submit(){
-        const currentTime = Date.now()
-        newPost({title: this.title, content: this.content, section: this.select, time: currentTime})
+        var date = new Date();
+    var year = date.getFullYear(); //月份从0~11，所以加一
+    let month = date.getMonth();
+    console.log("month",month);
+    var dateArr = [
+        date.getMonth() + 1,
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds(),
+    ];
+
+    for (var i = 0; i < dateArr.length; i++) {
+        if (dateArr[i] >= 1 && dateArr[i] <= 9) {
+            dateArr[i] = "0" + dateArr[i];
+        }
+    }
+
+    var strDate =
+        year +
+        "/" +
+        dateArr[0] +
+        "/" +
+        dateArr[1] +
+        " " +
+        dateArr[2] +
+        ":" +
+        dateArr[3] +
+        ":" +
+        dateArr[4];
+
+
+      console.log("strDate",strDate);
+        newPost({title: this.title, content: this.content, section: this.select, time: strDate})
       }
     }
   }
