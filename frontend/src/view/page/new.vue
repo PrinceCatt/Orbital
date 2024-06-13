@@ -36,11 +36,11 @@ import { newPost } from '@/api/post';
 
     methods:{
       submit(){
-        time = new Date()
-        newPost({title: this.title, content: this.content, section:this.select})
+        const currentTime = Date.now()
+        newPost({title: this.title, content: this.content, section: this.select, time: currentTime})
+      }
     }
   }
-}
 </script>
 
 <style>

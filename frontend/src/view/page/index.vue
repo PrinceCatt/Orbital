@@ -13,7 +13,11 @@
         <h3>{{post.title}}</h3>
       </li>
     </ul>
-
+    <el-pagination
+  background
+  layout="prev, pager, next"
+  :total="100">
+</el-pagination>
   </div></el-col>
 </el-row>
 
