@@ -9,7 +9,7 @@
 <el-col :span="24"><div class="grid-content bg-purple-dark">
   
   <ul>
-    <li v-for="post in postList" :key="post.id">
+    <li v-for="post in posts" :key="post.id">
       <h3>{{post.title}}</h3>
     </li>
   </ul>
@@ -27,19 +27,9 @@ layout="prev, pager, next"
 
 <script>
 
-<<<<<<< HEAD
 import {getPost} from '@/api/post'
-import axios from 'axios';
 
 export default {
-=======
-import axios from 'axios';
-
-export default {
-
-
-props: ['postList'],
->>>>>>> 6cfe20dfa199e4d71785aa2ab8b6ac236f3cce6b
 
   data(){
     return {
@@ -49,29 +39,20 @@ props: ['postList'],
     }
   },
   
-  created(){
-    let section = this.$route.params.id
-    axios({
-      url:'/post/section',
-<<<<<<< HEAD
-      params: {section} 
-    }).then((res) => {
-      console.log(res)
-      this.posts = res.data.list
-      console.log(this.posts)
-    }).catch((error) => {
-      console.log(error)
-    })
-=======
-      params: {section}
-    }).then((res) =>{
-      console.log(res)
-      this.postList = res.data.list
-    }).catch((error) =>{
-      console.log(error)
-    }
-    )
->>>>>>> 6cfe20dfa199e4d71785aa2ab8b6ac236f3cce6b
+  created() {
+    new Promise((resolve, reject) => {
+      getPost(this.$route.params.id)
+        .then(res => {
+          this.posts = res.data.pageInfo.list;
+          resolve(this.posts);
+        })
+        .catch(err => {
+          reject(err);
+          return "Error in loading posts";
+        });
+    }).catch((err) => {
+      console.log(err)
+    });
   },
   
   methods: {

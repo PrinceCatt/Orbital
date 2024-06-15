@@ -4,10 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
 import org.example.backend.mapper.PostMapper;
+import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -34,11 +36,12 @@ public class PostController {
     }
 
     @GetMapping("/section")
-    public PageInfo<Post> findPostsBySection(@RequestParam String section,
-                                             @RequestParam(defaultValue = "1") int pageNum) {
+    public Result findPostsBySection(@RequestParam String section,
+                                     @RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
         List<Post> posts = postMapper.selectBySection(section);
-        return new PageInfo<>(posts);
+        PageInfo<Post> pageInfo = new PageInfo<>(posts);
+        return Result.ok().data("pageInfo",pageInfo);
     }
 }
 
