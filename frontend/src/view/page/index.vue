@@ -28,23 +28,29 @@ layout="prev, pager, next"
 <script>
 
 import {getPost} from '@/api/post'
+import axios from 'axios';
 
 export default {
-props:['posts','pageId'],
 
+  data(){
+    return {
+      post: {},
+      posts: [],
+      pageId: {default: 1}
+    }
+  },
+  
   created(){
-    new Promise((resolve, reject) => {getPost(this.$route.params.id).then(
-      
-      console.log("before resolve"),
-      response => {
-              posts = response
-              console.log("at resolve")
-              resolve()
-          }).catch(error => {
-            console.log("at reject")
-            reject(error)
-            return('Error in loading posts')
-        })
+    let section = this.$route.params.id
+    axios({
+      url:'/post/section',
+      params: {section} 
+    }).then((res) => {
+      console.log(res)
+      this.posts = res.data.list
+      console.log(this.posts)
+    }).catch((error) => {
+      console.log(error)
     })
   },
   
