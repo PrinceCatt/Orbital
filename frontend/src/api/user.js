@@ -44,7 +44,6 @@ export function updateName(name) {
 }
 
 // {newAvatar}
-// Not using for user's updating avatar
 export function updateAvatar(avatar) {
   return request({
     url: '/user/updateAvatar',

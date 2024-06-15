@@ -9,7 +9,7 @@
 <el-col :span="24"><div class="grid-content bg-purple-dark">
   
   <ul>
-    <li v-for="post in postList" :key="post.id">
+    <li v-for="post in posts" :key="post.id">
       <h3>{{post.title}}</h3>
     </li>
   </ul>
@@ -27,25 +27,32 @@ layout="prev, pager, next"
 
 <script>
 
-import axios from 'axios';
+import {getPost} from '@/api/post'
 
 export default {
 
-
-props: ['postList'],
-
-  created(){
-    let section = this.$route.params.id
-    axios({
-      url:'/post/section',
-      params: {section}
-    }).then((res) =>{
-      console.log(res)
-      this.postList = res.data.list
-    }).catch((error) =>{
-      console.log(error)
+  data(){
+    return {
+      post: {},
+      posts: [],
+      pageId: {default: 1}
     }
-    )
+  },
+  
+  created() {
+    new Promise((resolve, reject) => {
+      getPost(this.$route.params.id)
+        .then(res => {
+          this.posts = res.data.pageInfo.list;
+          resolve(this.posts);
+        })
+        .catch(err => {
+          reject(err);
+          return "Error in loading posts";
+        });
+    }).catch((err) => {
+      console.log(err)
+    });
   },
   
   methods: {
