@@ -5,7 +5,7 @@
     
       <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="Section">
-          <el-option label="ACGN" value="ACGN"></el-option>
+          <el-option label="Anime" value="Anime"></el-option>
           <el-option label="Music" value="Music"></el-option>
           <el-button @click="submit()"> Post </el-button>
          
@@ -39,7 +39,7 @@
       methods:{
         submit(){
           var date = new Date();
-      var year = date.getFullYear(); //月份从0~11，所以加一
+      var year = date.getFullYear(); //month 0~11, so +1
       var dateArr = [
           date.getMonth() + 1,
           date.getDate(),
