@@ -5,9 +5,10 @@
     
       <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="Section">
-          <el-option label="ACGN" value="ACGN"></el-option>
+          <el-option label="ACGN-Anime" value="Anime"></el-option>
+          <el-option label="ACGN-comics" value="Comics"></el-option>
+          <el-option label="ACGN-gaming" value="Gaming"></el-option>
           <el-option label="Music" value="Music"></el-option>
-          <el-button @click="submit()"> Post </el-button>
          
         </el-select>
         <el-button slot="append" icon="el-icon-search"></el-button>

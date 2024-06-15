@@ -150,18 +150,19 @@ public class UserController {
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         String avatarPath = user.getAvatarPath();
-        File tempFile = new File(avatarPath);
-        String oldFileName = tempFile.getName();
 
-        String realAvatarPath = path + File.separator + oldFileName;
-        File file = new File(realAvatarPath);
+        if (avatarPath != null){
+            File tempFile = new File(avatarPath);
+            String oldFileName = tempFile.getName();
 
-        // Not completed yet, some problem with detecting old avatar
-        if (file.exists()){
-            boolean deleted = file.delete();
-            System.out.println("Avatar deleted = " + deleted);
+            String realAvatarPath = path + File.separator + oldFileName;
+            File file = new File(realAvatarPath);
+
+            if (file.exists()){
+                boolean deleted = file.delete();
+                System.out.println("Avatar deleted = " + deleted);
+            }
         }
-        else {System.out.println("Old avatar does not exist");}
 
         String contentType = avatar.getContentType();
         String fileName = avatar.getOriginalFilename();
