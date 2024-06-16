@@ -185,16 +185,15 @@ public class UserController {
 
     // To get the user's own posts (by page)
     @GetMapping("/post")
-    public PageInfo<Post> findPostsOfUser(HttpServletRequest request,
+    public Result findPostsOfUser(HttpServletRequest request,
                                           @RequestParam(defaultValue = "1") int pageNum) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
-        QueryWrapper<Post> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("email", email);
 
         PageHelper.startPage(pageNum, 10);
-        List<Post> posts = postMapper.selectList(queryWrapper);
-        return new PageInfo<>(posts);
+        List<Post> posts = userMapper.findPostsByEmail(email).getPosts();
+        PageInfo<Post> pageInfo = new PageInfo<>(posts);
+        return Result.ok().data("pageInfo", pageInfo);
     }
 
     // For user to create one post of his own
@@ -214,19 +213,18 @@ public class UserController {
 
     // For user to delete one post of his own
     @DeleteMapping("/post/delete")
-    public Result delete(@RequestBody Post post, HttpServletRequest request) {
+    public Result delete(int postId, HttpServletRequest request) {
         // check whether this is the user's own post
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findPostsByEmail(email);
         int uid = user.getId();
-        int id = post.getId();
-        int postUid = postMapper.selectById(id).getUid();
+        int postUid = postMapper.selectById(postId).getUid();
         if (postUid != uid) {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
 
-        int result = postMapper.deleteById(id);
+        int result = postMapper.deleteById(postId);
         if(result > 0){
             return Result.ok();
         }

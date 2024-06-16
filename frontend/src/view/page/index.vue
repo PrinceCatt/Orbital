@@ -4,7 +4,6 @@
       <h3>{{ $route.params.id }}</h3>
       <el-button @click="newPost()"> New Post </el-button>
 
-
 <el-row>
 <el-col :span="24"><div class="grid-content bg-purple-dark">
   
@@ -14,9 +13,9 @@
     </li>
   </ul>
   <el-pagination
-background
-layout="prev, pager, next"
-:total="100">
+  background
+  layout="prev, pager, next"
+  :total="100">
 </el-pagination>
 </div></el-col>
 </el-row>
@@ -35,7 +34,7 @@ export default {
     return {
       post: {},
       posts: [],
-      pageId: {default: 1}
+      pageNum: {default: 1}
     }
   },
   
@@ -50,9 +49,7 @@ export default {
           reject(err);
           return "Error in loading posts";
         });
-    }).catch((err) => {
-      console.log(err)
-    });
+    })
   },
   
   methods: {

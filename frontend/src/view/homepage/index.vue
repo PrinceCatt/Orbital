@@ -11,19 +11,20 @@
     active-text-color="#ffd04b">
     <el-menu-item index="1">
       
-    <el-button type="text" @click="open">Login/Logout</el-button>
+    <el-button type="text" @click="open">{{Login}}</el-button>
   
     </el-menu-item>
     <el-submenu index="2">
       <template slot="title">My</template>
       <el-menu-item index="2-1">
-        
         <el-button type="text" @click="myProfile">Profile</el-button>
-
       </el-menu-item>
-      <el-menu-item index="2-2">History</el-menu-item>
-      <el-menu-item index="2-3">Favorite</el-menu-item>
-      <el-submenu index="2-4">
+      <el-menu-item index="2-2">
+        <el-button type="text" @click="myPosts">Posts</el-button>
+      </el-menu-item>
+      <el-menu-item index="2-3">History</el-menu-item>
+      <el-menu-item index="2-4">Favorite</el-menu-item>
+      <el-submenu index="2-5">
         <template slot="title">Message</template>
         <el-menu-item index="2-4-1">@me</el-menu-item>
         <el-menu-item index="2-4-2">comment me</el-menu-item>
@@ -45,6 +46,23 @@
   <script>
 
     export default {
+
+      data() {
+        return {
+          activeIndex: '1',
+          activeIndex2: '1',
+          Login: "",
+        };
+      },
+
+      created() {
+        if (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null) {
+            this.Login = "Login"
+          } else {
+            this.Login = "Logout"
+          }
+      },
+
       methods: {
         handleSelect(key, keyPath) {
         console.log(key, keyPath);
@@ -52,11 +70,15 @@
 
         myProfile(){
           this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
-            this.$router.push({path: '/profile'})
+            this.$router.push({path: '/my/profile'})
           }).catch(() => {
             alert("Please login first")
             this.openLogin()
           })
+        },
+
+        myPosts(){
+          this.$router.push({path: '/my/posts'})
         },
 
         open(){
@@ -80,7 +102,8 @@
           type: 'warning'
         }).then(() => {
             this.$store.dispatch('user/logout').then(() => {
-                this.$router.push({path: '/discovery'})
+              this.$router.push({path: '/discovery'})
+              location.replace("")
           this.$message({
             type: 'success',
             message: 'successfully logout',
@@ -104,13 +127,5 @@
         }
       }, 
 
-  
-  
-      data() {
-        return {
-          activeIndex: '1',
-          activeIndex2: '1'
-        };
-      },
     }      
   </script>

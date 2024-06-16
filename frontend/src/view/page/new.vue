@@ -40,9 +40,9 @@
       methods:{
         submit(){
           var date = new Date();
-      var year = date.getFullYear(); //月份从0~11，所以加一
+      var year = date.getFullYear();
       var dateArr = [
-          date.getMonth() + 1,
+          date.getMonth() + 1, //months are 0-11
           date.getDate(),
           date.getHours(),
           date.getMinutes(),
@@ -69,7 +69,10 @@
           dateArr[4];
   
         console.log("strDate",strDate);
-          newPost({title: this.title, content: this.content, section: this.select, time: strDate})
+          newPost({title: this.title, content: this.content, section: this.select, time: strDate}).then(() => {
+            alert("You have successfully created a new post!")
+            this.$router.push({path: '/my/posts'})
+          })
         }
       }
     }
