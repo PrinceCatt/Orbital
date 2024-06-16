@@ -3,6 +3,7 @@ package org.example.backend.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 import org.example.backend.entity.Post;
+import org.example.backend.entity.User;
 
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface PostMapper extends BaseMapper<Post> {
                     @Result(column = "title",property = "title"),
                     @Result(column = "content",property = "content"),
                     @Result(column = "time",property = "time"),
-                    @Result(column = "id",property = "authorName",javaType = String.class,
+                    @Result(column = "uid",property = "author",javaType = String.class,
                             one = @One(select = "org.example.backend.mapper.UserMapper.findNameByUid")
                     )
             }

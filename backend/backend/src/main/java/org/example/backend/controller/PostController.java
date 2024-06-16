@@ -40,12 +40,12 @@ public class PostController {
     public Result findPostsBySection(@RequestParam String section,
                                      @RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
-        List<Post> posts = postMapper.selectBySection(section);
+        List<Post> posts = postMapper.selectSectionWithAuthorName(section);
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo",pageInfo);
     }
 
-    
+
 }
 
 
