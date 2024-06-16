@@ -17,3 +17,4 @@ export function newPost(data) {
     data
   })
 }
+

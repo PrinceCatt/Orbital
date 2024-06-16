@@ -15,6 +15,9 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from t_user where email = #{email} and password = #{password}")
     User findByEmailAndPassword(String email, String password);
 
+    @Select("select name from t_user where id = #{uid}")
+    String findNameByUid(int uid);
+
     @Update("update t_user set name=#{name} where email=#{email}")
     int updateName(@Param("email") String email, @Param("name") String name);
 

@@ -22,7 +22,7 @@ public class Post {
     private int uid;
 
     @TableField(exist = false)
-    private User author;
+    private String author;
 
     @Override
     public String toString() {

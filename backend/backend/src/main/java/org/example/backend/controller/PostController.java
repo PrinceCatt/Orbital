@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -20,29 +19,33 @@ public class PostController {
     private PostMapper postMapper;
 
     @GetMapping("/find/uid")
-    public PageInfo<Post> getPostsOfUser(@RequestParam int uid,
+    public Result getPostsOfUser(@RequestParam int uid,
                                          @RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
         List<Post> posts = postMapper.selectByUid(uid);
-        return new PageInfo<>(posts);
+        PageInfo<Post> pageInfo = new PageInfo<>(posts);
+        return Result.ok().data("pageInfo", pageInfo);
     }
 
     // Find all posts (by page)
     @GetMapping("/find")
-    public PageInfo<Post> findPosts(@RequestParam(defaultValue = "1") int pageNum) {
+    public Result findPosts(@RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
         List<Post> posts = postMapper.selectList(null);
-        return new PageInfo<>(posts);
+        PageInfo<Post> pageInfo = new PageInfo<>(posts);
+        return Result.ok().data("pageInfo", pageInfo);
     }
 
     @GetMapping("/section")
     public Result findPostsBySection(@RequestParam String section,
                                      @RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
-        List<Post> posts = postMapper.selectBySection(section);
+        List<Post> posts = postMapper.selectSectionWithAuthorName(section);
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo",pageInfo);
     }
+
+
 }
 
 

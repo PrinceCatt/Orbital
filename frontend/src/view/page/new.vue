@@ -5,9 +5,10 @@
     
       <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="Section">
-          <el-option label="Anime" value="Anime"></el-option>
+          <el-option label="ACGN-Anime" value="Anime"></el-option>
+          <el-option label="ACGN-comics" value="Comics"></el-option>
+          <el-option label="ACGN-gaming" value="Gaming"></el-option>
           <el-option label="Music" value="Music"></el-option>
-          <el-button @click="submit()"> Post </el-button>
          
         </el-select>
         <el-button slot="append" icon="el-icon-search"></el-button>
@@ -39,9 +40,9 @@
       methods:{
         submit(){
           var date = new Date();
-      var year = date.getFullYear(); //month 0~11, so +1
+      var year = date.getFullYear();
       var dateArr = [
-          date.getMonth() + 1,
+          date.getMonth() + 1, //months are 0-11
           date.getDate(),
           date.getHours(),
           date.getMinutes(),
@@ -68,7 +69,10 @@
           dateArr[4];
   
         console.log("strDate",strDate);
-          newPost({title: this.title, content: this.content, section: this.select, time: strDate})
+          newPost({title: this.title, content: this.content, section: this.select, time: strDate}).then(() => {
+            alert("You have successfully created a new post!")
+            this.$router.push({path: '/my/posts'})
+          })
         }
       }
     }
