@@ -1,42 +1,61 @@
 <template>
     
   <div>
-      <h3>{{ $route.params.id }}</h3>
+      <h3>{{ this.$route.params.id }}</h3>
       <el-button @click="newPost()"> New Post </el-button>
 
 <el-row>
 <el-col :span="24">
   <div class="grid-content bg-purple-dark">
   
-  <ul>
-    <li v-for="post in posts" :key="post.id">
-      <div style="display: flex">
-        <div><h3><el-button @click="openPost(post.id)"> 
-          {{post.title}}
-        </el-button></h3></div>
-        <div class="white-space"></div>
-        <div><h3>{{post.time}}</h3></div>
-      </div>
 
-    </li>
-  </ul>
+    <el-table
+        :data="posts"
+        border: true
+        :header-cell-style="{'text-align':'center'}"
+        :cell-style="{'text-align':'center'}"
+        :key="key"
+        empty-text="Oops, you don't have any posts yet."
+        align="left"
+        style="width: 60%;margin:auto">
+        <el-table-column
+          prop="title"
+          label="Title"
+          width="700">
+        </el-table-column>
+        <el-table-column
+          prop="author"
+          label="Author"
+          width="160">
+        </el-table-column>
+        <el-table-column
+          prop="time"
+          label="Last updated at"
+          width="200">
+        </el-table-column>
+      </el-table>
+
 
 </div>
 </el-col>
 </el-row>
 
 
-<ul class="page f16 tc mt30">
-<li>
-<span v-if="page > 1"><b @click="page--,pageClick()">上一页</b></span>
-<span v-if="page == 1">上一页</span>
-<span v-for="index in pageAll" :key="index" :class="{'active':page == index}" @click="goPage(index)">{{index}}</span>
-<span v-if="page!=pageAll"><b @click="page++,pageClick()">下一页</b></span>
-<span v-if="page == pageAll">下一页</span>
-</li>
-<li>共{{pageAll}}页</li>
-<li>到<input type="text" class="int02" v-model="jumpPage"> 页<input type="button" class="bt03" value="确定" @click="goPage(jumpPage)"></li>
-</ul>
+<div class="pagaination-tool" style="padding:20px 110px 70px">
+  <div class="count-show">
+      <span>
+          Total: {{total}} posts and {{pages}} pages
+      </span>
+  </div>
+  <el-pagination
+    @current-change="handlePageChange"
+    :page-size="pageSize"
+    layout="prev, pager, next, jumper"
+    :total="total"
+    :pages="pages">
+  </el-pagination>
+
+</div>
 
   </div>
 </template>
@@ -52,61 +71,40 @@ export default {
     return {
       post: {},
       posts: [],
-      page: 1,//当前页码，不传默认第一页
-      pageAll:"", //数据总页数
-      jumpPage:"",//跳转页码
-      pageNum: {default: 1}
-
+      pageNum: 1, //当前页码，不传默认第一页
+      pages: 0, //数据总页数
+      pageSize: 10,
+      total: 0,
+      key: 0
     }
   },
   
   created() {
-    new Promise((resolve, reject) => {
-      getPost({section: this.$route.params.id, pageNum: 1})
-        .then(res => {
-          this.posts = res.data.pageInfo.list;
-          resolve(this.posts);
-        })
-        .catch(err => {
-          reject(err);
-          return "Error in loading posts";
-        });
-    })
+    this.getData()
   },
   
   methods: {
-    getPostAlt(event){
-      return new Promise((resolve, reject) => {
-        console.log(this.$route.params.id)
-      getPost({section: this.$route.params.id, pageNum: event})
-        .then(res => {
-          this.posts = res.data.pageInfo.list;
-          resolve(this.posts);
+    getData() {
+      new Promise((resolve, reject) => {
+        getPost(this.$route.params.id, this.pageNum).then(res => {
+            this.posts = res.data.pageInfo.list
+            this.total = res.data.pageInfo.total
+            this.pages = res.data.pageInfo.pages
+            this.pageSize = res.data.pageInfo.pageSize
+            this.key = Math.random()
+
+            console.log(this.key)
+            resolve(this.posts)
+        }).catch(err => {
+            reject(err)
+            return "Error in loading MyPosts";
         })
-        .catch(err => {
-          reject(err);
-          return "Error in loading posts";
-        });
-    }).catch((err) => {
-      console.log(err)
-    });
- 
-    },
-    
-    //on click of next/before button
-    pageClick(){       
-      this.getPostAlt(this.page);
-      window.scrollTo(0,500) //scroll to top
+      })
     },
 
-    //go to page
-    goPage(event){
-      if(event != this.page && event != ""){
-        console.log(event)
-        this.page = event
-        this.getPostAlt(this.page)
-        window.scrollTo(0,500) //scroll to top
-      }
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getData()
     },
 
       newPost(){
@@ -117,50 +115,11 @@ export default {
       this.$router.push({path: `/post/${id}`})
     }
     },
-
-
-
-  computed: {
-    pagesAll: function(){
-        // Start
-        var leftNum = 1;
-        // End
-        var rightNum = this.pageAll;
-        // Page number array
-        var pageArray = [];
-        // Number of page numbers shown, better be odd number
-        var showNum = 5;
-      
-        var centerNum = Math.ceil(showNum/2);
-        // 判断分析当总页数超过showNum展示页数时，需要判断分页情况
-        //1、在最左边第一个或者在centerNum的前面
-        //2、在中间
-        //3、最右边最后一个
-        if(this.pageAll >= showNum){	
-            // 中间centerNum时左右都加上（centerNum-1)
-            if(this.page > centerNum && this.page < this.pageAll - (centerNum - 1)){
-                //Number() to ensure int instead of string
-                leftNum = Number(this.page) - (centerNum - 1)
-                rightNum = Number(this.page) + (centerNum - 1)
-            }else{
-              //最左边或者在showNum的中间
-              if(this.page <= centerNum){
-                leftNum = 1
-                rightNum = showNum
-                // 最右边时结束是总条数，开始是showNum减去1
-              }else{
-                rightNum = this.pageAll
-                leftNum = this.pageAll - (showNum - 1)
-              }
-           }
-        }
-        while (leftNum <= rightNum){
-            pageArray.push(leftNum)
-            leftNum ++
-	    }
-        return pageArray
+    watch: {
+    "$route": function(){
+      getPost(this.$route.params.id, this.pageNum)
     }
-  },
+  }
 }
 
 
