@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 //{section, (pageNum)}
-export function getPost(section, pageNum) {
+export function getPost(data) {
   return request({
     url: '/post/section',
     method: 'get',
-    params: {section, pageNum}
+    params: data
   })
 }
 

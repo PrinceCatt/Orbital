@@ -18,6 +18,8 @@ public class Post {
     private String section;
     private String title;
     private String content;
+    private int views;
+
     private String time;
     private int uid;
 
