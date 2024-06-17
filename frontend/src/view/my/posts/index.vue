@@ -1,6 +1,6 @@
 <template>
     
-    <div>
+    <div class="trend-Area">
         <h3>{{ $route.params.id }}</h3>
         <el-button @click="newPost()"> New Post </el-button>
         
@@ -26,9 +26,13 @@
         </el-table-column>
         <el-table-column
           prop="title"
-          label="Title"
-          width="200">
+          label="Title">
         </el-table-column>
+        <el-table-column
+          prop="views"
+          label="Views"
+          width="100">
+      </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
@@ -40,8 +44,22 @@
           </template>
         </el-table-column>
       </el-table>
-  
-  
+
+      <div class="pagaination-tool" style="padding:20px 110px 70px">
+        <div class="count-show">
+            <span>
+                Total: {{total}} posts and {{pages}} pages
+            </span>
+        </div>
+        <el-pagination
+          @current-change="handlePageChange"
+          :page-size="pageSize"
+          layout="prev, pager, next, jumper"
+          :total="total"
+          :pages="pages">
+        </el-pagination>
+
+      </div>
     </div>
   </template>
 
@@ -54,23 +72,38 @@ import {myPosts, deletePost} from '@/api/user'
         return {
             post: {},
             posts: [],
-            pageNum: {default:1}
+            pageNum: 1,
+            pageSize: 10,
+            pages: 0,
+            total: 0
         }
     },
 
     created() {
-        new Promise((resolve, reject) => {
-            myPosts().then(res => {
-                this.posts = res.data.pageInfo.list;
-                resolve(this.posts)
-            }).catch(err => {
-                reject(err)
-                return "Error in loading MyPosts";
-            })
-        })
+        this.getData()
     },
 
     methods: {
+        getData() {
+          new Promise((resolve, reject) => {
+            myPosts(this.pageNum).then(res => {
+              this.posts = res.data.pageInfo.list
+              this.total = res.data.pageInfo.total
+              this.pages = res.data.pageInfo.pages
+              this.pageSize = res.data.pageInfo.pageSize
+              resolve(this.posts)
+            }).catch(err => {
+              reject(err)
+              return "Error in loading MyPosts";
+            })
+          })
+        },
+
+        handlePageChange(val) {
+          this.pageNum = val
+          this.getData()
+        },
+
         deletePost(row) {
             this.$confirm('Are you sure to delete the post with title: ' + row.title, {
                 confirmButtonText: 'Yes',

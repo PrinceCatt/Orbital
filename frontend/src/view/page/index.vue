@@ -73,9 +73,11 @@ export default {
       posts: [],
       pageNum: 1, //当前页码，不传默认第一页
       pages: 0, //数据总页数
+
       pageSize: 10,
       total: 0,
       key: 0
+
     }
   },
   
@@ -86,13 +88,14 @@ export default {
   methods: {
     getData() {
       new Promise((resolve, reject) => {
+
         getPost(this.$route.params.id, this.pageNum).then(res => {
+
             this.posts = res.data.pageInfo.list
             this.total = res.data.pageInfo.total
             this.pages = res.data.pageInfo.pages
             this.pageSize = res.data.pageInfo.pageSize
             this.key = Math.random()
-
             console.log(this.key)
             resolve(this.posts)
         }).catch(err => {
@@ -115,11 +118,13 @@ export default {
       this.$router.push({path: `/post/${id}`})
     }
     },
+
     watch: {
     "$route": function(){
       getPost(this.$route.params.id, this.pageNum)
     }
   }
+
 }
 
 

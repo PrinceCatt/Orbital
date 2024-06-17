@@ -8,6 +8,7 @@ import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -20,8 +21,9 @@ public class PostController {
 
     @GetMapping("/find/uid")
     public Result getPostsOfUser(@RequestParam int uid,
-                                         @RequestParam(defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, 10);
+                                 @RequestParam(defaultValue = "1") int pageNum,
+                                 @RequestParam(defaultValue = "10") int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<Post> posts = postMapper.selectByUid(uid);
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo", pageInfo);
@@ -38,8 +40,9 @@ public class PostController {
 
     @GetMapping("/section")
     public Result findPostsBySection(@RequestParam String section,
-                                     @RequestParam(defaultValue = "1") int pageNum) {
-        PageHelper.startPage(pageNum, 10);
+                                     @RequestParam(defaultValue = "1") int pageNum,
+                                     @RequestParam(defaultValue = "10") int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<Post> posts = postMapper.selectSectionWithAuthorName(section);
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo",pageInfo);

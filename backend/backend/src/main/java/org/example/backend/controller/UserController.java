@@ -183,15 +183,18 @@ public class UserController {
         return Result.error().message("Avatar update failed");
     }
 
-    // To get the user's own posts (by page)
+    // To get the user's own posts
     @GetMapping("/post")
     public Result findPostsOfUser(HttpServletRequest request,
-                                          @RequestParam(defaultValue = "1") int pageNum) {
+                                  @RequestParam(defaultValue = "1") int pageNum,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        int uid = user.getId();
 
-        PageHelper.startPage(pageNum, 10);
-        List<Post> posts = userMapper.findPostsByEmail(email).getPosts();
+        PageHelper.startPage(pageNum, pageSize);
+        List<Post> posts = postMapper.selectByUid(uid);
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo", pageInfo);
     }
@@ -217,7 +220,7 @@ public class UserController {
         // check whether this is the user's own post
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
-        User user = userMapper.findPostsByEmail(email);
+        User user = userMapper.findByEmail(email);
         int uid = user.getId();
         int postUid = postMapper.selectById(postId).getUid();
         if (postUid != uid) {
@@ -236,15 +239,15 @@ public class UserController {
         // check whether this is the user's own post
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
-        User user = userMapper.findPostsByEmail(email);
+        User user = userMapper.findByEmail(email);
         int uid = user.getId();
         int id = post.getId();
         int postUid = postMapper.selectById(id).getUid();
         if (postUid != uid) {
-            return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
+            return Result.error().message("Post update failed. You are not allowed to update others' posts");
         }
 
-        int result = postMapper.updateById(post);
+        int result = postMapper.updatePost(post.getId(), post.getTitle(), post.getContent(), post.getTime());
         if(result > 0){
             return Result.ok();
         }
