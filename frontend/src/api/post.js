@@ -17,3 +17,11 @@ export function newPost(data) {
     data
   })
 }
+
+export function getPostbyId(id){
+  return request({
+    url: 'post/find/id',
+    method: 'get',
+    params: {id}
+  })
+}

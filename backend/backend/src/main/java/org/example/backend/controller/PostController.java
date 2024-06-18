@@ -38,6 +38,12 @@ public class PostController {
         return Result.ok().data("pageInfo", pageInfo);
     }
 
+    @GetMapping("/find/id")
+    public Result findPost(int id) {
+        Post post = postMapper.selectById(id);
+        return Result.ok().data("post", post);
+    }
+
     @GetMapping("/section")
     public Result findPostsBySection(@RequestParam String section,
                                      @RequestParam(defaultValue = "1") int pageNum,

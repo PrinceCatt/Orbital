@@ -80,8 +80,8 @@ export default {
   },
 
   methods: {
-    openPage(id){
-      this.$router.push({path: `/discovery/page/${id}`})
+    openPage(section){
+      this.$router.push({path: `/discovery/page/${section}`})
     }
   },
 
