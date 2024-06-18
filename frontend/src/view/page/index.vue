@@ -8,18 +8,30 @@
 <el-col :span="24">
   <div class="grid-content bg-purple-dark">
   
-  <ul>
-    <li v-for="post in posts" :key="post.id">
-      <div style="display: flex">
-        <div><h3><el-button @click="openPost(post.id)"> 
-          {{post.title}}
-        </el-button></h3></div>
-        <div class="white-space"></div>
-        <div><h3>{{post.time}}</h3></div>
-      </div>
-
-    </li>
-  </ul>
+    <el-table
+    :data="posts"
+    border: true
+    :header-cell-style="{'text-align':'center'}"
+    :cell-style="{'text-align':'center'}"
+    empty-text="Oops, there is no post for this section yet."
+    align="left"
+    style="width: 100%;margin:auto">
+    <el-table-column
+      prop="title"
+      label="Title"
+      width="700">
+    </el-table-column>
+    <el-table-column
+      prop="author"
+      label="Author"
+      width="160">
+    </el-table-column>
+    <el-table-column
+      prop="time"
+      label="Last updated at"
+      width="200">
+    </el-table-column>
+  </el-table>
 
 </div>
 </el-col>
@@ -46,9 +58,7 @@
 </template>
 
 <script>
-
 import {getPost} from '@/api/post'
-
 
 export default {
 
@@ -56,10 +66,10 @@ export default {
     return {
       post: {},
       posts: [],
-      pageNum: 1, //当前页码，不传默认第一页
-      pages: 0, //数据总页数
+      pageNum: 1, // current page number
+      pages: 0, // total number of pages
       pageSize: 10,
-      total: 0
+      total: 0 // total number of posts
     }
   },
   
@@ -78,7 +88,7 @@ export default {
             resolve(this.posts)
         }).catch(err => {
             reject(err)
-            return "Error in loading MyPosts";
+            return "Error in loading Posts";
         })
       })
     },
