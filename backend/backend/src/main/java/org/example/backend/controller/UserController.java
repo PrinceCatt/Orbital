@@ -84,6 +84,11 @@ public class UserController {
         if (userMapper.findByEmail(email) != null){
             return Result.error().message("This email has been registered");
         }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", user.getName());
+        if (userMapper.selectCount(queryWrapper) > 0) {
+            return Result.error().message("This name has been registered. Please choose another name");
+        }
         if (user.getPassword().length() < 6){
             return Result.error().message("Password must be at least 6 characters long");
         }
