@@ -86,6 +86,7 @@
           this.$router.push({path: `/discovery/page/${id}`})
         }
       },
+
     };
   </script>
 

@@ -22,6 +22,8 @@ public class User {
     private String email = "";
     private String avatarPath;
     private String password = "";
+    private List<Integer> favoritePosts;
+
 
     // Personal info not done yet:
 //    private String birthday = "2000-01-01";

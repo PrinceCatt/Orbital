@@ -58,7 +58,8 @@ export default {
       posts: [],
       pageNum: 1, //当前页码，不传默认第一页
       pages: 0, //数据总页数
-      pageSize: 10
+      pageSize: 10,
+      total: 0
     }
   },
   
@@ -87,14 +88,20 @@ export default {
       this.getData()
     },
 
-      newPost(){
-        this.$router.push({path: '/newpost'})
-      },
+    newPost(){
+      this.$router.push({path: '/newpost'})
+    },
 
-      openPost(id){
+    openPost(id){
       this.$router.push({path: `/post/${id}`})
     }
-    },
+  },
+
+  watch: {
+    "$route": function() {
+      this.getData();
+    }
+  }
 }
 
 
