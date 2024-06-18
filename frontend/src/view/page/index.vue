@@ -1,7 +1,7 @@
 <template>
     
   <div>
-      <h3>{{ $route.params.id }}</h3>
+      <h3>{{ $route.params.section }}</h3>
       <el-button @click="newPost()"> New Post </el-button>
 
 <el-row>
@@ -14,8 +14,14 @@
     :header-cell-style="{'text-align':'center'}"
     :cell-style="{'text-align':'center'}"
     empty-text="Oops, there is no post for this section yet."
+    @row-click="openPost"
     align="left"
     style="width: 100%;margin:auto">
+    <el-table-column
+    prop="id"
+    label="Id"
+    width="100">
+    </el-table-column>
     <el-table-column
       prop="title"
       label="Title"
@@ -80,7 +86,7 @@ export default {
   methods: {
     getData() {
       new Promise((resolve, reject) => {
-        getPost({section: this.$route.params.id, pageNum:this.pageNum}).then(res => {
+        getPost({section: this.$route.params.section, pageNum:this.pageNum}).then(res => {
             this.posts = res.data.pageInfo.list
             this.total = res.data.pageInfo.total
             this.pages = res.data.pageInfo.pages
@@ -102,7 +108,9 @@ export default {
       this.$router.push({path: '/newpost'})
     },
 
-    openPost(id){
+    openPost(row, column, cell, event){
+      let id = row.id
+      console.log(id)
       this.$router.push({path: `/post/${id}`})
     }
   },
