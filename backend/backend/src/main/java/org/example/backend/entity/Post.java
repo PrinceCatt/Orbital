@@ -33,8 +33,10 @@ public class Post {
                 ", section='" + section + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", views=" + views +
                 ", time='" + time + '\'' +
                 ", uid=" + uid +
+                ", author='" + author + '\'' +
                 '}';
     }
 

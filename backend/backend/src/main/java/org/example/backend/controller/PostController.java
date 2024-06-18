@@ -8,7 +8,6 @@ import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -38,9 +37,10 @@ public class PostController {
         return Result.ok().data("pageInfo", pageInfo);
     }
 
+    // Find post by postId
     @GetMapping("/find/id")
-    public Result findPost(int id) {
-        Post post = postMapper.selectById(id);
+    public Result findPost(int postId) {
+        Post post = postMapper.selectById(postId);
         return Result.ok().data("post", post);
     }
 

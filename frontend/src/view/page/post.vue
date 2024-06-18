@@ -19,27 +19,30 @@
 </template>
 
 <script>
-import { getPostbyId } from "@/api/post";
+import { getPostbyId, getComments } from "@/api/post";
 
 export default {
   data() {
     return {
       post: {},
-      comment: {},
+      comments: {},
+      section: "",
     };
   },
 
   created() {
-    this.getData();
+    this.getPost();
+    this.getComments();
   },
 
   methods: {
     //get post by id
-    getData() {
+    getPost() {
       new Promise((resolve, reject) => {
         getPostbyId(this.$route.params.id)
           .then((res) => {
             this.post = res.data.post;
+            this.section = res.data.post.section;
             resolve(this.posts);
           })
           .catch((err) => {
@@ -50,9 +53,9 @@ export default {
     },
 
     //get comments by post id
-    getComment() {
+    getComments() {
       new Promise((resolve, reject) => {
-        getComment(this.$route.params.id)
+        getComments(this.$route.params.id)
           .then((res) => {
             this.comment = res.data.comment;
             resolve(this.posts);
@@ -65,7 +68,7 @@ export default {
     },
 
     back() {
-      this.$router.push({ path: "/discovery" });
+      this.$router.push({path: `/discovery/page/${this.section}`});
     },
   },
 };
