@@ -1,21 +1,19 @@
 <template>
   <div>
-    <div class="demo-type">
   
-        <div class="book">
-    <div class="item1"></div>
-    <div class="item2"></div>
-  </div>
-    <div>
-      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-    </div>
+  <div class="book">
+
+    <div class="item1"><h3>{{ post.author}}</h3><h3>{{ post.time}}</h3></div>
+    <div class="item2"><h3>{{ post.content}}</h3></div>
 
   </div>
-    <h3>{{ post.author}}</h3>
-    <h3>{{ post.content}}</h3>
-    <h3>{{ post.time}}</h3>
-    <el-button @click="back()">Back</el-button>
-  </div>
+
+
+  <div><el-button @click="back()">Back</el-button></div>
+
+</div>
+
+
 </template>
 
 <script>
@@ -76,14 +74,14 @@ export default {
 .book {
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: 1600px;
   height: 300px;
   margin: 20px;
-  border: 1px dotted red;
+  border: 1px dotted rgb(12, 10, 10);
 }
 .item1 {
   height: 100px;
-  width: 150px;
+  width: 1000px;
   background-color: burlywood;
 }
 .item2 {
