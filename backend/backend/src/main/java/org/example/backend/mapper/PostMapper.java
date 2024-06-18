@@ -33,7 +33,7 @@ public interface PostMapper extends BaseMapper<Post> {
                     @Result(column = "title",property = "title"),
                     @Result(column = "content",property = "content"),
                     @Result(column = "time",property = "time"),
-                    @Result(column = "uid",property = "author",javaType = String.class,
+                    @Result(column = "uid",property = "uid",javaType = String.class,
                             one = @One(select = "org.example.backend.mapper.UserMapper.findNameByUid")
                     )
             }

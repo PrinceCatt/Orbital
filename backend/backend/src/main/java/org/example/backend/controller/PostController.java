@@ -19,7 +19,7 @@ public class PostController {
     @Autowired
     private PostMapper postMapper;
 
-    @GetMapping("/find/uid")
+    @GetMapping("/find/user")
     public Result getPostsOfUser(@RequestParam int uid,
                                  @RequestParam(defaultValue = "1") int pageNum,
                                  @RequestParam(defaultValue = "10") int pageSize) {
