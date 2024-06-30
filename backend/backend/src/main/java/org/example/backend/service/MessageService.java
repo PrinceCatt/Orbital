@@ -1,13 +1,13 @@
 package org.example.backend.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.example.backend.entity.Message;
+import org.example.backend.entity.SocketMsg;
 
 import java.util.List;
 
 public interface MessageService {
 
-    int saveMessage(Message message);
+    int saveMessage(SocketMsg message);
 
-    List<Message> list(LambdaQueryWrapper<Message> eq);
+    List<SocketMsg> list(LambdaQueryWrapper<SocketMsg> eq);
 }
