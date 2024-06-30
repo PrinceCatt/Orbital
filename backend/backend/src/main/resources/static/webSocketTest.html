@@ -79,7 +79,7 @@
         var message = document.getElementById('text').value;
         var toUser = document.getElementById('toUser').value;
         var socketMsg = {msg:message,toUser:toUser};
-        if(toUser == ''){
+        if(toUser === ''){
             //群聊.
             socketMsg.type = 0;
         }else{
