@@ -1,43 +1,71 @@
 <template>
   <div>
-  
-  <div class="book">
+    <div class="book">
+      <div class="item1">
+        <h3>{{ post.author }}</h3>
+        <h3>{{ post.time }}</h3>
+      </div>
+      <div class="item2">
+        <h3>{{ post.content }}</h3>
+      </div>
+    </div>
 
-    <div class="item1"><h3>{{ post.author}}</h3><h3>{{ post.time}}</h3></div>
-    <div class="item2"><h3>{{ post.content}}</h3></div>
+    <div><el-button @click="back()">Back</el-button></div>
 
+    <div v-for="comment in comments" :key="comment.id" class="author-title">
+      <el-avatar
+        class="author-avatar"
+        :size="40"
+        :src="comment.avatar"
+      ></el-avatar>
+      <div class="author-info">
+        <span class="author-name">{{ comment.authorName }}</span>
+        <span class="author-time">{{ comment.createTime }}</span>
+      </div>
+      
+      <el-badge :value="12" class="item">
+        <el-button type="primary" icon="el-icon-edit" round>Like</el-button>  
+      </el-badge>
+
+      <el-badge :value="12" class="item">
+        <el-button type="primary" icon="el-icon-edit" round>Dislike</el-button>  
+      </el-badge>
+
+      <el-badge :value="12" class="item">
+        <el-button type="primary" icon="el-icon-edit" round>Reply</el-button>  
+      </el-badge>
+
+      <hr />
+      <span class="author-content">{{ comment.content }}</span>
+    </div>
   </div>
-
-
-  <div><el-button @click="back()">Back</el-button></div>
-
-</div>
-
-
 </template>
 
 <script>
-import { getPostbyId } from "@/api/post";
+import { getPostbyId, getComments } from "@/api/post";
 
 export default {
   data() {
     return {
       post: {},
-      comment: {},
+      comments: {},
+      section: "",
     };
   },
 
   created() {
-    this.getData();
+    this.getPost();
+    this.getComments();
   },
 
   methods: {
     //get post by id
-    getData() {
+    getPost() {
       new Promise((resolve, reject) => {
         getPostbyId(this.$route.params.id)
           .then((res) => {
             this.post = res.data.post;
+            this.section = res.data.post.section;
             resolve(this.posts);
           })
           .catch((err) => {
@@ -48,11 +76,11 @@ export default {
     },
 
     //get comments by post id
-    getComment() {
+    getComments() {
       new Promise((resolve, reject) => {
-        getComment(this.$route.params.id)
+        getComments(this.$route.params.id)
           .then((res) => {
-            this.comment = res.data.comment;
+            this.comments = res.data.comments;
             resolve(this.posts);
           })
           .catch((err) => {
@@ -63,31 +91,43 @@ export default {
     },
 
     back() {
-      this.$router.push({ path: "/discovery" });
+      this.$router.push({ path: `/discovery/page/${this.section}` });
     },
   },
 };
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.author-title {
+  line-height: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  background-color: #ff0;
+  border-radius: 0px;
+  padding: 10px;
 
-.book {
-  display: flex;
-  flex-direction: column;
-  width: 1600px;
-  height: 300px;
-  margin: 20px;
-  border: 1px dotted rgb(12, 10, 10);
-}
-.item1 {
-  height: 100px;
-  width: 1000px;
-  background-color: burlywood;
-}
-.item2 {
-  height: 100px;
-  width: 150px;
-  background-color: skyblue;
-}
+  .author-avatar {
+    display: inline-block;
+    vertical-align: top;
+  }
 
+  .author-info {
+    display: inline-block;
+    margin-left: 5px;
+    width: 60%;
+    height: 40px;
+    line-height: 20px;
+  }
+
+  .author-name {
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .author-time {
+    font-size: 14px;
+  }
+}
 </style>

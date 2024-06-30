@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 //{section, (pageNum)}
-export function getPost(data) {
+export function getPost(section, id) {
   return request({
     url: '/post/section',
     method: 'get',
-    params: data
+    params: {section, id}
   })
 }
 
@@ -18,10 +18,20 @@ export function newPost(data) {
   })
 }
 
-export function getPostbyId(id){
+//{postId}
+export function getPostbyId(postId) {
   return request({
     url: 'post/find/id',
     method: 'get',
-    params: {id}
+    params: {postId}
+  })
+}
+
+
+export function getComments(postId) {
+  return request({
+    url:'post/comment',
+    method: 'get',
+    params: {postId}
   })
 }

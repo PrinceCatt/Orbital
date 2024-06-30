@@ -4,11 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
 import org.example.backend.mapper.PostMapper;
+import org.example.backend.mapper.UserMapper;
 import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -18,6 +18,8 @@ public class PostController {
 
     @Autowired
     private PostMapper postMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/find/user")
     public Result getPostsOfUser(@RequestParam int uid,
@@ -38,9 +40,12 @@ public class PostController {
         return Result.ok().data("pageInfo", pageInfo);
     }
 
+    // Find post by postId
     @GetMapping("/find/id")
-    public Result findPost(int id) {
-        Post post = postMapper.selectById(id);
+    public Result findPost(int postId) {
+        Post post = postMapper.selectById(postId);
+        String name = userMapper.findNameByUid(post.getUid());
+        post.setAuthor(name);
         return Result.ok().data("post", post);
     }
 

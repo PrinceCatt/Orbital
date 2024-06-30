@@ -20,6 +20,7 @@ public class User {
     private Integer id;
     private String name = "";
     private String email = "";
+    @TableField("avatarPath")
     private String avatarPath;
     private String password = "";
     private List<Integer> favoritePosts;

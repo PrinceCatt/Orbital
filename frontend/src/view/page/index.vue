@@ -86,7 +86,7 @@ export default {
   methods: {
     getData() {
       new Promise((resolve, reject) => {
-        getPost({section: this.$route.params.section, pageNum:this.pageNum}).then(res => {
+        getPost(this.$route.params.section, this.pageNum).then(res => {
             this.posts = res.data.pageInfo.list
             this.total = res.data.pageInfo.total
             this.pages = res.data.pageInfo.pages
@@ -110,7 +110,7 @@ export default {
 
     openPost(row, column, cell, event){
       let id = row.id
-      console.log(id)
+      console.log(id) // for debug
       this.$router.push({path: `/post/${id}`})
     }
   },
