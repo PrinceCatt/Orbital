@@ -18,7 +18,7 @@ export default {
         return {
             text: "",
             data: "",
-            websocket: null,
+            websocket: WebSocket,
             nickname: ""
         }
     },
