@@ -16,6 +16,8 @@ import java.util.List;
 @TableName("t_comment")
 public class Comment {
 
+    private int likes;
+
     @TableId(type = IdType.AUTO)
     private int id;
 

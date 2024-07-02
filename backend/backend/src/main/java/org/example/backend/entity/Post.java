@@ -23,7 +23,6 @@ public class Post {
     private String time;
     private int uid;
 
-    private int likes;
 
     @TableField(exist = false)
     private String author;
