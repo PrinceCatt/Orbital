@@ -1,21 +1,29 @@
 package org.example.backend.service;
 
 import org.example.backend.entity.UserLike;
+import org.springframework.data.redis.core.Cursor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public interface RedisService {
 
 
-    void saveLikeToRedis(String likedUserId, String giveLikeId);
+    void saveLikeToRedis(int likedUserId, int giveLikeId);
 
-    void unlikeFromRedis(String likedUserId, String giveLikeId);
+    void unlikeFromRedis(int likedUserId, int giveLikeId);
 
-    void deleteLikedFromRedis(String likedUserId, String giveLikeId);
+    void deleteLikedFromRedis(int likedUserId, int giveLikeId);
 
-    void incrementLikeCount(String likedUserId);
+    void incrementLikeCount(int likedUserId, int userId);
 
-    void decrementLikeCount(String likedUserId);
+    void decrementLikeCount(int likedUserId, int userId);
 
     List<UserLike> getLikedDataFromRedis();
+
+    Cursor<Map.Entry<Object, Object>> getLikedCountFromRedis();
+
+    void savaInfoFromDb2Re(int type);
+
 }
