@@ -2,43 +2,59 @@ package org.example.backend.service;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.example.backend.config.WebSocketConfig;
 import org.example.backend.entity.SocketMsg;
+import org.example.backend.mapper.UserMapper;
+import org.example.backend.utils.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
-import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint(value = "/websocket/{nickname}")
+import static io.netty.handler.codec.http.HttpHeaders.Names.WEBSOCKET_PROTOCOL;
+
+
+@Slf4j
+@ServerEndpoint(value = "/websocket", configurator = WebSocketConfig.class)
 @Component
 public class MyWebSocket {
     //用来存放每个客户端对应的MyWebSocket对象。
     private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<MyWebSocket>();
+    @Autowired
+    private UserMapper userMapper;
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
-    private String nickname;
+    private String username;
 
     private static Map<String, Session> map = new HashMap<String, Session>();
+
+    public MyWebSocket(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     /**
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("nickname") String nickname) {
+    public void onOpen(Session session) {
         this.session = session;
-        this.nickname = nickname;
+        this.username = getUserName(session);
+        System.out.println("New connection " + username);
 
         map.put(session.getId(), session);
 
         webSocketSet.add(this);     //加入set中
 
-        System.out.println("有新连接加入:" + nickname + ",当前在线人数为" + webSocketSet.size());
-        this.session.getAsyncRemote().sendText("恭喜"+nickname+"成功连接上WebSocket(其频道号："+session.getId()+")-->当前在线人数为："+webSocketSet.size());
+        System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
+        this.session.getAsyncRemote().sendText("恭喜" + username + "成功连接上WebSocket(其频道号：" + session.getId() + ")-->当前在线人数为：" + webSocketSet.size());
 
     }
 
@@ -58,8 +74,9 @@ public class MyWebSocket {
      */
 
     @OnMessage
-    public void onMessage(String message, Session session,@PathParam("nickname") String nickname) {
-        System.out.println("来自客户端的消息-->" + nickname + ": " + message);
+    public void onMessage(String message, Session session) {
+        username = getUserName(session);
+        System.out.println("来自客户端的消息-->" + username + ": " + message);
 
         //从客户端传过来的数据是json数据，所以这里使用jackson进行转换为SocketMsg对象，
         // 然后通过socketMsg的type进行判断是单聊还是群聊，进行相应的处理:
@@ -77,15 +94,15 @@ public class MyWebSocket {
                 //发送给接受者.
                 if (toSession != null) {
                     //发送给发送者.
-                    fromSession.getAsyncRemote().sendText(nickname + "：" + socketMsg.getMsg());
-                    toSession.getAsyncRemote().sendText(nickname + "：" + socketMsg.getMsg());
+                    fromSession.getAsyncRemote().sendText(username + "：" + socketMsg.getMsg());
+                    toSession.getAsyncRemote().sendText(username + "：" + socketMsg.getMsg());
                 } else {
                     //发送给发送者.
                     fromSession.getAsyncRemote().sendText("系统消息：对方不在线或者您输入的频道号不对");
                 }
             } else {
                 //群发消息
-                broadcast(nickname + ": " + socketMsg.getMsg());
+                broadcast(username + ": " + socketMsg.getMsg());
             }
 
         } catch (JsonParseException e) {
@@ -104,6 +121,25 @@ public class MyWebSocket {
     public void onError(Session session, Throwable error) {
         System.out.println("发生错误");
         error.printStackTrace();
+    }
+
+    // get username
+    private String getUserName(Session session) {
+        String token = getHeader(session, WEBSOCKET_PROTOCOL);
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        return userMapper.findByEmail(email).getName();
+    }
+
+    public String getHeader(Session session, String headerName) {
+        String header = (String) session.getUserProperties().get(headerName);
+        if (StringUtils.isBlank(header)) {
+            try {
+                session.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return header;
     }
 
     /**
