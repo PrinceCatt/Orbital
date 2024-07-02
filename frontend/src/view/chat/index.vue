@@ -1,25 +1,32 @@
 <template>
-    <div id="message">
+    <div>
         <br>
         <button @click="connectWebSocket()">连接到websocket</button>
         <br>
-        <input type="text" v-model="text">
+        频道号：<input type="text" v-model="toUser" />
+        消息：<input type="text" v-model="text">
         <button @click="send()">发送消息</button>
         <br>
         <button @click="closeWebSocket()">关闭websocket连接</button>
         <br>
-        <div>{{data}}</div>
+        <div id="message">{{data}}</div>
       </div>
 </template>
 
 <script>
+import { getDate } from '@/utils/date';
+
 export default {
     data() {
         return {
             text: "",
             data: "",
-            websocket: WebSocket,
-            nickname: ""
+            websocket: null,
+
+            socketMsg: {},
+            toUser: "",
+            date: "",
+            type: 0,
         }
     },
 
@@ -30,9 +37,9 @@ export default {
     methods: {
         connectWebSocket() {
             if ('WebSocket' in window) {
-                this.nickname = this.$store.state.user.name
-                this.websocket = new WebSocket('ws://localhost:8088/websocket/' + this.nickname)
-                this.initWebSocket()
+              var token = this.$store.state.user.token
+              this.websocket = new WebSocket('ws://localhost:8088/websocket', [token])
+              this.initWebSocket()
             } else { alert('Current browser does not support websocket') }
         },
         
@@ -53,24 +60,40 @@ export default {
       window.onbeforeunload = this.onbeforeunload
     },
     setErrorMessage() {
-      this.data = "WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState;
+      this.setMessageInnerHTML("WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState)
     },
     setOnopenMessage() {
-      this.data = "WebSocket连接成功" + '   状态码：' + this.websocket.readyState;
+      this.setMessageInnerHTML("WebSocket连接成功" + '   状态码：' + this.websocket.readyState)
     },
     setOnmessageMessage(event) {
-      this.data = '服务端返回：' + event.data;
+      this.setMessageInnerHTML(event.data)
     },
     setOncloseMessage() {
-      this.data = "WebSocket连接关闭" + '   状态码：' + this.websocket.readyState;
+      this.setMessageInnerHTML("WebSocket连接关闭" + '   状态码：' + this.websocket.readyState)
     },
     onbeforeunload() {
       this.closeWebSocket();
     },
+
+    //websocket reflect msg
+    setMessageInnerHTML(innerHTML) {
+      document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    },
  
     //websocket发送消息
     send() {
-      this.websocket.send(this.text)
+      this.date = getDate()
+      var message = this.text
+      var toUser = this.toUser
+      var socketMsg = {msg: message, toUser: toUser}
+      if (toUser === '') {
+        // group msg
+        socketMsg.type = 0
+      } else {
+        // private msg
+        socketMsg.type = 1
+      }
+      this.websocket.send(JSON.stringify(socketMsg))
       this.text = ''
     },
     closeWebSocket() {

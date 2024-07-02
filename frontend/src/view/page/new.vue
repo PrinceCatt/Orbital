@@ -26,6 +26,7 @@
   <script>
   
   import { newPost } from '@/api/post';
+  import { getDate } from '@/utils/date';
   
     export default {
   
@@ -33,43 +34,17 @@
         return {
           title: '',
           content: '',
-          select: ''
+          select: '',
+          strDate: ""
         }
       },
   
       methods:{
         submit(){
-          var date = new Date();
-      var year = date.getFullYear();
-      var dateArr = [
-          date.getMonth() + 1, //months are 0-11
-          date.getDate(),
-          date.getHours(),
-          date.getMinutes(),
-          date.getSeconds(),
-      ];
+        this.strDate = getDate()
   
-      for (var i = 0; i < dateArr.length; i++) {
-          if (dateArr[i] >= 1 && dateArr[i] <= 9) {
-              dateArr[i] = "0" + dateArr[i];
-          }
-      }
-  
-      var strDate =
-          year +
-          "-" +
-          dateArr[0] +
-          "-" +
-          dateArr[1] +
-          " " +
-          dateArr[2] +
-          ":" +
-          dateArr[3] +
-          ":" +
-          dateArr[4];
-  
-        console.log("strDate",strDate);
-          newPost({title: this.title, content: this.content, section: this.select, time: strDate}).then(() => {
+        console.log("strDate",this.strDate);
+          newPost({title: this.title, content: this.content, section: this.select, time: this.strDate}).then(() => {
             alert("You have successfully created a new post!")
             this.$router.push({path: '/my/posts'})
           })
