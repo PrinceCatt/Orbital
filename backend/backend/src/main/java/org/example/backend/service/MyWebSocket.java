@@ -19,11 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.WEBSOCKET_PROTOCOL;
 
 
 @Slf4j
-@ServerEndpoint(value = "/websocket", configurator = WebSocketConfig.class)
+@ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class)
 @Component
 public class MyWebSocket {
     //用来存放每个客户端对应的MyWebSocket对象。
@@ -125,7 +124,7 @@ public class MyWebSocket {
 
     // get username
     private String getUserName(Session session) {
-        String token = getHeader(session, WEBSOCKET_PROTOCOL);
+        String token = getHeader(session, "WEBSOCKET_PROTOCOL");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         return userMapper.findByEmail(email).getName();
     }

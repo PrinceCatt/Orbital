@@ -35,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
                 }
             return true;
             }
-        }).addPathPatterns("/user/**")
+        }).addPathPatterns("/user/**", "/ws/***")
                 .excludePathPatterns("/user/register","/user/login");
     }
 }

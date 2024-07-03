@@ -38,7 +38,7 @@ export default {
       connectWebSocket() {
           if ('WebSocket' in window) {
             var token = this.$store.state.user.token
-            this.websocket = new WebSocket('ws://localhost:8088/websocket', [token])
+            this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
             this.initWebSocket()
           } else { alert('Current browser does not support websocket') }
       },
@@ -85,7 +85,7 @@ export default {
     this.date = getDate()
     var message = this.text
     var toUser = this.toUser
-    var socketMsg = {msg: message, toUser: toUser}
+    var socketMsg = {msg: message, toUser: toUser, createTime: this.date}
     if (toUser === '') {
       // group msg
       socketMsg.type = 0

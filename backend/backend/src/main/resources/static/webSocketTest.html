@@ -13,7 +13,6 @@
     </style>
 
 <body>
-昵称：<input type="text" id="nickname"/>
 
 <button onclick="connectWebSocket()">连接WebSocket</button>
 <button onclick="closeWebSocket()">断开连接</button>
@@ -29,16 +28,9 @@
 
     function connectWebSocket(){
 
-        var nickname = document.getElementById("nickname").value;
-
-        if (nickname === "") {
-            alert("Please enter a nickname");
-            return;
-        }
-
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket'in window) {
-            websocket = new WebSocket("ws://localhost:8088/websocket" + "/" + nickname);
+            websocket = new WebSocket("ws://localhost:8088/ws", ["eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJzdWIiOiJtYXlpdGFvQCIsImlhdCI6MTcyMDAwOTA1OCwiZXhwIjoxNzIwNjEzODU4fQ.X-xmgHApQoEp0QUAZH-I9g9pYBDd0eB3NaW97B3Wf-C4TIjtshw12bNVTDV-xxCHcXb7fInjsTNQJHLLnKRxOg"]);
         } else {
             alert('Not support websocket')
         }
