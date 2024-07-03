@@ -44,28 +44,11 @@ export function updateName(name) {
 }
 
 // {newAvatar}
+// Not using for user's updating avatar
 export function updateAvatar(avatar) {
   return request({
     url: '/user/updateAvatar',
     method: 'post',
-    params: {avatar}
-  })
-}
-
-// {pageNum}
-export function myPosts(pageNum) {
-  return request({
-    url: '/user/post',
-    method: 'get',
-    params: {pageNum}
-  })
-}
-
-//{postId}
-export function deletePost(postId) {
-  return request({
-    url: '/user/post/delete',
-    method: 'delete',
-    params: {postId}
+    params: { avatar }
   })
 }
