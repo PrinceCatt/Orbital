@@ -1,6 +1,5 @@
 package org.example.backend.service;
 
-import javafx.beans.binding.ObjectExpression;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.UserLike;
 import org.example.backend.mapper.PostMapper;
@@ -8,12 +7,15 @@ import org.example.backend.mapper.UserLikeMapper;
 import org.example.backend.service.impl.RedisServiceImpl;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class LikedService {
 
     @Resource
