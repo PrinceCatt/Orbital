@@ -6,26 +6,27 @@ export function getComments(postId) {
     })
   }
 
-export function like(parentComment, id) {
+export function like(comment) {
     return request({
-      url: '/post/section',
-      method: 'get',
-      params: {section, id}
+      url: '/userlike/like',
+      method: 'post',
+      params: {comment}
     })
   }
 
-  export function getPost(section, id) {
+  export function unlike(comment) {
     return request({
-      url: '/post/section',
-      method: 'get',
-      params: {section, id}
+      url: '/userlike/unlike',
+      method: 'post',
+      params: {comment}
     })
   }
 
-  export function getPost(section, id) {
+  export function reply(comment, token) {
     return request({
-      url: '/post/section',
-      method: 'get',
-      params: {section, id}
+      url: '/post/comment/new',
+      method: 'post',
+      params: {comment, token}
     })
   }
+

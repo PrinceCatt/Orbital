@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.Cursor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 public interface RedisService {
 
@@ -24,6 +24,6 @@ public interface RedisService {
 
     Cursor<Map.Entry<Object, Object>> getLikedCountFromRedis();
 
-    void savaInfoFromDb2Re(int type);
+    void savaInfoFromDb2Re();
 
 }

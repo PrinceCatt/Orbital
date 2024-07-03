@@ -1,13 +1,14 @@
 package org.example.backend.service;
 
-import org.example.backend.entity.Post;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.example.backend.entity.Comment;
 import org.example.backend.entity.UserLike;
-import org.example.backend.mapper.PostMapper;
+import org.example.backend.mapper.CommentMapper;
 import org.example.backend.mapper.UserLikeMapper;
 import org.example.backend.service.impl.RedisServiceImpl;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,14 +29,14 @@ public class LikedService {
     private UserLikeMapper userLikeMapper;
 
     @Resource
-    private PostMapper postMapper;
+    private CommentMapper commentMapper;
 
-    public void transLiked(){
+    public void transLiked() {
         List<UserLike> likeds = redisService.getLikedDataFromRedis();
-        for(UserLike liked : likeds){
+        for (UserLike liked : likeds) {
             Date date = new Date();
-            UserLike newLike = userLikeMapper.findByPostIdAndUserId(liked.getPostId(), liked.getGiveUserId());
-            if(newLike == null){
+            UserLike newLike = userLikeMapper.findByPostIdAndUserId(liked.getCommentId(), liked.getGiveUserId());
+            if (newLike == null) {
                 userLikeMapper.insert(liked);
             } else {
                 userLikeMapper.updateById(liked);
@@ -43,15 +44,21 @@ public class LikedService {
         }
     }
 
-    public void transCount(){
+    public void transCount() {
         Cursor<Map.Entry<Object, Object>> cursor = redisService.getLikedCountFromRedis();
-        while(cursor.hasNext()){
+        while (cursor.hasNext()) {
             Map.Entry<Object, Object> map = cursor.next();
-            int postId = (int)map.getKey();
-            int likes = (int) redisTemplate.opsForHash().get("MapUserLikesCount", postId);
-            Post currPost = postMapper.selectById(postId);
-            currPost.setLikes(likes);
-            postMapper.updateById(currPost);
+            int commentId = (int) map.getKey();
+            int likes = (int) redisTemplate.opsForHash().get("MapUserLikesCount", commentId);
+            Comment currComment = commentMapper.selectById(commentId);
+            currComment.setLikes(likes);
+            commentMapper.updateById(currComment);
         }
+    }
+
+    public List<UserLike> getAllUserLikeFromMysql() {
+        QueryWrapper<UserLike> queryWrapper = new QueryWrapper<>();
+        List<UserLike> map = userLikeMapper.selectList(queryWrapper);
+        return map;
     }
 }

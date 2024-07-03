@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public class RedisServiceImpl implements RedisService {
 
 
     //in the redis database, two types of data are respectively stored in hashmaps
-    //type1: like data, the key of hashmap is MapUserLiked, the key of like is [postId::userId], the value either 0 or 1
-    //type2: like counts of a post, the key of hashmap is MapUserLikesCount, the key of count is [postId], the value is the number of counts
+    //type1: like data, the key of hashmap is MapUserLiked, the key of like is [commentId::userId], the value either 0 or 1
+    //type2: like counts of a post, the key of hashmap is MapUserLikesCount, the key of count is [commentId], the value is the number of counts
 
 
     @Resource
@@ -47,26 +48,26 @@ public class RedisServiceImpl implements RedisService {
 
     //delete is not used for now
     @Override
-    public void deleteLikedFromRedis(int postId, int giveUserId) {
-        String key = RedisKeyUtils.getLikedKey(postId, giveUserId);
+    public void deleteLikedFromRedis(int commentId, int giveUserId) {
+        String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
         redisTemplate.opsForHash().delete(RedisKeyUtils.MapUserLiked, key);
     }
 
-    //increment the number of likes of a certain post given postId
+    //increment the number of likes of a certain post given commentId
     @Override
-    public void incrementLikeCount(int postId, int userId) {
-        String key = RedisKeyUtils.getLikedKey(postId, userId);
+    public void incrementLikeCount(int commentId, int userId) {
+        String key = RedisKeyUtils.getLikedKey(commentId, userId);
         if("0".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key))
         || redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == null) {
-            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, postId, 1);
+            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1);
         }
     }
 
     @Override
-    public void decrementLikeCount(int postId, int userId) {
-        String key = RedisKeyUtils.getLikedKey(postId, userId);
+    public void decrementLikeCount(int commentId, int userId) {
+        String key = RedisKeyUtils.getLikedKey(commentId, userId);
         if("1".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key))) {
-            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, postId, -1);
+            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, -1);
         }
     }
 
@@ -83,7 +84,7 @@ public class RedisServiceImpl implements RedisService {
 
 
             UserLike like = new UserLike();
-            like.setPostId(Integer.parseInt(split[0]));
+            like.setCommentId(Integer.parseInt(split[0]));
             like.setGiveUserId(Integer.parseInt(split[1]));
             like.setStatus(status);
             list.add(like);
@@ -96,12 +97,25 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Cursor<Map.Entry<Object, Object>> getLikedCountFromRedis() {
-        return null;
+        Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(RedisKeyUtils.MapUserLikesCount, ScanOptions.NONE);
+        return cursor;
     }
 
 
     @Override
-    public void savaInfoFromDb2Re(int type) {
-
+    public void savaInfoFromDb2Re() {
+        List<UserLike> likeds = likedService.getAllUserLikeFromMysql();
+        if(likeds.isEmpty() || likeds.equals("")) {
+            return;
+        }
+        Iterator<UserLike> iterator = likeds.iterator();
+        while(iterator.hasNext()) {
+            UserLike userLike = iterator.next();
+            int commentId = userLike.getCommentId();
+            int giveUserId = userLike.getGiveUserId();
+            int status = userLike.getStatus();
+            String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
+            redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLiked,key, status);
+        }
     }
 }
