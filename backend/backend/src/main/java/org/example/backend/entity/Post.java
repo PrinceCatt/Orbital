@@ -19,6 +19,7 @@ public class Post {
     private String title;
     private String content;
     private int views;
+    private int likes = 0;
 
     private String time;
     private int uid;
