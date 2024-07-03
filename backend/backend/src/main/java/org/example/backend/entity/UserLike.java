@@ -3,7 +3,7 @@ package org.example.backend.entity;
 public class UserLike {
 
     private int id;
-    private int postId;
+    private int commentId;
     private int giveUserId;
     private int status = LikedStatusEnum.Unlike.getCode();
 
@@ -17,12 +17,12 @@ public class UserLike {
         this.id = id;
     }
 
-    public int getPostId() {
-        return postId;
+    public int getCommentId() {
+        return commentId;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 
     public int getGiveUserId() {
@@ -41,8 +41,8 @@ public class UserLike {
         this.status = status;
     }
 
-    public UserLike(int postId, int giveUserId, int status) {
-        this.postId = postId;
+    public UserLike(int commentId, int giveUserId, int status) {
+        this.commentId = commentId;
         this.giveUserId = giveUserId;
         this.status = status;
     }
