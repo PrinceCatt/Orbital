@@ -22,12 +22,19 @@ export default {
           text: "",
           data: "",
           websocket: null,
+          connected: false,
 
           socketMsg: {},
           toUser: "",
           date: "",
           type: 0,
       }
+  },
+
+  crreated() {
+    this.connectWebSocket().then(() => {
+      this.connected = true
+    })
   },
 
   beforeDestroy() {
@@ -37,9 +44,12 @@ export default {
   methods: {
       connectWebSocket() {
           if ('WebSocket' in window) {
-            var token = this.$store.state.user.token
-            this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
-            this.initWebSocket()
+            if (!this.connected) {
+              var token = this.$store.state.user.token
+              this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
+              this.initWebSocket()
+              this.connected = true
+            } else { alert('You have already connected to WebSocket') }
           } else { alert('Current browser does not support websocket') }
       },
       
@@ -98,6 +108,8 @@ export default {
   },
   closeWebSocket() {
     this.websocket.close()
+    this.connected = false
+    console.log("WebSocket closed")
   }
 }
 }

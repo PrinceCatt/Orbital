@@ -27,16 +27,17 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class MyWebSocket {
     //用来存放每个客户端对应的MyWebSocket对象。
     private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<MyWebSocket>();
-    @Autowired
-    private UserMapper userMapper;
+
+    private static UserMapper userMapper;
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
     private String username;
 
     private static Map<String, Session> map = new HashMap<String, Session>();
 
-    public MyWebSocket(UserMapper userMapper) {
-        this.userMapper = userMapper;
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        MyWebSocket.userMapper = userMapper;
     }
 
     /**
@@ -123,7 +124,7 @@ public class MyWebSocket {
     }
 
     // get username
-    private String getUserName(Session session) {
+    public String getUserName(Session session) {
         String token = getHeader(session, "WEBSOCKET_PROTOCOL");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         return userMapper.findByEmail(email).getName();

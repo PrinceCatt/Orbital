@@ -1,10 +1,6 @@
 package org.example.backend.config;
 
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -18,7 +14,7 @@ import java.util.Map;
 
 
 @Configuration
-public class WebSocketConfig extends ServerEndpointConfig.Configurator implements ApplicationContextAware {
+public class WebSocketConfig extends ServerEndpointConfig.Configurator {
 
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
@@ -44,14 +40,8 @@ public class WebSocketConfig extends ServerEndpointConfig.Configurator implement
      */
     @Override
     public <T> T getEndpointInstance(Class<T> clazz) throws InstantiationException {
-        return context.getBean(clazz);
+        return super.getEndpointInstance(clazz);
     }
 
-    private static volatile BeanFactory context;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        WebSocketConfig.context = applicationContext;
-    }
 
 }
