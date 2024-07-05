@@ -28,10 +28,3 @@ export function getPostbyId(postId) {
 }
 
 
-export function getComments(postId) {
-  return request({
-    url:'post/comment',
-    method: 'get',
-    params: {postId}
-  })
-}

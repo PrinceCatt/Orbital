@@ -17,6 +17,10 @@ public class RedisController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private RedisService redisService;
+
+    //like
     @PostMapping("/like")
     public Result like(int postId, int userId) {
         RedisService redisService = (RedisService) redisTemplate;
@@ -25,6 +29,7 @@ public class RedisController {
         return Result.ok();
     }
 
+    //unlike when clicked the second time
     @PostMapping("/unlike")
     public Result unlike(int postId, int userId) {
         RedisService redisService = (RedisService) redisTemplate;
@@ -33,4 +38,9 @@ public class RedisController {
         return Result.ok();
     }
 
+    @GetMapping("/restore")
+    public Result restore() {
+        redisService.savaInfoFromDb2Re();
+        return Result.ok();
+    }
 }

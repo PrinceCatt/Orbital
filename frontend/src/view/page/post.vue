@@ -24,16 +24,12 @@
       </div>
       
       <el-badge :value="12" class="item">
-        <el-button type="primary" icon="el-icon-edit" round>Like</el-button>  
+        <el-button type="primary" icon="el-icon-edit" round @click="like(comment.id)">Like</el-button>  
       </el-badge>
 
-      <el-badge :value="12" class="item">
-        <el-button type="primary" icon="el-icon-edit" round>Dislike</el-button>  
-      </el-badge>
 
-      <el-badge :value="12" class="item">
-        <el-button type="primary" icon="el-icon-edit" round>Reply</el-button>  
-      </el-badge>
+        <el-button type="primary" icon="el-icon-edit" round @click="reply(comment.id)">Reply</el-button>  
+
 
       <hr />
       <span class="author-content">{{ comment.content }}</span>
@@ -42,7 +38,8 @@
 </template>
 
 <script>
-import { getPostbyId, getComments } from "@/api/post";
+import { getPostbyId} from "@/api/post";
+import { getComments } from "@/api/comment";
 
 export default {
   data() {
@@ -93,6 +90,14 @@ export default {
     back() {
       this.$router.push({ path: `/discovery/page/${this.section}` });
     },
+
+    like(id){
+
+    },
+
+    reply(id){
+
+    }
   },
 };
 </script>

@@ -31,6 +31,7 @@ public class LikedService {
     @Resource
     private CommentMapper commentMapper;
 
+    //transfer liked from redis to mysql
     public void transLiked() {
         List<UserLike> likeds = redisService.getLikedDataFromRedis();
         for (UserLike liked : likeds) {
@@ -44,6 +45,7 @@ public class LikedService {
         }
     }
 
+    //transfer count from redis to mysql
     public void transCount() {
         Cursor<Map.Entry<Object, Object>> cursor = redisService.getLikedCountFromRedis();
         while (cursor.hasNext()) {
@@ -56,6 +58,7 @@ public class LikedService {
         }
     }
 
+    //get all userLike from mysql to a list of userLike
     public List<UserLike> getAllUserLikeFromMysql() {
         QueryWrapper<UserLike> queryWrapper = new QueryWrapper<>();
         List<UserLike> map = userLikeMapper.selectList(queryWrapper);
