@@ -10,7 +10,7 @@ import org.example.backend.entity.UserLike;
 @Mapper
 public interface UserLikeMapper extends BaseMapper<UserLike> {
 
-    @Select("select * from t_userLike where postId = #{postId} and userId = #{userId}")
-    UserLike findByPostIdAndUserId(int postId, int userId);
+    @Select("select * from t_userLike where commentId = #{commentId} and userId = #{userId}")
+    UserLike findByCommentIdAndUserId(int commentId, int userId);
 
 }
