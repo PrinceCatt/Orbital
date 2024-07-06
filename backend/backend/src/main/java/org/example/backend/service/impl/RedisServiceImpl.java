@@ -34,14 +34,14 @@ public class RedisServiceImpl implements RedisService {
 
     //save like data to redis hashmap
     @Override
-    public void saveLikeToRedis(int likedUserId, int giveUserId) {
-        String key = RedisKeyUtils.getLikedKey(likedUserId, giveUserId);
+    public void saveLikeToRedis(int commentId, int giveUserId) {
+        String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
         redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLiked, key, LikedStatusEnum.Like.getCode());
     }
 
     @Override
-    public void unlikeFromRedis(int likedUserId, int giveUserId) {
-        String key = RedisKeyUtils.getLikedKey(likedUserId, giveUserId);
+    public void unlikeFromRedis(int commentId, int giveUserId) {
+        String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
         redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLiked, key, LikedStatusEnum.Unlike.getCode());
     }
 
