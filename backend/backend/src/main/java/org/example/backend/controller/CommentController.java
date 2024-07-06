@@ -48,6 +48,9 @@ public class CommentController {
             if (commentMapper.selectById(parentId) == null) {
                 return Result.error().message("Parent comment does not exist");
             }
+            if (commentMapper.selectById(parentId).getParentCommentId() != -1) {
+                return Result.error().message("You may not comment to a child comment");
+            }
         }
 
         int postId = comment.getPostId();
