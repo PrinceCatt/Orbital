@@ -36,7 +36,7 @@ public class LikedService {
         List<UserLike> likeds = redisService.getLikedDataFromRedis();
         for (UserLike liked : likeds) {
             Date date = new Date();
-            UserLike newLike = userLikeMapper.findByPostIdAndUserId(liked.getCommentId(), liked.getGiveUserId());
+            UserLike newLike = userLikeMapper.findByCommentIdAndUserId(liked.getCommentId(), liked.getGiveUserId());
             if (newLike == null) {
                 userLikeMapper.insert(liked);
             } else {
