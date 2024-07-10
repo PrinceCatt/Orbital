@@ -20,3 +20,21 @@ new Vue({
   router,
   store
 }).$mount('#app')
+
+// check whether the user have logged in before proceeding the target page
+router.beforeEach(function(to, from, next) {
+  if (to.meta.needLogin) {
+    // need login
+    if (store.getters.token != null && store.getters.token != 'test_template_token') {
+      next();
+    } else {
+      alert("Please login first")
+      next({
+        name: "login"
+      });
+    }
+  } else {
+    // not need to login
+    next();
+  }
+});

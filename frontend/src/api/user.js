@@ -52,3 +52,21 @@ export function updateAvatar(avatar) {
     params: { avatar }
   })
 }
+
+// {pageNum}
+export function myPosts(pageNum) {
+  return request({
+    url: '/user/post',
+    method: 'get',
+    params: {pageNum}
+  })
+}
+
+//{postId}
+export function deletePost(postId) {
+  return request({
+    url: '/user/post/delete',
+    method: 'delete',
+    params: {postId}
+  })
+}
