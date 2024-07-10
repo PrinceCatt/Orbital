@@ -29,7 +29,6 @@ public class WebSocketConfig extends ServerEndpointConfig.Configurator {
         List<String> protocol = headers.get("Sec-Websocket-Protocol");
         // 存放自己想要的header信息
         if(protocol != null){
-            System.out.println("Sec-Websocket-Protocol: "+protocol);
             userProperties.put("WEBSOCKET_PROTOCOL", protocol.get(0));
         }
         super.modifyHandshake(sec, request, response);

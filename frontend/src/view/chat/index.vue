@@ -46,7 +46,7 @@ export default {
           if ('WebSocket' in window) {
             if (!this.connected) {
               var token = this.$store.state.user.token
-              this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
+              this.websocket = new WebSocket('ws://114.55.89.49:8088/ws', [token])
               this.initWebSocket()
               this.connected = true
             } else { alert('You have already connected to WebSocket') }

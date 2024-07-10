@@ -1,3 +1,5 @@
+import request from '@/utils/request'
+
 export function getComments(postId) {
     return request({
       url:'post/comment',
