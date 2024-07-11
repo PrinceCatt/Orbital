@@ -26,7 +26,7 @@
           autocomplete="off"
         ></el-input>
       </el-form-item>
-      <el-form-item label="Username" prop="username">
+      <el-form-item label="Username" prop="name">
         <el-input
           type="username"
           v-model="registerForm.name"
@@ -35,7 +35,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm()">Enter</el-button>
-        <el-button @click="resetForm('registerForm')">Reset</el-button>
+        <el-button @click="resetForm()">Reset</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -113,9 +113,11 @@ export default {
             .dispatch("user/register", this.registerForm)
             .then(() => {
               alert("You have successfully registered a NUSurf account");
-              email = this.registerForm.email;
-              password = this.registerForm.password;
-              this.$store.dispatch("user/login", { email, password });
+              this.email = this.registerForm.email;
+              this.password = this.registerForm.password;
+              this.$store.dispatch("user/login", { email: this.email, password: this.password });
+              this.$router.push({path: "/discovery"});
+              location.reload("");
               this.loading = false;
             })
             .catch(() => {
@@ -128,8 +130,10 @@ export default {
       });
     },
 
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$nextTick(() => {
+        this.$refs['loginForm'].resetFields();
+      })
     },
   },
 };

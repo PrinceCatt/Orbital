@@ -30,7 +30,7 @@
       <el-upload
         class="avatar-uploader"
         name="avatar"
-        action="http://localhost:8088/user/updateAvatar"
+        action="http://114.55.89.49:8088/user/updateAvatar"
         :show-file-list="false"
         :on-success="handleAvatarUpload"
         :before-upload="beforeAvatarUpload"
