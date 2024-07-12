@@ -113,9 +113,10 @@ export default {
             .dispatch("user/register", this.registerForm)
             .then(() => {
               alert("You have successfully registered a NUSurf account");
-              email = this.registerForm.email;
-              password = this.registerForm.password;
-              this.$store.dispatch("user/login", { email, password });
+              this.email = this.registerForm.email;
+              this.password = this.registerForm.password;
+              this.$store.dispatch("user/login", { email: this.email, password: this.password });
+              this.$router.push({path: '/discover'});
               this.loading = false;
             })
             .catch(() => {

@@ -1,13 +1,13 @@
 <template>
   <div>
       <br>
-      <button @click="connectWebSocket()">连接到websocket</button>
+      <button @click="connectWebSocket()">Connect to WebSocket</button>
       <br>
-      频道号：<input type="text" v-model="toUser" />
-      消息：<input type="text" v-model="text">
-      <button @click="send()">发送消息</button>
+      Session code: <input type="text" v-model="toUser" />
+      Message: <input type="text" v-model="text">
+      <button @click="send()">Send</button>
       <br>
-      <button @click="closeWebSocket()">关闭websocket连接</button>
+      <button @click="closeWebSocket()">Close WebSocket</button>
       <br>
       <div id="message">{{data}}</div>
     </div>
@@ -70,16 +70,16 @@ export default {
     window.onbeforeunload = this.onbeforeunload
   },
   setErrorMessage() {
-    this.setMessageInnerHTML("WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("An error occurred during WebSocket connection" + '   状态码：' + this.websocket.readyState)
   },
   setOnopenMessage() {
-    this.setMessageInnerHTML("WebSocket连接成功" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("WebSocket connection success" + '   状态码：' + this.websocket.readyState)
   },
   setOnmessageMessage(event) {
     this.setMessageInnerHTML(event.data)
   },
   setOncloseMessage() {
-    this.setMessageInnerHTML("WebSocket连接关闭" + '   状态码：' + this.websocket.readyState)
+    console.log("WebSocket connection closed" + '   状态码：' + this.websocket.readyState)
   },
   onbeforeunload() {
     this.closeWebSocket();
