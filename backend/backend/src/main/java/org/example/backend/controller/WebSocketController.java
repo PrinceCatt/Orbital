@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
-// Not using yet
+// Not using
 @RestController
 @RequestMapping("/user/message")
 public class WebSocketController {
