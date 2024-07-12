@@ -23,8 +23,8 @@
         <span class="author-time">{{ comment.createTime }}</span>
       </div>
       
-      <el-badge :value="12" class="item">
-        <el-button type="primary" icon="el-icon-edit" round @click="like(comment.id)">Like</el-button>  
+      <el-badge :value="comment.likes" class="item">
+        <el-button type="primary" icon="el-icon-edit" round @click="likes(comment.id)">Like</el-button>  
       </el-badge>
 
 
@@ -39,7 +39,7 @@
 
 <script>
 import { getPostbyId} from "@/api/post";
-import { getComments } from "@/api/comment";
+import { getComments, getStatus, replyComment, like, unlike} from "@/api/comment";
 
 export default {
   data() {
@@ -91,12 +91,28 @@ export default {
       this.$router.push({ path: `/discovery/page/${this.section}` });
     },
 
-    like(id){
-
+    likes(commentId){
+      new Promise((resolve, reject) => {
+        getStatus(commentId)
+          .then((res) => {
+            let status = res.data.status;
+            if(status == 1){
+              unlike(commentId)
+            }
+            else{
+              like(commentId)
+            }
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+            return "Error in like or unlike";
+          });
+      });
     },
 
-    reply(id){
-
+    reply(commentId){
+      replyComment(commentId)
     }
   },
 };

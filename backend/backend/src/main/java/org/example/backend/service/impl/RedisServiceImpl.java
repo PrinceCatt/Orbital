@@ -57,8 +57,20 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void incrementLikeCount(int commentId, int userId) {
         String key = RedisKeyUtils.getLikedKey(commentId, userId);
-        if("0".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key))
-        || redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == null) {
+
+        //the user like is not created or something went wrong so the increment of like count terminates
+        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == null) {
+          return;
+        }
+
+        //the like count is not created so create one and increase
+        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId) == null) {
+            redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLikesCount, commentId, 0);
+            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1);
+        }
+
+        //normal condition: like count exists so increase by one
+        else if("0".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId))) {
             redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1);
         }
     }
@@ -80,7 +92,7 @@ public class RedisServiceImpl implements RedisService {
             String key = (String) entry.getKey();
 
             String[] split = key.split("::");
-            int status =  Integer.parseInt((String) entry.getValue());
+            int status =  (int) entry.getValue();
 
 
             UserLike like = new UserLike();
