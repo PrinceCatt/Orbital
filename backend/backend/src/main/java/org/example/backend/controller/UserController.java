@@ -179,7 +179,7 @@ public class UserController {
             System.out.println("Upload avatar exception: " + e.getMessage());
         }
 
-        String resourceHandlerPath = "http://114.55.89.49:8088/user/avatar/";
+        String resourceHandlerPath = "http://114.55.89.49/user/avatar/";
 
         int result = imageUploadService.imageUpload(resourceHandlerPath + newRandomFileName, email);
         if (result > 0) {
