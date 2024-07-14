@@ -29,7 +29,7 @@ public class Comment {
     @TableField(exist = false)
     private String avatar;
 
-    @TableField("time")
+    @TableField("createTime")
     private String createTime;
     @TableField("postId")
     private int postId;

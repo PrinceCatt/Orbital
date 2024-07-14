@@ -41,7 +41,6 @@ public class CommentController {
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         comment.setUid(user.getId());
-        comment.setAvatar(user.getAvatarPath());
 
         int parentId = comment.getParentCommentId();
         if (parentId >= 0) {

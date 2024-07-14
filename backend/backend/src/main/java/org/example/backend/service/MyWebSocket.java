@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.backend.config.WebSocketConfig;
 import org.example.backend.entity.SocketMsg;
+import org.example.backend.entity.User;
+import org.example.backend.mapper.MessageMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
@@ -29,15 +30,25 @@ public class MyWebSocket {
     private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<MyWebSocket>();
 
     private static UserMapper userMapper;
+    private static MessageMapper messageMapper; ;
+
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+    private User user;
     private String username;
+    private int uid;
 
     private static Map<String, Session> map = new HashMap<String, Session>();
+    private static Map<Integer, String> uidSessionIdMap = new HashMap<Integer, String>();
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         MyWebSocket.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setMessageMapper(MessageMapper messageMapper) {
+        MyWebSocket.messageMapper = messageMapper;
     }
 
     /**
@@ -46,15 +57,28 @@ public class MyWebSocket {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        this.username = getUserName(session);
+
+        this.user = getUserBySession(session);
+        this.username = user.getName();
+        this.uid = user.getId();
         System.out.println("New connection " + username);
 
+        // get all online users
+        List<User> onlineUsers = new ArrayList<>();
+        for (MyWebSocket webSocket : webSocketSet) {
+            User onlineUser = getUserBySession(webSocket.session);
+            onlineUser.setPassword("NA");
+            onlineUsers.add(onlineUser);
+        }
+        session.getAsyncRemote().sendObject(onlineUsers);
+
         map.put(session.getId(), session);
+        uidSessionIdMap.put(uid, session.getId());
 
         webSocketSet.add(this);     //加入set中
 
         System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
-        this.session.getAsyncRemote().sendText("恭喜" + username + "成功连接上WebSocket(其频道号：" + session.getId() + ")-->当前在线人数为：" + webSocketSet.size());
+        broadcast("恭喜" + username + "成功连接上WebSocket(Uid：" + user.getId() + ")-->当前在线人数为：" + webSocketSet.size());
 
     }
 
@@ -75,7 +99,9 @@ public class MyWebSocket {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        username = getUserName(session);
+        user = getUserBySession(session);
+        username = user.getName();
+
         System.out.println("来自客户端的消息-->" + username + ": " + message);
 
         //从客户端传过来的数据是json数据，所以这里使用jackson进行转换为SocketMsg对象，
@@ -86,20 +112,31 @@ public class MyWebSocket {
         try {
             socketMsg = objectMapper.readValue(message, SocketMsg.class);
             if (socketMsg.getType() == 1) {
+
                 //单聊.需要找到发送者和接受者.
 
                 socketMsg.setFromUser(session.getId());//发送者.
+                socketMsg.setFromUid(user.getId());
                 Session fromSession = map.get(socketMsg.getFromUser());
-                Session toSession = map.get(socketMsg.getToUser());
-                //发送给接受者.
-                if (toSession != null) {
-                    //发送给发送者.
-                    fromSession.getAsyncRemote().sendText(username + "：" + socketMsg.getMsg());
-                    toSession.getAsyncRemote().sendText(username + "：" + socketMsg.getMsg());
+                String toSessionId = uidSessionIdMap.get(socketMsg.getToUid());
+
+                if (userMapper.selectById(socketMsg.getToUid()) == null || Objects.equals(fromSession.getId(), toSessionId)) {
+                    fromSession.getBasicRemote().sendText("System message: you have keyed in an invalid user id.");
                 } else {
-                    //发送给发送者.
-                    fromSession.getAsyncRemote().sendText("系统消息：对方不在线或者您输入的频道号不对");
+                    // save the valid private message
+                    messageMapper.insert(socketMsg);
+                    Session toSession = map.get(toSessionId);
+                    //发送给接受者.
+                    if (toSession != null) {
+                        //发送给发送者.
+                        fromSession.getAsyncRemote().sendText( "You: " + socketMsg.getMsg());
+                        toSession.getAsyncRemote().sendText(username + ": " + socketMsg.getMsg());
+                    } else {
+                        //发送给发送者.
+                        fromSession.getAsyncRemote().sendText("System message: the other side is not available right now.");
+                    }
                 }
+
             } else {
                 //群发消息
                 broadcast(username + ": " + socketMsg.getMsg());
@@ -123,12 +160,13 @@ public class MyWebSocket {
         error.printStackTrace();
     }
 
-    // get username
-    public String getUserName(Session session) {
+    // get user
+    public User getUserBySession(Session session) {
         String token = getHeader(session, "WEBSOCKET_PROTOCOL");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
-        return userMapper.findByEmail(email).getName();
+        return userMapper.findByEmail(email);
     }
+
 
     public String getHeader(Session session, String headerName) {
         String header = (String) session.getUserProperties().get(headerName);

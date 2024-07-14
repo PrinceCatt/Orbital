@@ -3,7 +3,7 @@
       <br>
       <button @click="connectWebSocket()">Connect to WebSocket</button>
       <br>
-      Session code: <input type="text" v-model="toUser" />
+      Private message:  Uid: <input v-model.number="toUid" />
       Message: <input type="text" v-model="text">
       <button @click="send()">Send</button>
       <br>
@@ -25,7 +25,7 @@ export default {
           connected: false,
 
           socketMsg: {},
-          toUser: "",
+          toUid: null,
           date: "",
           type: 0,
       }
@@ -94,9 +94,8 @@ export default {
   send() {
     this.date = getDate()
     var message = this.text
-    var toUser = this.toUser
-    var socketMsg = {msg: message, toUser: toUser, createTime: this.date}
-    if (toUser === '') {
+    var socketMsg = {msg: message, toUid: this.toUid, createTime: this.date}
+    if (this.toUid == -1) {
       // group msg
       socketMsg.type = 0
     } else {
