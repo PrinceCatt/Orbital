@@ -30,7 +30,7 @@ public class Comment {
     private String avatar;
 
     @TableField("time")
-    private String createTime;
+    private String gir;
     @TableField("postId")
     private int postId;
     @TableField("parentCommentId")
