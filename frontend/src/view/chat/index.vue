@@ -1,13 +1,13 @@
 <template>
   <div>
       <br>
-      <button @click="connectWebSocket()">连接到websocket</button>
+      <button @click="connectWebSocket()">Connect to WebSocket</button>
       <br>
-      频道号：<input type="text" v-model="toUser" />
-      消息：<input type="text" v-model="text">
-      <button @click="send()">发送消息</button>
+      Private message:  Uid: <input v-model.number="toUid" />
+      Message: <input type="text" v-model="text">
+      <button @click="send()">Send</button>
       <br>
-      <button @click="closeWebSocket()">关闭websocket连接</button>
+      <button @click="closeWebSocket()">Close WebSocket</button>
       <br>
       <div id="message">{{data}}</div>
     </div>
@@ -25,7 +25,7 @@ export default {
           connected: false,
 
           socketMsg: {},
-          toUser: "",
+          toUid: null,
           date: "",
           type: 0,
       }
@@ -70,16 +70,16 @@ export default {
     window.onbeforeunload = this.onbeforeunload
   },
   setErrorMessage() {
-    this.setMessageInnerHTML("WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("An error occurred during WebSocket connection" + '   状态码：' + this.websocket.readyState)
   },
   setOnopenMessage() {
-    this.setMessageInnerHTML("WebSocket连接成功" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("WebSocket connection success" + '   状态码：' + this.websocket.readyState)
   },
   setOnmessageMessage(event) {
     this.setMessageInnerHTML(event.data)
   },
   setOncloseMessage() {
-    this.setMessageInnerHTML("WebSocket连接关闭" + '   状态码：' + this.websocket.readyState)
+    console.log("WebSocket connection closed" + '   状态码：' + this.websocket.readyState)
   },
   onbeforeunload() {
     this.closeWebSocket();
@@ -94,9 +94,8 @@ export default {
   send() {
     this.date = getDate()
     var message = this.text
-    var toUser = this.toUser
-    var socketMsg = {msg: message, toUser: toUser, createTime: this.date}
-    if (toUser === '') {
+    var socketMsg = {msg: message, toUid: this.toUid, createTime: this.date}
+    if (this.toUid == -1) {
       // group msg
       socketMsg.type = 0
     } else {

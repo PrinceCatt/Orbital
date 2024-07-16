@@ -23,6 +23,8 @@ public class User {
     @TableField("avatarPath")
     private String avatarPath;
     private String password = "";
+
+    @TableField(exist = false)
     private List<Integer> favoritePosts;
 
 

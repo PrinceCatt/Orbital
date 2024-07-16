@@ -37,6 +37,14 @@ public class CommentServiceImpl implements CommentService {
 
             childComments = commentMapper.findByParentCommentId(id);
 
+            for (Comment childComment : childComments) {
+                int cUid = childComment.getUid();
+                String cName = userMapper.findNameByUid(cUid);
+                String cAvatarPath = userMapper.findAvatarPathByUid(cUid);
+                childComment.setAuthorName(cName);
+                childComment.setAvatar(cAvatarPath);
+            }
+
             comment.setReplyComments(childComments);
             childComments = new ArrayList<>();
         }
