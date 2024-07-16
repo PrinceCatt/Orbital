@@ -24,25 +24,17 @@ export function like(commentId) {
     })
   }
 
-  export function replyComment(comment) {
+  export function replyComment(data) {
     return request({
       url: '/post/comment/new',
       method: 'post',
-      params: {comment}
+      data
     })
   }
 
   export function getStatus(commentId) {
     return request({
       url: '/userlike/status',
-      method: 'get',
-      params: {commentId}
-    })
-  }
-
-  export function getCount(commentId) {
-    return request({
-      url: '/userlike/count',
       method: 'get',
       params: {commentId}
     })

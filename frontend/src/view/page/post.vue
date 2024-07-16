@@ -21,10 +21,10 @@
 <div class="comment"></div>
     
 
-<div v-clickoutside="hideReplyBtn" @click ="inputFocus" class="my-comment mt20">
+<div v-clickoutside="hideReplyPostBtn" @click ="inputFocus" class="my-comment mt20">
 <el-avatar class="header-img" :size ="40" :src="this.$store.state.user.avatar"></el-avatar>
 <div class="reply-info">
-<input tabindex="0" contenteditable="true" id="replyInput" spellcheck="false" placeholder="Please enter comment..." class="reply-input" @focus="showReplyBtn">
+<input tabindex="0" contenteditable="true" id="replyInput" spellcheck="false" placeholder="Please enter comment..." class="reply-input" @focus="showReplyPostBtn">
 
 <div class="reply-btn-box" v-show="btnShow">
   <el-button class="reply-btn" size="medium" @click="sendCommentToPost()" type="primary">Send Comment</el-button>
@@ -45,7 +45,7 @@
       </el-badge>
 
 
-        <el-button type="primary" icon="el-icon-edit" round @click="reply(comment.id)">Reply</el-button>  
+        <el-button type="primary" icon="el-icon-edit" round @click="callbox(comment.id)">Reply</el-button>  
 
 
       <span class="author-content">{{ comment.content }}</span>
@@ -62,11 +62,23 @@
         <el-button type="primary" icon="el-icon-edit" round @click="likes(reply.id)">Like</el-button>  
       </el-badge>
 
-
-        <el-button type="primary" icon="el-icon-edit" round @click="reply(reply.id)">Reply</el-button>  
-
+        <el-button type="primary" icon="el-icon-edit" round @click="callbox(reply.id)">Reply</el-button>  
 
       <span class="author-content">{{ reply.content }}</span>
+
+      
+
+<el-dialog title="输入框" :visible.sync="dialogVisible" width="30%">
+      <!-- 输入框 -->
+      <el-input v-model="inputValue" placeholder="请输入内容"></el-input>
+ 
+      <!-- 对话框的尾部（按钮等） -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sendCommentToComment(inputValue)">确 定</el-button>
+      </span>
+    </el-dialog>
+
 
       </div>
     </div>
@@ -111,7 +123,9 @@ export default {
       replyComments: {},
       section: "",
       btnShow: "false",
-
+      commenId: "",
+      dialogVisible: false,
+      inputValue: ""
     };
   },
   directives: { clickoutside },
@@ -122,6 +136,10 @@ export default {
   },
 
   methods: {
+    callbox(id){
+      this.commenId = id
+      this.dialogVisible = true
+    },
 
     inputFocus() {
       var replyInput = document.getElementById("replyInput")
@@ -131,15 +149,21 @@ export default {
     },
 
     //to show reply button
-    showReplyBtn() {
+    showReplyPostBtn() {
       this.btnShow = true
     },
 
     //to hide reply button
-    hideReplyBtn() {
+    hideReplyPostBtn() {
       this.btnShow = false;
       replyInput.style.padding = "10px";
       replyInput.style.border = "none";
+    },
+
+    hideReplyCommentBox(){
+      this.replyBoxShow = false;
+      commentInput.style.padding = "10px";
+      commentInput.style.border = "none";
     },
 
     //get post by id
@@ -199,14 +223,24 @@ export default {
 
     sendCommentToPost(){
       let content = document.getElementById('replyInput').value
+      if(content == "") {
+        alert("cannot send empty comment")
+        return
+      }
       let createTime = getDate()
       replyComment({postId: this.post.id, content: content, createTime: createTime})
     },
 
-    sendCommentToComment(comment){
-      let content = document.getElementById('replyInput').value
+    sendCommentToComment(content, parentCommentId){
+
+      console.log(content)
+      if(content == "") {
+        alert("cannot send empty comment")
+        return
+      }
       let createTime = getDate()
-      replyComment({postId: this.post.id, commentId: comment.id, content: content, createTime: createTime})
+      replyComment({postId: this.post.id, parentCommentId: parentCommentId, content: content, createTime: createTime})
+    
     }
   },
 };
