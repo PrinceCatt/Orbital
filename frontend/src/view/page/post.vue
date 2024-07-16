@@ -21,8 +21,8 @@
 <div class="comment"></div>
     
 
-<div v-clickoutside="hideReplyPostBtn" @click ="inputFocus" class="my-comment mt20">
-<el-avatar class="header-img" :size ="40" :src="this.$store.state.user.avatar"></el-avatar>
+<div v-clickoutside="hideReplyPostBtn" @click="inputFocus" class="my-comment mt20">
+<el-avatar class="header-img" :size="40" :src="this.$store.state.user.avatar"></el-avatar>
 <div class="reply-info">
 <input tabindex="0" contenteditable="true" id="replyInput" spellcheck="false" placeholder="Please enter comment..." class="reply-input" @focus="showReplyPostBtn">
 
@@ -75,7 +75,7 @@
       <!-- 对话框的尾部（按钮等） -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="sendCommentToComment(inputValue)">确 定</el-button>
+        <el-button type="primary" @click="sendCommentToComment(inputValue, comment.id)">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -123,7 +123,8 @@ export default {
       replyComments: {},
       section: "",
       btnShow: "false",
-      commenId: "",
+      commenId: -1,
+      parentCommentId: -1,
       dialogVisible: false,
       inputValue: ""
     };

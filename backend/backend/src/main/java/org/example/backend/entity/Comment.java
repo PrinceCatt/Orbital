@@ -16,7 +16,6 @@ import java.util.List;
 @TableName("t_comment")
 public class Comment {
 
-    @TableField(exist = false)
     private int likes = 0;
 
     @TableId(type = IdType.AUTO)
