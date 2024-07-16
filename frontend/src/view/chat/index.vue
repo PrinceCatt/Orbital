@@ -95,12 +95,12 @@ export default {
     this.date = getDate()
     var message = this.text
     var socketMsg = {msg: message, toUid: this.toUid, createTime: this.date}
-    if (this.toUid == -1) {
-      // group msg
-      socketMsg.type = 0
-    } else {
+    if (this.toUid !== null) {
       // private msg
       socketMsg.type = 1
+    } else {
+      // group msg
+      socketMsg.type = 0
     }
     this.websocket.send(JSON.stringify(socketMsg))
     this.text = ''

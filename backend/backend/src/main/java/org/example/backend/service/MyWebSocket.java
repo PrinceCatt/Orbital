@@ -78,7 +78,8 @@ public class MyWebSocket {
         webSocketSet.add(this);     //加入set中
 
         System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
-        broadcast("恭喜" + username + "成功连接上WebSocket(Uid：" + user.getId() + ")-->当前在线人数为：" + webSocketSet.size());
+        broadcastForElse(username + " is online now (Uid：" + user.getId() + ")-->Currently online:" + webSocketSet.size() + "people.");
+        session.getAsyncRemote().sendText("Congratulations! You are now connected to WebSocket server as " + username + "!");
 
     }
 
@@ -139,7 +140,8 @@ public class MyWebSocket {
 
             } else {
                 //群发消息
-                broadcast(username + ": " + socketMsg.getMsg());
+                broadcastForElse(username + ":" + socketMsg.getMsg());
+                session.getAsyncRemote().sendText("You: " + socketMsg.getMsg());
             }
 
         } catch (JsonParseException e) {
@@ -183,13 +185,17 @@ public class MyWebSocket {
     /**
      * 群发自定义消息
      */
-    public void broadcast(String message) {
+    public void broadcastForElse(String message) {
         for (MyWebSocket item : webSocketSet) {
             //同步异步说明参考：http://blog.csdn.net/who_is_xiaoming/article/details/53287691
             //this.session.getBasicRemote().sendText(message);
-            item.session.getAsyncRemote().sendText(message);//异步发送消息.
+            if (!item.session.getId().equals(this.session.getId())) {
+                item.session.getAsyncRemote().sendText(message);
+            }
         }
     }
+
+
 
 
 }
