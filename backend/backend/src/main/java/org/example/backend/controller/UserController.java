@@ -27,7 +27,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/user") // baseUrl: http:localhost:8088/user
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
