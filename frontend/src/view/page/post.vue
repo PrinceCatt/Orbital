@@ -15,7 +15,7 @@
     <el-card>
       <el-row :gutter="10">
         <el-col :span="24">
-          <div class="comment"></div>
+          
 
           <!-- replyBox -->
           <div
@@ -377,6 +377,7 @@ export default {
     color: #666;
     background-color: #fff;
     border-radius: 5px;
+    width: 1800px
   }
   .my-reply .reply-info .reply-input:empty:before {
     content: attr(placeholder);
@@ -488,12 +489,12 @@ export default {
     display: inline-block !important;
   }
   .author {
-    background: #ffba00;
+
     border-radius: 2px;
     display: inline-block;
-    width: 40px;
+    width: 500px;
     text-align: center;
-    color: #fff;
+    color: #000000;
   }
 </style>
 
