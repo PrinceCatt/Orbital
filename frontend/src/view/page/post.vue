@@ -89,44 +89,7 @@
               >Reply
             </el-button>
 
-            <!-- Second Level Comment -->
-            <div class="reply-box">
-              <div
-                v-for="reply in comment.replyComments"
-                :key="reply.id"
-                class="author-title"
-              >
-                <el-avatar
-                  class="header-img"
-                  :size="40"
-                  :src="reply.avatar"
-                ></el-avatar>
-                <div class="author-info">
-                  <span class="author-name">{{ reply.authorName }}</span>
-                  <span class="author-time">{{ reply.createTime }}</span>
-                </div>
-                <el-badge :value="comment.likes" class="item">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                    round
-                    @click="likes(reply.id)"
-                    >Like</el-button
-                  >
-                </el-badge>
-
-                <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  round
-                  @click="callbox(reply.id)"
-                  >Reply</el-button
-                >
-
-                <span class="author-content">{{ reply.content }}</span>                
-              </div>
-            </div>
-
+            <!--message box for reply-->
             <el-dialog
                   title="Reply to Comment"
                   :visible.sync= dialogVisible
@@ -143,11 +106,53 @@
                     <el-button @click="dialogVisible = false">Cancel</el-button>
                     <el-button
                       type="primary"
-                      @click="sendCommentToComment(inputValue, comment.id)"
+                      @click="sendCommentToComment(inputValue, commentId)"
                       >Confirm</el-button
                     >
                   </span>
                 </el-dialog>
+
+            <!-- Second Level Comment -->
+            <div class="reply-box">
+              <div
+                v-for="reply in comment.replyComments"
+                :key="reply.id"
+                class="author-title"
+              >
+                <el-avatar
+                  class="header-img"
+                  :size="40"
+                  :src="reply.avatar"
+                ></el-avatar>
+                <div class="author-info">
+                  <span class="author-name">{{ reply.authorName }}</span>
+                  <span class="author">{{ reply.content }}</span> 
+                  <span class="author-time">{{ reply.createTime }}</span>
+                </div>
+                <el-badge :value="comment.likes" class="item">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    round
+                    @click="likes(reply.id)"
+                    >Like</el-button
+                  >
+                </el-badge>
+
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  round
+                  @click="callbox(comment.id)"
+                  >Reply</el-button
+                >
+
+                               
+              </div>
+            </div>
+
+
+            
 
           </div>
         </el-col>
@@ -195,7 +200,7 @@ export default {
       replyComments: {},
       section: "",
       btnShow: "false",
-      commenId: -1,
+      commentId: -1,
       parentCommentId: -1,
       dialogVisible: false,
       inputValue: "",
@@ -211,7 +216,8 @@ export default {
   methods: {
     callbox(id) {
       console.log(id)
-      this.commenId = id;
+      this.commentId = id;
+      console.log(this.commentId)
       this.dialogVisible = true;
     },
 
@@ -307,6 +313,7 @@ export default {
     //send comment to comment; params: content, parentCommentId, for both replies to first level comment and second level comment, parentCommentId will be the same first level comment
     sendCommentToComment(content, parentCommentId) {
       console.log(content);
+      console.log(parentCommentId);
       if (content == "") {
         alert("cannot send empty comment");
         return;
@@ -318,6 +325,7 @@ export default {
         content: content,
         createTime: createTime,
       });
+
     },
   },
 };
