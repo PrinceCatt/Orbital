@@ -2,10 +2,20 @@
   <div>
     Online Users:
     <br>
-    <div class="brand-list bybrand_list" v-for="(item, index) in onlineUsers" :key="index">
-      {{item.name}} {{item.id}} 
+    <div class="online-user-list" v-for="(onlineUser) in onlineUsers" :key="onlineUser.id"> 
+      <el-avatar
+      class="header-img"
+      @click.native="handlePrivateChat(onlineUser)"
+      :size="40"
+      :src="onlineUser.avatar"
+    ></el-avatar>
+    <div class="author-info">
+      <span class="author-name">{{ onlineUser.name }}</span>
+      <span class="author-id">{{ onlineUser.id }}</span>
+    </div>
       </div>
       <br>
+      <private-chat v-if="Visible" ref="private"></private-chat>
       <br>
       Private message:  Uid: <input v-model.number="toUid" />
       Message: <input type="text" v-model="text">
@@ -18,8 +28,11 @@
 
 <script>
 import { getDate } from '@/utils/date';
+import privateChat from './private.vue';
 
 export default {
+  components: { privateChat },
+
   data() {
       return {
           text: "",
@@ -30,9 +43,11 @@ export default {
           socketMsg: {},
           toUid: null,
           date: "",
-          type: 0,
+          type: null,
 
           onlineUsers: [],
+
+          Visible: false,
       }
   },
 
@@ -49,7 +64,14 @@ export default {
   methods: {
     setOnlineUsers(onlineUsers) {
       this.onlineUsers = onlineUsers
-      console.log(this.onlineUsers)
+    },
+
+    handlePrivateChat(onlineUser) {
+      this.Visible = true
+      this.toUid = onlineUser.id
+      this.$nextTick(() => {
+        this.$refs.private.init(onlineUser)
+      })
     },
 
     connectWebSocket() {

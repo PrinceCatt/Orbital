@@ -33,7 +33,7 @@ public class OnlineUserList {
         OnlineUser onlineUser = new OnlineUser();
         onlineUser.setId(user.getId());
         onlineUser.setName(user.getName());
-        onlineUser.setAvatarPath(user.getAvatarPath());
+        onlineUser.setAvatar(user.getAvatarPath());
 
         onlineUsers.add(onlineUser);
         size++;
