@@ -9,14 +9,14 @@ public class OnlineUser {
 
     private int id;
     private String name;
-    private String avatarPath;
+    private String avatar;
 
     @Override
     public String toString() {
         return "OnlineUser{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", avatarPath='" + avatarPath + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 

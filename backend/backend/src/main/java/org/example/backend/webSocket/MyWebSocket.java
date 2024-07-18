@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 
 @Slf4j
-@ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class, encoders = JsonEncoder.class)
+@ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class, encoders = {OnlineUserEncoder.class, MessageEncoder.class})
 @Component
 public class MyWebSocket {
     //用来存放每个客户端对应的MyWebSocket对象。
@@ -50,6 +50,9 @@ public class MyWebSocket {
     public void setMessageMapper(MessageMapper messageMapper) {
         MyWebSocket.messageMapper = messageMapper;
     }
+
+    private SocketMsg welcomeMsg = new SocketMsg();
+    private SocketMsg warningMsg = new SocketMsg();
 
     /**
      * 连接建立成功调用的方法
@@ -136,9 +139,13 @@ public class MyWebSocket {
                 }
 
             } else {
-                //群发消息
-                broadcastForElse(username + ":" + socketMsg.getMsg());
-                session.getAsyncRemote().sendText("You: " + socketMsg.getMsg());
+                if (StringUtils.isBlank(socketMsg.getMsg())) {
+                    session.getAsyncRemote().sendText("System message: You cannot send empty message.");
+                } else {
+                    //群发消息
+                    broadcastForElse(username + ":" + socketMsg.getMsg());
+                    session.getAsyncRemote().sendText("You: " + socketMsg.getMsg());
+                }
             }
 
         } catch (JsonParseException e) {

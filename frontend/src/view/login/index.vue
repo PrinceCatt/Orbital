@@ -73,6 +73,7 @@ export default {
             .dispatch("user/login", this.loginForm)
             .then(() => {
               this.$router.push({ path: "/discovery" });
+              location.replace("");
               this.loading = false;
             })
             .catch(() => {
