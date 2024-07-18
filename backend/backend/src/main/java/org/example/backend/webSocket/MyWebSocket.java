@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.webSocket;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 
 @Slf4j
-@ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class)
+@ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class, encoders = JsonEncoder.class)
 @Component
 public class MyWebSocket {
     //用来存放每个客户端对应的MyWebSocket对象。
@@ -63,22 +63,15 @@ public class MyWebSocket {
         this.uid = user.getId();
         System.out.println("New connection " + username);
 
-        // get all online users
-        List<User> onlineUsers = new ArrayList<>();
-        for (MyWebSocket webSocket : webSocketSet) {
-            User onlineUser = getUserBySession(webSocket.session);
-            onlineUser.setPassword("NA");
-            onlineUsers.add(onlineUser);
-        }
-        session.getAsyncRemote().sendObject(onlineUsers);
-
         map.put(session.getId(), session);
         uidSessionIdMap.put(uid, session.getId());
 
         webSocketSet.add(this);     //加入set中
 
+        sendOnlineUsers();
+
         System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
-        broadcastForElse(username + " is online now (Uid：" + user.getId() + ")-->Currently online:" + webSocketSet.size() + "people.");
+        broadcastForElse(username + " is online now (Uid: " + user.getId() + ")-->Currently online: " + webSocketSet.size());
         session.getAsyncRemote().sendText("Congratulations! You are now connected to WebSocket server as " + username + "!");
 
     }
@@ -88,8 +81,12 @@ public class MyWebSocket {
      */
     @OnClose
     public void onClose() {
+
         webSocketSet.remove(this);  //从set中删除
+        uidSessionIdMap.remove(uid);
         System.out.println("有一连接关闭！当前在线人数为" + webSocketSet.size());
+
+        sendOnlineUsers();
     }
 
     /**
@@ -195,8 +192,23 @@ public class MyWebSocket {
         }
     }
 
+    // send online users to every user
+    public void sendOnlineUsers() {
 
+        OnlineUserList onlineUsersList = new OnlineUserList();
+        for (MyWebSocket webSocket : webSocketSet) {
+            User onlineUser = getUserBySession(webSocket.session);
+            onlineUsersList.add(onlineUser);
+        }
 
+        for (MyWebSocket item: webSocketSet) {
+            try {
+                item.session.getBasicRemote().sendObject(onlineUsersList);
+            } catch (IOException | EncodeException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
 }
 

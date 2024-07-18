@@ -1,13 +1,16 @@
 <template>
   <div>
+    Online Users:
+    <br>
+    <div class="brand-list bybrand_list" v-for="(item, index) in onlineUsers" :key="index">
+      {{item.name}} {{item.id}} 
+      </div>
       <br>
-      <button @click="connectWebSocket()">Connect to WebSocket</button>
       <br>
       Private message:  Uid: <input v-model.number="toUid" />
       Message: <input type="text" v-model="text">
       <button @click="send()">Send</button>
       <br>
-      <button @click="closeWebSocket()">Close WebSocket</button>
       <br>
       <div id="message">{{data}}</div>
     </div>
@@ -28,32 +31,39 @@ export default {
           toUid: null,
           date: "",
           type: 0,
+
+          onlineUsers: [],
       }
   },
 
-  crreated() {
-    this.connectWebSocket().then(() => {
-      this.connected = true
-    })
+  created() {
+    this.connectWebSocket()
+    this.connected = true
   },
 
   beforeDestroy() {
       this.onbeforeunload()
   },
 
+
   methods: {
-      connectWebSocket() {
-          if ('WebSocket' in window) {
-            if (!this.connected) {
-              var token = this.$store.state.user.token
-              this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
-              this.initWebSocket()
-              this.connected = true
-            } else { alert('You have already connected to WebSocket') }
-          } else { alert('Current browser does not support websocket') }
-      },
+    setOnlineUsers(onlineUsers) {
+      this.onlineUsers = onlineUsers
+      console.log(this.onlineUsers)
+    },
+
+    connectWebSocket() {
+        if ('WebSocket' in window) {
+          if (!this.connected) {
+            var token = this.$store.state.user.token
+            this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
+            this.initWebSocket()
+            this.connected = true
+          } else { alert('You have already connected to WebSocket') }
+        } else { alert('Current browser does not support websocket') }
+    },
       
-      initWebSocket() {
+  initWebSocket() {
     //连接错误
     this.websocket.onerror = this.setErrorMessage
 
@@ -70,16 +80,21 @@ export default {
     window.onbeforeunload = this.onbeforeunload
   },
   setErrorMessage() {
-    this.setMessageInnerHTML("An error occurred during WebSocket connection" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("An error occurred during WebSocket connection")
   },
   setOnopenMessage() {
-    this.setMessageInnerHTML("WebSocket connection success" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("WebSocket connection success")
   },
   setOnmessageMessage(event) {
-    this.setMessageInnerHTML(event.data)
+    if (event.data.substr(0,1) == "{") {
+      var json = JSON.parse(event.data)
+      this.setOnlineUsers(json.onlineUsers)
+    } else {
+      this.setMessageInnerHTML(event.data)
+    }
   },
   setOncloseMessage() {
-    console.log("WebSocket connection closed" + '   状态码：' + this.websocket.readyState)
+    console.log("WebSocket connection closed")
   },
   onbeforeunload() {
     this.closeWebSocket();
