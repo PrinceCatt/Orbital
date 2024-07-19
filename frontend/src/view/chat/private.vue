@@ -19,7 +19,8 @@
  <el-button @click="getHistory(user.id)">Chat History</el-button>
  
  <div class="message" v-for="(socketMsg) in messages" :key="socketMsg.id">
-  {{socketMsg.msg}}
+  {{user.name}} {{ user.avatar }}
+  {{socketMsg.msg}} {{ socketMsg.createTime }}
  </div>
 </span>
 </div>
