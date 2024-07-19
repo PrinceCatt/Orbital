@@ -108,11 +108,13 @@ export default {
     this.setMessageInnerHTML("WebSocket connection success")
   },
   setOnmessageMessage(event) {
-    if (event.data.substr(0,1) == "{") {
-      var json = JSON.parse(event.data)
-      this.setOnlineUsers(json.onlineUsers)
+    var json = JSON.parse(event.data)
+    if (json.type == 0) {
+      this.setMessageInnerHTML(json.msg)
+    } else if (json.type == 1) {
+      
     } else {
-      this.setMessageInnerHTML(event.data)
+      this.setOnlineUsers(json.onlineUsers)
     }
   },
   setOncloseMessage() {
