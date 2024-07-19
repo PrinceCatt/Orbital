@@ -1,5 +1,5 @@
 <template>
-    <el-dialog titel="private chat"
+    <el-dialog title="private chat"
     :visible.sync="privateChatVisible" width="70%">
       <div class="user-info">
         <el-avatar
@@ -11,7 +11,18 @@
           <span class="user-name">{{ user.name }}</span>
         </div>
       </div>
+      <hr>
 
+<div class="chat-history">
+<span class="chat-title">
+ <el-button @click="getHistory(user.id)">Chat History</el-button>
+ 
+ <div v-for="socketMsg in messages" :key="socketMsg.id" class="message"></div>
+<span>{{socketMsg}}</span>
+</span>
+</div>
+
+<hr>
       <el-popover
             placement="bottom"
             title="标题"
@@ -56,6 +67,7 @@
     
 <script>
 const appData = require("@/assets/images/emoji.json");
+import { getMessages } from "@/api/chat";
 
   export default {
     name: "privateChat",
@@ -72,7 +84,7 @@ const appData = require("@/assets/images/emoji.json");
         emojiShow: false,
         faceList: [],
         getBrowString: "",
-
+        messages: {},
       }
     },
 
@@ -81,11 +93,26 @@ const appData = require("@/assets/images/emoji.json");
     },
     
     methods:{
+      getHistory(toUid){
+        console.log("toUid:" + toUid)
+        new Promise((resolve, reject) => {
+        getMessages(toUid)
+          .then((res) => {
+            this.messages = res.data.messages;
+            console.log(this.messages)
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+            return "Error in loading History";
+          });
+      });
+      },
 
       init(data){
         this.privateChatVisible=true
         this.user = data
-        console.log(data); // for debug
+        console.log("data:" + data); // for debug
       },
 
       loadEmojis() {
@@ -113,7 +140,10 @@ const appData = require("@/assets/images/emoji.json");
 </script>
 
 <style scoped>
-
+.chat-history {
+  border: 1px solid rgb(92, 82, 82);
+  height: 300px;
+}
 .item-test{
   border: 1px solid black;
   padding: 7px;
