@@ -11,7 +11,6 @@
     ></el-avatar>
     <div class="author-info">
       <span class="author-name">{{ onlineUser.name }}</span>
-      <span class="author-id">{{ onlineUser.id }}</span>
     </div>
       </div>
       <br>
@@ -38,7 +37,6 @@ export default {
           text: "",
           data: "",
           websocket: null,
-          connected: false,
 
           socketMsg: {},
           toUid: null,
@@ -53,7 +51,6 @@ export default {
 
   created() {
     this.connectWebSocket()
-    this.connected = true
   },
 
   beforeDestroy() {
@@ -76,12 +73,10 @@ export default {
 
     connectWebSocket() {
         if ('WebSocket' in window) {
-          if (!this.connected) {
-            var token = this.$store.state.user.token
-            this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
-            this.initWebSocket()
-            this.connected = true
-          } else { alert('You have already connected to WebSocket') }
+          var token = this.$store.state.user.token
+          this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
+          this.initWebSocket()
+          this.connected = true
         } else { alert('Current browser does not support websocket') }
     },
       

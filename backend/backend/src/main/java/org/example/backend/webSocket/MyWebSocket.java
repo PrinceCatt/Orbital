@@ -134,7 +134,7 @@ public class MyWebSocket {
                 Session fromSession = map.get(socketMsg.getFromUser());
                 String toSessionId = uidSessionIdMap.get(socketMsg.getToUid());
 
-                if (userMapper.selectById(socketMsg.getToUid()) == null || Objects.equals(fromSession.getId(), toSessionId)) {
+                if (userMapper.selectById(socketMsg.getToUid()) == null || user.getId() == socketMsg.getToUid()) {
                     SocketMsg warningMsg = new SocketMsg();
                     warningMsg.setType(1);
                     warningMsg.setMsg("System message: you have keyed in an invalid user id.");
