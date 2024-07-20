@@ -1,6 +1,7 @@
 <template>
     <el-dialog title="private chat"
-    :visible.sync="privateChatVisible" width="70%">
+    :visible.sync="privateChatVisible" width="70%"
+    @close="handleClose">
       <div class="user-info">
         <el-avatar
         class="header-img"
@@ -17,8 +18,10 @@
 <span class="chat-title">
  <el-button @click="getHistory(user.id)">Chat History</el-button>
  
- <div v-for="socketMsg in messages" :key="socketMsg.id" class="message"></div>
-<span>{{socketMsg}}</span>
+ <div class="message" v-for="(socketMsg) in messages" :key="socketMsg.id">
+  {{user.name}} {{ user.avatar }}
+  {{socketMsg.msg}} {{ socketMsg.createTime }}
+ </div>
 </span>
 </div>
 
@@ -72,6 +75,14 @@ import { getMessages } from "@/api/chat";
   export default {
     name: "privateChat",
 
+    computed: {
+      messages: {
+        get: function(){
+          return this.tempMessages;
+        }
+      }
+    },
+
     data(){
       return{
         privateChatVisible:false,
@@ -84,7 +95,10 @@ import { getMessages } from "@/api/chat";
         emojiShow: false,
         faceList: [],
         getBrowString: "",
-        messages: {},
+
+        tempMessages: [],
+        socketMsg: {},
+        msg: ""
       }
     },
 
@@ -93,12 +107,12 @@ import { getMessages } from "@/api/chat";
     },
     
     methods:{
+
       getHistory(toUid){
-        console.log("toUid:" + toUid)
         new Promise((resolve, reject) => {
         getMessages(toUid)
           .then((res) => {
-            this.messages = res.data.messages;
+            this.tempMessages = res.data.messages
             console.log(this.messages)
             resolve();
           })
@@ -112,15 +126,16 @@ import { getMessages } from "@/api/chat";
       init(data){
         this.privateChatVisible=true
         this.user = data
-        console.log("data:" + data); // for debug
+
+        this.getHistory(this.user.id)
       },
 
       loadEmojis() {
-      for (let i in appData) {
-        this.faceList.push(appData[i].char);
-      }
-    },
-     // 获取用户点击之后的标签 ，存放到输入框内
+        for (let i in appData) {
+          this.faceList.push(appData[i].char);
+        }
+      },
+
       getBrow(index) {
         for (let i in this.faceList) {
           if (index == i) {
@@ -130,10 +145,15 @@ import { getMessages } from "@/api/chat";
         }
         this.emojiShow = false;
       },
-      submitMessage(){
+
+      submitMessage() {
         this.$parent.text = this.text
         this.$parent.send()
         this.text = ""
+      },
+
+      handleClose() {
+        this.$parent.toUid = null
       }
     }
   }

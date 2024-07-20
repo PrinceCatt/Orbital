@@ -51,8 +51,6 @@ public class MyWebSocket {
         MyWebSocket.messageMapper = messageMapper;
     }
 
-    private SocketMsg welcomeMsg = new SocketMsg();
-    private SocketMsg warningMsg = new SocketMsg();
 
     /**
      * 连接建立成功调用的方法
@@ -74,8 +72,16 @@ public class MyWebSocket {
         sendOnlineUsers();
 
         System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
-        broadcastForElse(username + " is online now (Uid: " + user.getId() + ")-->Currently online: " + webSocketSet.size());
-        session.getAsyncRemote().sendText("Congratulations! You are now connected to WebSocket server as " + username + "!");
+
+        SocketMsg noticeMsg = new SocketMsg();
+        noticeMsg.setMsg(username + " is online now (Uid: " + user.getId() + ")-->Currently online: " + webSocketSet.size());
+
+        broadcastForElse(noticeMsg);
+
+        SocketMsg welcomeMsg = new SocketMsg();
+        welcomeMsg.setMsg("Congratulations! You are now connected to WebSocket server as " + username + "!");
+
+        session.getAsyncRemote().sendObject(welcomeMsg);
 
     }
 
@@ -112,7 +118,14 @@ public class MyWebSocket {
 
         try {
             socketMsg = objectMapper.readValue(message, SocketMsg.class);
-            if (socketMsg.getType() == 1) {
+
+            if (StringUtils.isBlank(socketMsg.getMsg())) {
+                SocketMsg emptyMsg = new SocketMsg();
+                emptyMsg.setMsg("System message: You cannot send empty message.");
+                session.getAsyncRemote().sendObject(emptyMsg);
+            }
+
+            else if (socketMsg.getType() == 1) {
 
                 //单聊.需要找到发送者和接受者.
 
@@ -121,31 +134,34 @@ public class MyWebSocket {
                 Session fromSession = map.get(socketMsg.getFromUser());
                 String toSessionId = uidSessionIdMap.get(socketMsg.getToUid());
 
-                if (userMapper.selectById(socketMsg.getToUid()) == null || Objects.equals(fromSession.getId(), toSessionId)) {
-                    fromSession.getBasicRemote().sendText("System message: you have keyed in an invalid user id.");
+                if (userMapper.selectById(socketMsg.getToUid()) == null || user.getId() == socketMsg.getToUid()) {
+                    SocketMsg warningMsg = new SocketMsg();
+                    warningMsg.setType(1);
+                    warningMsg.setMsg("System message: you have keyed in an invalid user id.");
+                    fromSession.getBasicRemote().sendObject(warningMsg);
                 } else {
                     // save the valid private message
                     messageMapper.insert(socketMsg);
                     Session toSession = map.get(toSessionId);
                     //发送给接受者.
                     if (toSession != null) {
+                        socketMsg.setMsg(username + ": " + socketMsg.getMsg());
                         //发送给发送者.
-                        fromSession.getAsyncRemote().sendText( "You: " + socketMsg.getMsg());
-                        toSession.getAsyncRemote().sendText(username + ": " + socketMsg.getMsg());
+                        fromSession.getAsyncRemote().sendObject(socketMsg);
+                        toSession.getAsyncRemote().sendObject(socketMsg);
                     } else {
+                        SocketMsg noticeMsg = new SocketMsg();
+                        noticeMsg.setType(1);
+                        noticeMsg.setMsg("System message: the other side is not available right now.");
                         //发送给发送者.
-                        fromSession.getAsyncRemote().sendText("System message: the other side is not available right now.");
+                        fromSession.getAsyncRemote().sendObject(noticeMsg);
                     }
                 }
 
             } else {
-                if (StringUtils.isBlank(socketMsg.getMsg())) {
-                    session.getAsyncRemote().sendText("System message: You cannot send empty message.");
-                } else {
-                    //群发消息
-                    broadcastForElse(username + ":" + socketMsg.getMsg());
-                    session.getAsyncRemote().sendText("You: " + socketMsg.getMsg());
-                }
+                //群发消息
+                socketMsg.setMsg(username + ":" + socketMsg.getMsg());
+                broadcast(socketMsg);
             }
 
         } catch (JsonParseException e) {
@@ -154,6 +170,8 @@ public class MyWebSocket {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (EncodeException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -186,16 +204,20 @@ public class MyWebSocket {
         return header;
     }
 
-    /**
-     * 群发自定义消息
-     */
-    public void broadcastForElse(String message) {
+
+    public void broadcastForElse(Object object) {
         for (MyWebSocket item : webSocketSet) {
             //同步异步说明参考：http://blog.csdn.net/who_is_xiaoming/article/details/53287691
             //this.session.getBasicRemote().sendText(message);
             if (!item.session.getId().equals(this.session.getId())) {
-                item.session.getAsyncRemote().sendText(message);
+                item.session.getAsyncRemote().sendObject(object);
             }
+        }
+    }
+
+    public void broadcast(Object object) {
+        for (MyWebSocket item : webSocketSet) {
+            item.session.getAsyncRemote().sendObject(object);
         }
     }
 
@@ -216,6 +238,8 @@ public class MyWebSocket {
             }
         }
     }
+
+
 
 }
 
