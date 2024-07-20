@@ -34,7 +34,7 @@
         label="操作"
         width="180">
         <template slot-scope="scope">
-          <el-button type="text" size="midium">details</el-button>
+          <el-button type="text" size="midium" @click="goTo(scope.row.id)">details</el-button>
           <el-button type="text" size="midium">update</el-button>
           <el-button @click="deletePost(scope.row)" type="text" size="midium">delete</el-button>
         </template>
@@ -99,6 +99,10 @@ export default {
         this.getData()
       },
 
+      goTo(postId){
+        this.$router.replace(`post/${postId}`)
+      }
+      ,
       deletePost(row) {
           this.$confirm('Are you sure to delete the post with title: ' + row.title, {
               confirmButtonText: 'Yes',
