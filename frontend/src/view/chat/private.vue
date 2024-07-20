@@ -6,61 +6,64 @@
         <el-avatar
         class="header-img"
         :size="40"
-        :src="user.avatar"
+        :src="otherUser.avatar"
         ></el-avatar>
         <div class="user-info">
-          <span class="user-name">{{ user.name }}</span>
+          <span class="user-name">{{ otherUser.name }}</span>
         </div>
       </div>
       <hr>
 
 <div class="chat-history">
-<span class="chat-title">
- <el-button @click="getHistory(user.id)">Chat History</el-button>
- 
- <div class="message" v-for="(socketMsg) in messages" :key="socketMsg.id">
-  {{user.name}} {{ user.avatar }}
-  {{socketMsg.msg}} {{ socketMsg.createTime }}
+ <div v-for="(socketMsg) in messages" :key="socketMsg.id">
+  <!--Showing other's messages-->
+  <div v-if="socketMsg.toUid == uid" class="message-other">
+    <span style="font-size: 8px">{{otherUser.name}}  {{socketMsg.createTime}} </span>
+    <p style="margin: 0px;margin-top: 4px;">{{socketMsg.msg}}</p>
+  </div>
+  <!--Showing my messages-->
+  <div v-else class="message-me">
+    <span style="font-size: 8px;">{{socketMsg.createTime}}   {{name}}</span>
+    <p style="margin: 0px;margin-top: 4px;">{{socketMsg.msg}}</p>
+  </div>
  </div>
-</span>
 </div>
 
-<hr>
-      <el-popover
-            placement="bottom"
-            title="标题"
-            width="500"
-            height="700"
-            trigger="click"
-            v-model="emojiShow"
-          >
-            <el-button slot="reference">😀</el-button>
-            <div class="browBox">
-              <ul>
-                <li
-                  v-for="(item, index) in faceList"
-                  :key="index"
-                  @click="getBrow(index)"
-                >
-                  {{ item }}
-                </li>
-              </ul>
-            </div>
+<el-popover
+  placement="bottom"
+  title="标题"
+  width="500"
+  height="700"
+  trigger="click"
+  v-model="emojiShow"
+>
+<el-button slot="reference">😀</el-button>
+<div class="browBox">
+  <ul>
+    <li
+    v-for="(item, index) in faceList"
+    :key="index"
+    @click="getBrow(index)"
+    >
+    {{item}}
+  </li>
+</ul>
+</div>
   </el-popover>
-   <el-button
-            class="submit-btn"
-            type="primary"
-            @click="submitMessage"
-            :disabled="text == ''"
-            >send
-   </el-button>
-   <el-input
-            :rows="5"
-            type="textarea"
-            placeholder="请输入内容"
-            @keyup.enter.native="submitMessage"
-            v-model="text"
-          >
+  <el-button
+  class="submit-btn"
+  type="primary"
+  @click="submitMessage"
+  :disabled="text == ''"
+  >send
+</el-button>
+  <el-input
+  :rows="5"
+  type="textarea"
+  placeholder="请输入内容"
+  @keyup.enter.native="submitMessage"
+  v-model="text"
+  >
     </el-input>
 
       <hr>
@@ -86,10 +89,14 @@ import { getMessages } from "@/api/chat";
     data(){
       return{
         privateChatVisible:false,
+        otherUser: {},
+        otherAvatar: "",
+        otherName: "",
+        otherUid: null,
         user: {},
-        avatar: "",
+        uid: null,
         name: "",
-        toUid: null,
+        avatar: "",
 
         text: "",
         emojiShow: false,
@@ -108,26 +115,34 @@ import { getMessages } from "@/api/chat";
     
     methods:{
 
+      scrollChat() {
+        var container = document.querySelector('.chat-history')
+        if (container.scrollHeight > 400) {
+          container.scrollTop = container.scrollHeight
+        }
+      },
+
       getHistory(toUid){
         new Promise((resolve, reject) => {
         getMessages(toUid)
           .then((res) => {
             this.tempMessages = res.data.messages
-            console.log(this.messages)
             resolve();
           })
           .catch((err) => {
             reject(err);
             return "Error in loading History";
           });
-      });
+        });
       },
 
       init(data){
         this.privateChatVisible=true
-        this.user = data
+        this.otherUser = data
+        this.name = this.$store.state.user.name
+        this.uid = this.$store.state.user.id
 
-        this.getHistory(this.user.id)
+        this.getHistory(this.otherUser.id)
       },
 
       loadEmojis() {
@@ -161,8 +176,10 @@ import { getMessages } from "@/api/chat";
 
 <style scoped>
 .chat-history {
-  border: 1px solid rgb(92, 82, 82);
-  height: 300px;
+  width: 100%;
+  height: 400px;
+  border-bottom: 1px solid #8a8282;
+  overflow: auto;
 }
 .item-test{
   border: 1px solid black;
@@ -197,6 +214,14 @@ import { getMessages } from "@/api/chat";
 .submit-btn {
   margin: 0 15px 10px 0;
   float: right;
+}
+.message-other{
+  width: 98%;
+  text-align: left;
+}
+.message-me{
+  width: 98%;
+  text-align: right;
 }
 
 </style>
