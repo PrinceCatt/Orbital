@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-class CommentControllerTest {
+public class CommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

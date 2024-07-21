@@ -1,12 +1,33 @@
 package org.example.backend.controller;
 
+import org.example.backend.entity.User;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    void login() {
+    public void loginTest() throws Exception {
+        String userJson = "{\"name\":\"testUser\",  \"password\": \"123456\", email\":\"test@gmail.com\"}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/login")
+                .contentType("application/json")
+                .content(userJson))
+                .andExpect(status().isOk());
     }
 }
