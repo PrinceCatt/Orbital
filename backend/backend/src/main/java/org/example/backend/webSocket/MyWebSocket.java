@@ -64,6 +64,7 @@ public class MyWebSocket {
         this.uid = user.getId();
         System.out.println("New connection " + username);
 
+
         map.put(session.getId(), session);
         uidSessionIdMap.put(uid, session.getId());
 
@@ -79,7 +80,7 @@ public class MyWebSocket {
         broadcastForElse(noticeMsg);
 
         SocketMsg welcomeMsg = new SocketMsg();
-        welcomeMsg.setMsg("Congratulations! You are now connected to WebSocket server as " + username + "!");
+        welcomeMsg.setMsg("Congratulations! You are now connected to NUSurf chat server as " + username + ".");
 
         session.getAsyncRemote().sendObject(welcomeMsg);
 
