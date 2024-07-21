@@ -2,6 +2,7 @@
   <div>
     Online Users:
     <br>
+    <br>
     <div class="online-user-list" v-for="(onlineUser) in onlineUsers" :key="onlineUser.id"> 
       <el-avatar
       class="header-img"
@@ -16,7 +17,6 @@
       <br>
       <private-chat v-if="Visible" ref="private"></private-chat>
       <br>
-      Private message:  Uid: <input v-model.number="toUid" />
       Message: <input type="text" v-model="text">
       <button @click="send()">Send</button>
       <br>
@@ -37,6 +37,7 @@ export default {
           text: "",
           data: "",
           websocket: null,
+          uid: null,
 
           socketMsg: {},
           toUid: null,
@@ -44,6 +45,7 @@ export default {
           type: null,
 
           onlineUsers: [],
+          message: {},
 
           Visible: false,
       }
@@ -51,12 +53,16 @@ export default {
 
   created() {
     this.connectWebSocket()
+    this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+      this.uid = this.$store.state.user.id
+    }).catch((err) => {
+      console.log(err)
+    })
   },
 
   beforeDestroy() {
       this.onbeforeunload()
   },
-
 
   methods: {
     setOnlineUsers(onlineUsers) {
@@ -64,11 +70,26 @@ export default {
     },
 
     handlePrivateChat(onlineUser) {
-      this.Visible = true
-      this.toUid = onlineUser.id
-      this.$nextTick(() => {
-        this.$refs.private.init(onlineUser)
-      })
+      if (onlineUser.id != this.uid) {
+        this.Visible = true
+        this.toUid = onlineUser.id
+        this.$nextTick(() => {
+          this.$refs.private.init(onlineUser)
+        })
+      } else {
+        this.$message({
+          type:'warning',
+          message:"You cannot text yourself."
+        })
+      }
+    },
+
+    handlePrivateMessage(message) {
+      if (this.toUid == message.fromUid || this.toUid == message.toUid) {
+        this.$refs.private.tempMessages.push(message)
+      } else {
+        alert("You have a new message from " + message.fromUser)
+      }
     },
 
     connectWebSocket() {
@@ -107,7 +128,7 @@ export default {
     if (json.type == 0) {
       this.setMessageInnerHTML(json.msg)
     } else if (json.type == 1) {
-      
+      this.handlePrivateMessage(json)
     } else {
       this.setOnlineUsers(json.onlineUsers)
     }

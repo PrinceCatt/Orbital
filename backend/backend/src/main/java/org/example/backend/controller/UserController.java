@@ -67,9 +67,10 @@ public class UserController {
 
         // find user's information
         User user = userMapper.findByEmail(email);
+        int id = user.getId();
         String name = user.getName();
         String avatarPath = user.getAvatarPath();
-        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath ); // Avatar path to be changed
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id); // Avatar path to be changed
     }
 
     // For logout function

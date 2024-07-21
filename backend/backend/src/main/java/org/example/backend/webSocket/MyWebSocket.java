@@ -145,13 +145,14 @@ public class MyWebSocket {
                     Session toSession = map.get(toSessionId);
                     //发送给接受者.
                     if (toSession != null) {
-                        socketMsg.setMsg(username + ": " + socketMsg.getMsg());
+                        socketMsg.setFromUser(user.getName());
                         //发送给发送者.
                         fromSession.getAsyncRemote().sendObject(socketMsg);
                         toSession.getAsyncRemote().sendObject(socketMsg);
                     } else {
                         SocketMsg noticeMsg = new SocketMsg();
                         noticeMsg.setType(1);
+                        noticeMsg.setFromUid(socketMsg.getToUid());
                         noticeMsg.setMsg("System message: the other side is not available right now.");
                         //发送给发送者.
                         fromSession.getAsyncRemote().sendObject(noticeMsg);
