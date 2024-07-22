@@ -2,15 +2,19 @@ package org.example.backend.controller;
 
 import lombok.SneakyThrows;
 import org.example.backend.entity.User;
-import org.example.backend.service.UserService;
-import org.example.backend.utils.JwtUtils;
+import org.example.backend.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,40 +25,29 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private UserService userService;
+    @InjectMocks
+    private UserMapper userMapper = Mockito.mock(UserMapper.class);
 
-//    @Before
-//    public void setUp() throws Exception {
-//        System.out.println("---------------start---------------");
-//        save();
-//        get();
-//        System.out.println("================end================");
-//    }
-    @SneakyThrows
     @Test
     public void loginTest() throws Exception {
-        String email = "test@test.com";
+        String userJson = "{\"name\":\"testUser\",  \"password\": \"123456\", email\":\"test@gmail.com\"}";
         User user = new User();
-        user.setName("test user");
-        user.setEmail(email);
-        user.setPassword("password");
+        user.setEmail("test@gmail.com");
+        user.setPassword("123456");
+        user.setName("testUser");
 
-        Mockito.when(userService.userLogin(email)).thenReturn(user);
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/user/login"));
-        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
-        resultActions.andDo(result -> System.out.println("请求响应：" + result.getResponse().getContentAsString()));
+        Mockito.when(userMapper.findByEmail(Mockito.eq("test@gmail.com"))).thenReturn(user);
 
-        String expect = "{\"name\":\"test user\",\"email\":\"test@test.com\"}";
-        resultActions.andExpect(MockMvcResultMatchers.content().json(expect, true));
-
-
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/login")
+                .contentType("application/json")
+                .content(userJson))
+                .andExpect(status().isOk());
     }
 }

@@ -1,18 +1,13 @@
 package org.example.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.ImageUploadService;
-import org.example.backend.service.UserService;
-import org.example.backend.service.impl.UserServiceImpl;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
@@ -36,8 +31,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
-    @Autowired
-    private UserService userService;
+
+
     // For login function
     @PostMapping("/login")
     //json: {email,password}
@@ -46,7 +41,7 @@ public class UserController {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        User ActualUser = userService.userLogin(email);
+        User ActualUser = userMapper.findByEmail(email);
         if (ActualUser == null){
             return Result.error().message("This email has not been registered");
         }
