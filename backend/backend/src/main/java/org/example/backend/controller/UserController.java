@@ -11,6 +11,8 @@ import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.ImageUploadService;
+import org.example.backend.service.UserService;
+import org.example.backend.service.impl.UserServiceImpl;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
@@ -34,7 +36,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
-
+    @Autowired
+    private UserService userService;
     // For login function
     @PostMapping("/login")
     //json: {email,password}
@@ -43,7 +46,7 @@ public class UserController {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        User ActualUser = userMapper.findByEmail(email);
+        User ActualUser = userService.userLogin(email);
         if (ActualUser == null){
             return Result.error().message("This email has not been registered");
         }

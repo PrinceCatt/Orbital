@@ -4,9 +4,11 @@ import org.example.backend.controller.CommentControllerTest;
 import org.example.backend.controller.UserControllerTest;
 import org.example.backend.utils.RedisKeyUtilsTest;
 import org.junit.jupiter.api.Test;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
+@MapperScan("src/main/java/org/example/backend/mapper")
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class BackendApplicationTests {
 
