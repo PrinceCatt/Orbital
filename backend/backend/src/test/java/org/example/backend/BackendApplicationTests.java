@@ -6,16 +6,25 @@ import org.example.backend.utils.RedisKeyUtilsTest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-@RunWith(MockitoJUnitRunner.class)
-@SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BackendApplicationTests {
 
     private RedisKeyUtilsTest redisKeyUtilsTest;
     private CommentControllerTest commentControllerTest;
     private UserControllerTest userControllerTest;
+
+
 
     @Test
     void contextLoads() {
@@ -36,6 +45,6 @@ class BackendApplicationTests {
     @Test
     void testUserController() throws Exception {
         userControllerTest = new UserControllerTest();
-        userControllerTest.loginTest();
+        userControllerTest.login();
     }
 }
