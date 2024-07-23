@@ -1,5 +1,6 @@
 package org.example.backend;
 
+import org.example.backend.controller.CommentControllerTest;
 import org.example.backend.controller.UserControllerTest;
 import org.example.backend.mapper.UserMapperTest;
 import org.example.backend.utils.RedisKeyUtilsTest;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(classes = BackendApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
