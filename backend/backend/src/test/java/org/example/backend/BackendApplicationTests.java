@@ -1,7 +1,5 @@
 package org.example.backend;
 
-import org.example.backend.controller.UserControllerTest;
-import org.example.backend.mapper.UserMapperTest;
 import org.example.backend.utils.RedisKeyUtilsTest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BackendApplicationTests {
 
     private RedisKeyUtilsTest redisKeyUtilsTest;
-    private CommentControllerTest commentControllerTest;
-    private UserControllerTest userControllerTest;
-    private UserMapperTest userMapperTest;
+
 
     @Test
     void contextLoads() {
@@ -34,14 +30,5 @@ class BackendApplicationTests {
 
     }
 
-    @Test
-    void testUserController() throws Exception {
-        userControllerTest = new UserControllerTest();
-        userControllerTest.loginTest();
-    }
 
-    @Test
-    void userMapperTest() throws Exception {
-
-    }
 }
