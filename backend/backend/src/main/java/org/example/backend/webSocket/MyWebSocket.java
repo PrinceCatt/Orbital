@@ -26,19 +26,21 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint(value = "/ws", configurator = WebSocketConfig.class, encoders = {OnlineUserEncoder.class, MessageEncoder.class})
 @Component
 public class MyWebSocket {
-    //用来存放每个客户端对应的MyWebSocket对象。
+    //for storing the corresponding MyWebsocket object of each client
     private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<MyWebSocket>();
 
     private static UserMapper userMapper;
     private static MessageMapper messageMapper; ;
 
-    //与某个客户端的连接会话，需要通过它来给客户端发送数据
+    //the session to each client，we need it to push message to every user
     private Session session;
     private User user;
     private String username;
     private int uid;
 
+    //storing sessionId map to Session
     private static Map<String, Session> map = new HashMap<String, Session>();
+    //storing uid map to sessionId, for determining online users
     private static Map<Integer, String> uidSessionIdMap = new HashMap<Integer, String>();
 
     @Autowired
@@ -53,7 +55,7 @@ public class MyWebSocket {
 
 
     /**
-     * 连接建立成功调用的方法
+     * Method when the connection is successfully established
      */
     @OnOpen
     public void onOpen(Session session) {
@@ -63,35 +65,29 @@ public class MyWebSocket {
         this.username = user.getName();
         this.uid = user.getId();
         System.out.println("New connection " + username);
-
         map.put(session.getId(), session);
         uidSessionIdMap.put(uid, session.getId());
 
-        webSocketSet.add(this);     //加入set中
-
-        sendOnlineUsers();
-
-        System.out.println("有新连接加入:" + username + ",当前在线人数为" + webSocketSet.size());
+        webSocketSet.add(this);
+        sendOnlineUsers(); // send the updated list of online users to every online user
+        System.out.println("New connection added:" + username + ",current online number:" + webSocketSet.size());
 
         SocketMsg noticeMsg = new SocketMsg();
         noticeMsg.setMsg(username + " is online now (Uid: " + user.getId() + ")-->Currently online: " + webSocketSet.size());
-
         broadcastForElse(noticeMsg);
 
         SocketMsg welcomeMsg = new SocketMsg();
-        welcomeMsg.setMsg("Congratulations! You are now connected to WebSocket server as " + username + "!");
-
+        welcomeMsg.setMsg("Congratulations! You are now connected to NUSurf chat server as " + username + ".");
         session.getAsyncRemote().sendObject(welcomeMsg);
-
     }
 
     /**
-     * 连接关闭调用的方法
+     * Method when close websocket connection
      */
     @OnClose
     public void onClose() {
 
-        webSocketSet.remove(this);  //从set中删除
+        webSocketSet.remove(this);  //delete from the set
         uidSessionIdMap.remove(uid);
         System.out.println("有一连接关闭！当前在线人数为" + webSocketSet.size());
 
@@ -99,9 +95,9 @@ public class MyWebSocket {
     }
 
     /**
-     * 收到客户端消息后调用的方法
+     * Method after receiving message from the user end
      *
-     * @param message 客户端发送过来的消息
+     * @param message The message from user end
      */
 
     @OnMessage
@@ -109,16 +105,17 @@ public class MyWebSocket {
         user = getUserBySession(session);
         username = user.getName();
 
-        System.out.println("来自客户端的消息-->" + username + ": " + message);
+        System.out.println("Information from client end-->" + username + ": " + message);
 
-        //从客户端传过来的数据是json数据，所以这里使用jackson进行转换为SocketMsg对象，
-        // 然后通过socketMsg的type进行判断是单聊还是群聊，进行相应的处理:
+        // The data transmitted from the client is JSON data, so Jackson is used here to convert it into a SocketMSG object,
+        // Then, determine whether it is private chat or group chat based on the type of socketMSG, and take corresponding actions:
         ObjectMapper objectMapper = new ObjectMapper();
         SocketMsg socketMsg;
 
         try {
             socketMsg = objectMapper.readValue(message, SocketMsg.class);
 
+            // Response when receiving empty message
             if (StringUtils.isBlank(socketMsg.getMsg())) {
                 SocketMsg emptyMsg = new SocketMsg();
                 emptyMsg.setMsg("System message: You cannot send empty message.");
@@ -126,10 +123,8 @@ public class MyWebSocket {
             }
 
             else if (socketMsg.getType() == 1) {
-
-                //单聊.需要找到发送者和接受者.
-
-                socketMsg.setFromUser(session.getId());//发送者.
+                //private msg, need to find corresponding sender and receiver.
+                socketMsg.setFromUser(session.getId());//the sender.
                 socketMsg.setFromUid(user.getId());
                 Session fromSession = map.get(socketMsg.getFromUser());
                 String toSessionId = uidSessionIdMap.get(socketMsg.getToUid());
@@ -143,10 +138,9 @@ public class MyWebSocket {
                     // save the valid private message
                     messageMapper.insert(socketMsg);
                     Session toSession = map.get(toSessionId);
-                    //发送给接受者.
+                    //send msg.
                     if (toSession != null) {
                         socketMsg.setFromUser(user.getName());
-                        //发送给发送者.
                         fromSession.getAsyncRemote().sendObject(socketMsg);
                         toSession.getAsyncRemote().sendObject(socketMsg);
                     } else {
@@ -154,13 +148,13 @@ public class MyWebSocket {
                         noticeMsg.setType(1);
                         noticeMsg.setFromUid(socketMsg.getToUid());
                         noticeMsg.setMsg("System message: the other side is not available right now.");
-                        //发送给发送者.
+                        //send to the fromUser.
                         fromSession.getAsyncRemote().sendObject(noticeMsg);
                     }
                 }
 
             } else {
-                //群发消息
+                //group msg
                 socketMsg.setMsg(username + ":" + socketMsg.getMsg());
                 broadcast(socketMsg);
             }
@@ -181,7 +175,7 @@ public class MyWebSocket {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
+        System.out.println("An error happened");
         error.printStackTrace();
     }
 

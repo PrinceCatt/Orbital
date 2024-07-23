@@ -3,13 +3,13 @@
     Online Users:
     <br>
     <br>
-    <div class="online-user-list" v-for="(onlineUser) in onlineUsers" :key="onlineUser.id"> 
-      <el-avatar
-      class="header-img"
-      @click.native="handlePrivateChat(onlineUser)"
-      :size="40"
-      :src="onlineUser.avatar"
-    ></el-avatar>
+    <div class="online-user-list" v-for="onlineUser in onlineUsers" :key="onlineUser.id"> 
+        <el-avatar
+        class="header-img"
+        @click.native="handlePrivateChat(onlineUser)"
+        :size="40"
+        :src="onlineUser.avatar">
+        </el-avatar>
     <div class="author-info">
       <span class="author-name">{{ onlineUser.name }}</span>
     </div>
@@ -71,6 +71,7 @@ export default {
 
     handlePrivateChat(onlineUser) {
       if (onlineUser.id != this.uid) {
+        onlineUser.hideBadge = true
         this.Visible = true
         this.toUid = onlineUser.id
         this.$nextTick(() => {
@@ -88,7 +89,10 @@ export default {
       if (this.toUid == message.fromUid || this.toUid == message.toUid) {
         this.$refs.private.tempMessages.push(message)
       } else {
-        alert("You have a new message from " + message.fromUser)
+        this.$message({
+          type: 'info',
+          message: "You have received a new message from " + message.fromUser
+        })
       }
     },
 

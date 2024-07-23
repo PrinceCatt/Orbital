@@ -1,11 +1,8 @@
 package org.example.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
@@ -34,6 +31,7 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
+
 
     // For login function
     @PostMapping("/login")
