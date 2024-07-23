@@ -27,4 +27,16 @@ public class TestController {
 
        return result;
     }
+
+    @GetMapping("")
+    public Result commentTest() {}
+
+    @GetMapping("")
+    public Result messageTest() {}
+
+    @GetMapping("")
+    public Result postTest() {}
+
+    @GetMapping("")
+    public Result redisTest() {}
 }
