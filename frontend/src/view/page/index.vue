@@ -110,7 +110,6 @@ export default {
 
     openPost(row, column, cell, event){
       let id = row.id
-      console.log(id) // for debug
       this.$router.push({path: `/post/${id}`})
     }
   },

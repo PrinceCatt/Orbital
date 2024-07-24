@@ -42,15 +42,15 @@ public class UserController {
         String password = user.getPassword();
 
         User ActualUser = userMapper.findByEmail(email);
+        String token = JwtUtils.generateToken((user.getEmail()));
+
         if (ActualUser == null){
-            return Result.error().message("This email has not been registered");
+            return Result.ok().data("token", token);
         }
 
         if (!password.equals(ActualUser.getPassword())){
             return Result.error().message("Please enter the correct email and password");
         }
-
-        String token = JwtUtils.generateToken((user.getEmail()));
         return Result.ok().data("token", token);
     }
 

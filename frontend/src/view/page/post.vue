@@ -215,9 +215,7 @@ export default {
 
   methods: {
     callbox(id) {
-      console.log(id)
       this.commentId = id;
-      console.log(this.commentId)
       this.dialogVisible = true;
     },
 
@@ -307,13 +305,17 @@ export default {
         postId: this.post.id,
         content: content,
         createTime: createTime,
+      }).then(() => {
+        this.inputValue = "";
+        this.dialogVisible = false;
+        this.getComments();
+      }).catch((err) => {
+        console.log(err)
       });
     },
 
     //send comment to comment; params: content, parentCommentId, for both replies to first level comment and second level comment, parentCommentId will be the same first level comment
     sendCommentToComment(content, parentCommentId) {
-      console.log(content);
-      console.log(parentCommentId);
       if (content == "") {
         alert("cannot send empty comment");
         return;
@@ -324,6 +326,12 @@ export default {
         parentCommentId: parentCommentId,
         content: content,
         createTime: createTime,
+      }).then(() => {
+        this.inputValue = "";
+        this.dialogVisible = false;
+        this.getComments();
+      }).catch((err) => {
+        console.log(err)
       });
 
     },

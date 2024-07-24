@@ -211,6 +211,7 @@ import { getMessages } from "@/api/chat";
       list-style: none;
       text-align: center;
     }
+  
 .submit-btn {
   margin: 0 15px 10px 0;
   float: right;
@@ -222,6 +223,9 @@ import { getMessages } from "@/api/chat";
 .message-me{
   width: 98%;
   text-align: right;
+}
+.el-textarea {
+  width: 100%;
 }
 
 </style>

@@ -73,16 +73,7 @@
         },
 
         myProfile(){
-          if (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null) {
-            alert("Please login first")
-            this.openLogin()
-          } else {
-            this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
-              this.$router.push({path: '/my/profile'})
-            }).catch((err) => {
-              console.log(err)
-            })
-          }
+          this.$router.push({path: '/my/profile'})
         },
 
         myPosts(){
