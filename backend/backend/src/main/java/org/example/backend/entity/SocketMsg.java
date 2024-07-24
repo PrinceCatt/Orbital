@@ -23,8 +23,11 @@ public class SocketMsg {
     private String createTime;
     private int type; // 0:public message, 1:private message
 
+    @TableField(exist = false)
     private String fromUser;
+    @TableField(exist = false)
     private String toUser;
+
     private String msg;
 
 }

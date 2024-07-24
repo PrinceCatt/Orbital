@@ -16,7 +16,6 @@ import java.util.List;
 @TableName("t_comment")
 public class Comment {
 
-    @TableField(exist = false)
     private int likes = 0;
 
     @TableId(type = IdType.AUTO)
@@ -30,7 +29,7 @@ public class Comment {
     @TableField(exist = false)
     private String avatar;
 
-    @TableField("time")
+    @TableField("createTime")
     private String createTime;
     @TableField("postId")
     private int postId;

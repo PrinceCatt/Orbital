@@ -40,6 +40,7 @@ public class LikedService {
             if (newLike == null) {
                 userLikeMapper.insert(liked);
             } else {
+                liked.setId(newLike.getId());
                 userLikeMapper.updateById(liked);
             }
         }

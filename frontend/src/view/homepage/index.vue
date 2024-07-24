@@ -41,7 +41,6 @@
       <el-button type="text" @click="openChat">Chat</el-button>
 
       </el-menu-item>
-    <el-menu-item index="5"><a href="https://www.ele.me" target="_blank">饿了么</a></el-menu-item>
   </el-menu>
   <hr>
   <router-view></router-view>

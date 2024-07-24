@@ -1,11 +1,8 @@
 package org.example.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
@@ -27,13 +24,14 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/user") // baseUrl: http:localhost:8088/user
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
+
 
     // For login function
     @PostMapping("/login")
@@ -67,9 +65,10 @@ public class UserController {
 
         // find user's information
         User user = userMapper.findByEmail(email);
+        int id = user.getId();
         String name = user.getName();
         String avatarPath = user.getAvatarPath();
-        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath ); // Avatar path to be changed
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id); // Avatar path to be changed
     }
 
     // For logout function

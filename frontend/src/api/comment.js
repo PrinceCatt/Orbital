@@ -8,27 +8,34 @@ export function getComments(postId) {
     })
   }
 
-export function like(comment) {
+export function like(commentId) {
     return request({
       url: '/userlike/like',
       method: 'post',
-      params: {comment}
+      params: {commentId}
     })
   }
 
-  export function unlike(comment) {
+  export function unlike(commentId) {
     return request({
       url: '/userlike/unlike',
       method: 'post',
-      params: {comment}
+      params: {commentId}
     })
   }
 
-  export function reply(comment, token) {
+  export function replyComment(data) {
     return request({
       url: '/post/comment/new',
       method: 'post',
-      params: {comment, token}
+      data
     })
   }
 
+  export function getStatus(commentId) {
+    return request({
+      url: '/userlike/status',
+      method: 'get',
+      params: {commentId}
+    })
+  }

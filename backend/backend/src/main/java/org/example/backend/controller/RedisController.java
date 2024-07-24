@@ -2,15 +2,16 @@ package org.example.backend.controller;
 
 import org.example.backend.entity.UserLike;
 import org.example.backend.mapper.UserLikeMapper;
+import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.RedisService;
+import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.RedisKeyUtils;
 import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/userlike")
@@ -24,22 +25,32 @@ public class RedisController {
     private RedisService redisService;
     @Autowired
     private UserLikeMapper userLikeMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     //like
     @PostMapping("/like")
-    public Result like(int postId, int userId) {
-        RedisService redisService = (RedisService) redisTemplate;
-        redisService.saveLikeToRedis(postId, userId);
-        redisService.incrementLikeCount(postId, userId);
+    public Result like(int commentId,  HttpServletRequest request) {
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int userId = userMapper.findByEmail(email).getId();
+
+        redisService.saveLikeToRedis(commentId, userId);
+        redisService.incrementLikeCount(commentId, userId);
         return Result.ok();
     }
 
     //unlike when clicked the second time
     @PostMapping("/unlike")
-    public Result unlike(int postId, int userId) {
-        RedisService redisService = (RedisService) redisTemplate;
-        redisService.unlikeFromRedis(postId, userId);
-        redisService.decrementLikeCount(postId, userId);
+    public Result unlike(int commentId,  HttpServletRequest request) {
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int userId = userMapper.findByEmail(email).getId();
+
+        redisService.unlikeFromRedis(commentId, userId);
+        redisService.decrementLikeCount(commentId, userId);
         return Result.ok();
     }
 
@@ -50,10 +61,30 @@ public class RedisController {
     }
 
     @GetMapping("/status")
-    public Result status(int commentId, int userId){
+    public Result status(int commentId,  HttpServletRequest request){
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        int userId = userMapper.findByEmail(email).getId();
+
         String key = RedisKeyUtils.getLikedKey(commentId, userId);
-        UserLike userLike = (UserLike) redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key);
-        int status = userLike.getStatus();
+        Object temp = redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key);
+        if(temp == null){
+            int status = 0;
+            return Result.ok().data("status", status);
+        }
+        int status = (int) temp;
+
+        if(status != 1){
+            status = 0;
+            return Result.ok().data("status",status);
+        }
         return Result.ok().data("status",status);
+    }
+
+    @GetMapping("/count")
+    public Result count(int commentId) {
+        int count = (int) redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId);
+        return Result.ok().data("count",count);
     }
 }

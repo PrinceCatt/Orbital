@@ -1,13 +1,25 @@
 <template>
   <div>
+    Online Users:
+    <br>
+    <br>
+    <div class="online-user-list" v-for="onlineUser in onlineUsers" :key="onlineUser.id"> 
+        <el-avatar
+        class="header-img"
+        @click.native="handlePrivateChat(onlineUser)"
+        :size="40"
+        :src="onlineUser.avatar">
+        </el-avatar>
+    <div class="author-info">
+      <span class="author-name">{{ onlineUser.name }}</span>
+    </div>
+      </div>
       <br>
-      <button @click="connectWebSocket()">连接到websocket</button>
+      <private-chat v-if="Visible" ref="private"></private-chat>
       <br>
-      频道号：<input type="text" v-model="toUser" />
-      消息：<input type="text" v-model="text">
-      <button @click="send()">发送消息</button>
+      Message: <input type="text" v-model="text">
+      <button @click="send()">Send</button>
       <br>
-      <button @click="closeWebSocket()">关闭websocket连接</button>
       <br>
       <div id="message">{{data}}</div>
     </div>
@@ -15,25 +27,36 @@
 
 <script>
 import { getDate } from '@/utils/date';
+import privateChat from './private.vue';
 
 export default {
+  components: { privateChat },
+
   data() {
       return {
           text: "",
           data: "",
           websocket: null,
-          connected: false,
+          uid: null,
 
           socketMsg: {},
-          toUser: "",
+          toUid: null,
           date: "",
-          type: 0,
+          type: null,
+
+          onlineUsers: [],
+          message: {},
+
+          Visible: false,
       }
   },
 
-  crreated() {
-    this.connectWebSocket().then(() => {
-      this.connected = true
+  created() {
+    this.connectWebSocket()
+    this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+      this.uid = this.$store.state.user.id
+    }).catch((err) => {
+      console.log(err)
     })
   },
 
@@ -42,18 +65,46 @@ export default {
   },
 
   methods: {
-      connectWebSocket() {
-          if ('WebSocket' in window) {
-            if (!this.connected) {
-              var token = this.$store.state.user.token
-              this.websocket = new WebSocket('ws://114.55.89.49:8088/ws', [token])
-              this.initWebSocket()
-              this.connected = true
-            } else { alert('You have already connected to WebSocket') }
-          } else { alert('Current browser does not support websocket') }
-      },
+    setOnlineUsers(onlineUsers) {
+      this.onlineUsers = onlineUsers
+    },
+
+    handlePrivateChat(onlineUser) {
+      if (onlineUser.id != this.uid) {
+        onlineUser.hideBadge = true
+        this.Visible = true
+        this.toUid = onlineUser.id
+        this.$nextTick(() => {
+          this.$refs.private.init(onlineUser)
+        })
+      } else {
+        this.$message({
+          type:'warning',
+          message:"You cannot text yourself."
+        })
+      }
+    },
+
+    handlePrivateMessage(message) {
+      if (this.toUid == message.fromUid || this.toUid == message.toUid) {
+        this.$refs.private.tempMessages.push(message)
+      } else {
+        this.$message({
+          type: 'info',
+          message: "You have received a new message from " + message.fromUser
+        })
+      }
+    },
+
+    connectWebSocket() {
+        if ('WebSocket' in window) {
+          var token = this.$store.state.user.token
+          this.websocket = new WebSocket('ws://114.55.89.49:8088/ws', [token])
+          this.initWebSocket()
+        } else { alert('Current browser does not support websocket') }
+    },
       
-      initWebSocket() {
+  initWebSocket() {
     //连接错误
     this.websocket.onerror = this.setErrorMessage
 
@@ -70,16 +121,23 @@ export default {
     window.onbeforeunload = this.onbeforeunload
   },
   setErrorMessage() {
-    this.setMessageInnerHTML("WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("An error occurred during WebSocket connection")
   },
   setOnopenMessage() {
-    this.setMessageInnerHTML("WebSocket连接成功" + '   状态码：' + this.websocket.readyState)
+    this.setMessageInnerHTML("WebSocket connection success")
   },
   setOnmessageMessage(event) {
-    this.setMessageInnerHTML(event.data)
+    var json = JSON.parse(event.data)
+    if (json.type == 0) {
+      this.setMessageInnerHTML(json.msg)
+    } else if (json.type == 1) {
+      this.handlePrivateMessage(json)
+    } else {
+      this.setOnlineUsers(json.onlineUsers)
+    }
   },
   setOncloseMessage() {
-    this.setMessageInnerHTML("WebSocket连接关闭" + '   状态码：' + this.websocket.readyState)
+    console.log("WebSocket connection closed")
   },
   onbeforeunload() {
     this.closeWebSocket();
@@ -94,14 +152,13 @@ export default {
   send() {
     this.date = getDate()
     var message = this.text
-    var toUser = this.toUser
-    var socketMsg = {msg: message, toUser: toUser, createTime: this.date}
-    if (toUser === '') {
-      // group msg
-      socketMsg.type = 0
-    } else {
+    var socketMsg = {msg: message, toUid: this.toUid, createTime: this.date}
+    if (this.toUid !== null) {
       // private msg
       socketMsg.type = 1
+    } else {
+      // group msg
+      socketMsg.type = 0
     }
     this.websocket.send(JSON.stringify(socketMsg))
     this.text = ''
