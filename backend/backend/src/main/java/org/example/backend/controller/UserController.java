@@ -219,13 +219,17 @@ public class UserController {
     }
 
     // For user to delete one post of his own
-    @DeleteMapping("/post/delete")
-    public Result delete(int postId, HttpServletRequest request) {
+    @PostMapping("/post/delete")
+    public Result delete(@RequestBody Integer postId, HttpServletRequest request) {
         // check whether this is the user's own post
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         int uid = user.getId();
+
+        System.out.println(uid);
+        System.out.println(postId);
+
         int postUid = postMapper.selectById(postId).getUid();
         if (postUid != uid) {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");

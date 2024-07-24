@@ -31,7 +31,8 @@ public class PostController {
         return Result.ok().data("pageInfo", pageInfo);
     }
 
-    // Find all posts (by page)
+
+     // Find all posts (by page)
     @GetMapping("/find")
     public Result findPosts(@RequestParam(defaultValue = "1") int pageNum) {
         PageHelper.startPage(pageNum, 10);
