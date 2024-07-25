@@ -7,10 +7,13 @@ import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.CommentService;
 import org.example.backend.service.ImageUploadService;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,24 +33,27 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
     private PostMapper postMapper;
 
+    @Autowired
+    private CommentService commentService;
 
     // For login function
     @PostMapping("/login")
     //json: {email,password}
     //As the frontEnd sending data in json format, @RequestBody is needed
-    public Result login(@RequestBody User user){
+    public Result login(@RequestBody User user) {
         String email = user.getEmail();
         String password = user.getPassword();
 
         User ActualUser = userMapper.findByEmail(email);
-        if (ActualUser == null){
+        if (ActualUser == null) {
             return Result.error().message("This email has not been registered");
         }
 
-        if (!password.equals(ActualUser.getPassword())){
+        if (!password.equals(ActualUser.getPassword())) {
             return Result.error().message("Please enter the correct email and password");
         }
 
@@ -56,8 +63,8 @@ public class UserController {
 
     // To get user info
     @GetMapping("/info") // "token:xxx“
-    public Result info(String token){
-        if (!JwtUtils.validateToken(token)){
+    public Result info(String token) {
+        if (!JwtUtils.validateToken(token)) {
             return Result.error().message("Invalid token");
         }
         // find user's email by token
@@ -73,14 +80,16 @@ public class UserController {
 
     // For logout function
     @PostMapping("/logout") // "remove token and all, see details in front end "
-    public Result logout(){ return Result.ok(); }
+    public Result logout() {
+        return Result.ok();
+    }
 
     // For new user to register
     //json:{email,password,name}
     @PostMapping("/register")
-    public Result register(@RequestBody User user){
+    public Result register(@RequestBody User user) {
         String email = user.getEmail();
-        if (userMapper.findByEmail(email) != null){
+        if (userMapper.findByEmail(email) != null) {
             return Result.error().message("This email has been registered");
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -88,12 +97,12 @@ public class UserController {
         if (userMapper.selectCount(queryWrapper) > 0) {
             return Result.error().message("This name has been registered. Please choose another name");
         }
-        if (user.getPassword().length() < 6){
+        if (user.getPassword().length() < 6) {
             return Result.error().message("Password must be at least 6 characters long");
         }
 
         int result = userMapper.insert(user);
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error();
@@ -101,35 +110,36 @@ public class UserController {
 
     // For user to change name
     @PostMapping("/updateName")
-    public Result updateName(String name, HttpServletRequest request){
+    public Result updateName(String name, HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        if(user.getName().equals(name)){
+        if (user.getName().equals(name)) {
             return Result.error().message("Please enter a new name");
         }
-        
+
         int result = userMapper.updateName(email, name);
-        if (result > 0){
+        if (result > 0) {
             return Result.ok();
+        } else {
+            return Result.error().message("Invalid update");
         }
-        else { return Result.error().message("Invalid update"); }
     }
 
     // For user to change password
     @PostMapping("/changePassword")
-    public Result changePassword(String oldPassword, String newPassword, HttpServletRequest request){
+    public Result changePassword(String oldPassword, String newPassword, HttpServletRequest request) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        if(!user.getPassword().equals(oldPassword)){
+        if (!user.getPassword().equals(oldPassword)) {
             return Result.error().message("Please enter the correct old password");
-        } else if (newPassword.length() < 6){
+        } else if (newPassword.length() < 6) {
             return Result.error().message("Password must be at least 6 characters long");
         } else {
             int result = userMapper.changePassword(email, newPassword);
-            if (result > 0){
+            if (result > 0) {
                 return Result.ok();
             }
             return Result.error().message("Invalid update");
@@ -146,7 +156,7 @@ public class UserController {
     private String path;
 
     @PostMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam("avatar") MultipartFile avatar, HttpServletRequest request){
+    public Result updateAvatar(@RequestParam("avatar") MultipartFile avatar, HttpServletRequest request) {
         if (avatar.isEmpty()) {
             return Result.error().message("Avatar should not be empty");
         }
@@ -155,14 +165,14 @@ public class UserController {
         User user = userMapper.findByEmail(email);
         String avatarPath = user.getAvatarPath();
 
-        if (avatarPath != null){
+        if (avatarPath != null) {
             File tempFile = new File(avatarPath);
             String oldFileName = tempFile.getName();
 
             String realAvatarPath = path + File.separator + oldFileName;
             File file = new File(realAvatarPath);
 
-            if (file.exists()){
+            if (file.exists()) {
                 boolean deleted = file.delete();
                 System.out.println("Avatar deleted = " + deleted);
             }
@@ -212,7 +222,7 @@ public class UserController {
         post.setUid(uid);
 
         int result = postMapper.insert(post);
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error().message("Post add failed");
@@ -231,8 +241,11 @@ public class UserController {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
 
+        //before deleting the post, delete its comments, if any
+        commentService.deleteAllCommentsToPost(postId);
+
         int result = postMapper.deleteById(postId);
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error().message("Post delete failed");
@@ -252,10 +265,61 @@ public class UserController {
         }
 
         int result = postMapper.updatePost(post.getId(), post.getTitle(), post.getContent(), post.getTime());
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error().message("Post update failed");
     }
 
+
+    @PostMapping("/post/addHistory")
+    public Result addHistory(int postId, HttpServletRequest request) {
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        String history = user.getHistory();
+
+        System.out.println("history" + history);
+        System.out.println(history==null);
+
+        //convert history from JSON String to JSON array, create a new array with +1 length, if history != null
+        ArrayList<Integer> converted = new ArrayList<Integer>();
+
+        if (history. != null) {
+        JSONArray jsonArray = new JSONArray(history);
+
+        //put JSON array in the array
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            converted.add(jsonObject.getInt("i"));
+        }
+        }
+
+        //if history is null, just add postId
+        //check if the new postId is repeatedly called, if yes, do not add
+        if (converted.get(0) != postId) {
+            converted.add(postId);
+        }
+
+        //convert the array back to JSON
+        JSONArray resultJsonArray = new JSONArray(converted);
+        String result = resultJsonArray.toString();
+
+        //update user
+        user.setHistory(result);
+        userMapper.updateById(user);
+        return Result.ok();
+    }
+
+    @GetMapping("/post/getHistory")
+    public Result getHistory(HttpServletRequest request) {
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+        String history = user.getHistory();
+        return Result.ok().data("history", history);
+
+    }
 }
