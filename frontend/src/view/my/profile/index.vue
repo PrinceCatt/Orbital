@@ -44,12 +44,24 @@
 
 <script>
 export default {
+
+  created() {
+    this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+      this.name = this.$store.state.user.name
+      this.email = this.$store.state.user.email
+      this.avatar = this.$store.state.user.avatar
+
+    }).catch((err) => {
+      console.log(err)
+    })
+  },
+
   data() {
     return {
       imageUrl: "",
-      email: this.$store.state.user.email,
-      avatar: this.$store.state.user.avatar,
-      name: this.$store.state.user.name,
+      email: "",
+      avatar: "",
+      name: "",
       fits: ["fill"],
       token: this.$store.state.user.token,
     };

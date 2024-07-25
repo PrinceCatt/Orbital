@@ -273,7 +273,7 @@ export default {
 
     //back to discovery page
     back() {
-      this.$router.push({ path: `/discovery/page/${this.section}` });
+      this.$router.back();
     },
 
     likes(commentId) {

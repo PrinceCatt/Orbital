@@ -29,16 +29,7 @@
         label="Title"
         width="200">
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="180">
-        <template slot-scope="scope">
-          <el-button type="text" size="midium" @click="goTo(scope.row.id)">details</el-button>
-          <el-button type="text" size="midium">update</el-button>
-          <el-button @click="deletePost(scope.row)" type="text" size="midium">delete</el-button>
-        </template>
-      </el-table-column>
+
     </el-table>
     <div class="pagaination-tool" style="padding:20px 110px 70px">
       <div class="count-show">

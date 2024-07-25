@@ -276,39 +276,9 @@ public class UserController {
         return Result.error().message("Post update failed");
     }
 
-
-    @PostMapping("/post/addHistory")
-    public Result addHistory(int postId, HttpServletRequest request) {
-
-        String token = request.getHeader("X-Token");
-        String email = JwtUtils.getClaimsByToken(token).getSubject();
-        User user = userMapper.findByEmail(email);
-        String history = user.getHistory();
-
-        System.out.println("history" + history.length());
-        System.out.println(history==null);
-
-        //convert history from JSON String to JSON array, create a new array with +1 length, if history != null
-        List<Integer> converted = userService.convertStringToIntegerList(history);
-
-        //if history is null, just add postId
-        //check if the new postId is repeatedly called, if yes, do not add
-        if (converted.isEmpty() || converted.get(0) != postId) {
-            converted.add(postId);
-        }
-
-        //convert the array back to JSON
-        JSONArray resultJsonArray = JSONArray.parseArray(JSON.toJSONString(converted));
-        String result = resultJsonArray.toString();
-
-        //update user
-        user.setHistory(result);
-        userMapper.updateById(user);
-        return Result.ok();
-    }
-
     @GetMapping("/post/getHistory")
-    public Result getHistory(HttpServletRequest request) {
+    public Result getHistory(int pageNum,
+                             HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
@@ -319,6 +289,9 @@ public class UserController {
 
         List<Post> postHistory = postService.getPostsByIds(converted);
 
-        return Result.ok().data("history", postHistory);
+        PageHelper.startPage(pageNum, 10);
+        PageInfo<Post> pageInfo = new PageInfo<>(postHistory);
+
+        return Result.ok().data("pageInfo", pageInfo);
     }
 }

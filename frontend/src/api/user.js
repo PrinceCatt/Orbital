@@ -88,10 +88,10 @@ export function addHistory(postId) {
   })
 }
 
-export function getHistory() {
+export function getHistory(pageNum) {
   return request({
     url: '/user/post/getHistory',
     method: 'get',
-    params: {}
+    params: {pageNum}
   })
 }
