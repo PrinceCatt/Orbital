@@ -70,3 +70,4 @@ export function deletePost(postId) {
     params: {postId}
   })
 }
+

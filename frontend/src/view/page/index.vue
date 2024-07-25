@@ -13,7 +13,7 @@
     border: true
     :header-cell-style="{'text-align':'center'}"
     :cell-style="{'text-align':'center'}"
-    empty-text="Oops, there is no post for this section yet."
+    empty-text="Oops, there is no post in this section yet."
     @row-click="openPost"
     align="left"
     style="width: 100%;margin:auto">

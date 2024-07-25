@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
+import org.example.backend.mapper.CommentMapper;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.ImageUploadService;
@@ -31,6 +32,8 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
+    @Autowired
+    private CommentMapper commentMapper;
 
 
     // For login function
@@ -83,11 +86,7 @@ public class UserController {
         if (userMapper.findByEmail(email) != null){
             return Result.error().message("This email has been registered");
         }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", user.getName());
-        if (userMapper.selectCount(queryWrapper) > 0) {
-            return Result.error().message("This name has been registered. Please choose another name");
-        }
+
         if (user.getPassword().length() < 6){
             return Result.error().message("Password must be at least 6 characters long");
         }
@@ -231,8 +230,9 @@ public class UserController {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
 
-        int result = postMapper.deleteById(postId);
-        if(result > 0){
+        int result0 = postMapper.deleteById(postId);
+        int result1 = commentMapper.deleteByPostId(postId);
+        if(result0 > 0 && result1 > 0){
             return Result.ok();
         }
         return Result.error().message("Post delete failed");

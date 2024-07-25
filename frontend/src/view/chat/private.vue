@@ -60,7 +60,7 @@
   <el-input
   :rows="5"
   type="textarea"
-  placeholder="请输入内容"
+  placeholder="Please enter text"
   @keyup.enter.native="submitMessage"
   v-model="text"
   >

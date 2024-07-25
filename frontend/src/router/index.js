@@ -3,6 +3,7 @@ import Vue from "vue";
 import Login from "@/view/login";
 import MyProfile from '@/view/my/profile'
 import MyPosts from '@/view/my/posts'
+import UpdatePost from '@/view/my/posts/update.vue'
 import Register from '@/view/register'
 import Discovery from '@/view/discovery'
 import Page from '@/view/page'
@@ -19,7 +20,8 @@ const router = new VueRouter({
         { path:'/my/profile', component: MyProfile, meta: {
             needLogin: true }},
         { path:'/my/posts', component: MyPosts, meta: {
-            needLogin: true }},
+            needLogin: true }},    
+        { path: '/my/update/:postId', component: UpdatePost },
         { path: '/login', name: "login", component: Login },
         {
             path: '/discovery', component: Discovery,

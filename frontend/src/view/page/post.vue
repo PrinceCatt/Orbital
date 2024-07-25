@@ -26,10 +26,11 @@
             <el-avatar
               class="header-img"
               :size="40"
-              :src="this.$store.state.user.avatar"
+              :src="avatar"
             ></el-avatar>
             <div class="reply-info">
               <input
+              v-model="replyInput"
                 tabindex="0"
                 contenteditable="true"
                 id="replyInput"
@@ -195,6 +196,7 @@ const clickoutside = {
 export default {
   data() {
     return {
+      avatar: "",
       post: {},
       comments: {},
       replyComments: {},
@@ -204,6 +206,7 @@ export default {
       parentCommentId: -1,
       dialogVisible: false,
       inputValue: "",
+      replyInput: "",
     };
   },
   directives: { clickoutside },
@@ -211,9 +214,18 @@ export default {
   created() {
     this.getPost();
     this.getComments();
+    this.setAvatar();
   },
 
   methods: {
+    setAvatar() {
+      this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+      this.avatar = this.$store.state.user.avatar
+    }).catch((err) => {
+      console.log(err)
+    })
+    },
+
     callbox(id) {
       this.commentId = id;
       this.dialogVisible = true;
@@ -271,7 +283,7 @@ export default {
 
     //back to discovery page
     back() {
-      this.$router.push({ path: `/discovery/page/${this.section}` });
+      this.$router.back();
     },
 
     likes(commentId) {
@@ -306,6 +318,7 @@ export default {
         content: content,
         createTime: createTime,
       }).then(() => {
+        this.replyInput = "";
         this.inputValue = "";
         this.dialogVisible = false;
         this.getComments();

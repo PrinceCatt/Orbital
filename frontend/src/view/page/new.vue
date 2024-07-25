@@ -6,9 +6,14 @@
       <el-input placeholder="Post Title"   v-model="title" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="Section">
           <el-option label="ACGN-Anime" value="Anime"></el-option>
-          <el-option label="ACGN-comics" value="Comics"></el-option>
-          <el-option label="ACGN-gaming" value="Gaming"></el-option>
-          <el-option label="Music" value="Music"></el-option>
+          <el-option label="ACGN-Comics" value="Comics"></el-option>
+          <el-option label="ACGN-Gaming" value="Gaming"></el-option>
+          <el-option label="Music-Chinese" value="Music-Chinese"></el-option>
+          <el-option label="Music-English" value="Music-English"></el-option>
+          <el-option label="Music-Japanese" value="Music-Japanese"></el-option>
+          <el-option label="Music-Korean" value="Music-Korean"></el-option>
+          <el-option label="Music-Spanish" value="Music-Spanish"></el-option>
+
          
         </el-select>
         <el-button slot="append" icon="el-icon-search"></el-button>

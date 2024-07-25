@@ -18,6 +18,15 @@ export function newPost(data) {
   })
 }
 
+//{post:(section, title, content, time)}
+export function updatePost(data) {
+  return request({
+    url: '/user/post/update',
+    method: 'post',
+    data
+  })
+}
+
 //{postId}
 export function getPostbyId(postId) {
   return request({

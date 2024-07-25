@@ -2,6 +2,7 @@ package org.example.backend.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -22,4 +23,7 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     @Select("select * from t_comment where parentCommentId = #{childId}")
     List<Comment> findByChildCommentId(Integer childId);
+
+    @Delete("delete from t_comment where postId = #{postId}")
+    int deleteByPostId(Integer postId);
 }

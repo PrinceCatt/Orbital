@@ -31,9 +31,24 @@
             <template slot="title">Music</template>
             <el-menu-item-group>
               <template slot="title"></template>
-              <el-menu-item index="2-1">Chinese</el-menu-item>
-              <el-menu-item index="2-2">English</el-menu-item>
-              <el-menu-item index="2-2">Spanish</el-menu-item>
+              <el-menu-item index="2-1">
+                <el-button @click="openPage('Chinese')">Chinese</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-2">
+                <el-button @click="openPage('English')">English</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-3">
+                <el-button @click="openPage('Japanese')">Japanese</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-4">
+                <el-button @click="openPage('Korean')">Korean</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-5">
+                <el-button @click="openPage('Spanish')">Spanish</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-6">
+                <el-button @click="openPage('Others')">Others</el-button>
+                </el-menu-item>  
             </el-menu-item-group>
           </el-submenu>
         </el-menu>

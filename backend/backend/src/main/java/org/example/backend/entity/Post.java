@@ -24,6 +24,8 @@ public class Post {
     private String time;
     private int uid;
 
+    @TableField(exist = false)
+    private int commentNum;
 
     @TableField(exist = false)
     private String author;

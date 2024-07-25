@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item label="Confirm Password" prop="confirmPassword">
         <el-input
-          type="confirmPassword"
+          type="password"
           v-model="registerForm.confirmPassword"
           autocomplete="off"
         ></el-input>
@@ -115,8 +115,9 @@ export default {
               alert("You have successfully registered a NUSurf account");
               this.email = this.registerForm.email;
               this.password = this.registerForm.password;
-              this.$store.dispatch("user/login", { email: this.email, password: this.password });
-              this.$router.push({path: "/discovery"});
+              this.$store.dispatch("user/login", { email: this.email, password: this.password }).then(() => {
+                this.$router.push({path: "/discovery"});
+              });
               location.reload("");
               this.loading = false;
             })
