@@ -22,7 +22,9 @@
       <el-menu-item index="2-2">
         <el-button type="text" @click="myPosts">Posts</el-button>
       </el-menu-item>
-      <el-menu-item index="2-3">History</el-menu-item>
+      <el-menu-item index="2-3">
+        <el-button type="text" @click="myHistory">History</el-button>
+      </el-menu-item>
       <el-menu-item index="2-4">Favorite</el-menu-item>
       <el-submenu index="2-5">
         <template slot="title">Message</template>
@@ -87,6 +89,10 @@
 
         myPosts(){
           this.$router.push({path: '/my/posts'})
+        },
+
+        myHistory(){
+          this.$router.push({path: '/my/history'})
         },
 
         open(){
