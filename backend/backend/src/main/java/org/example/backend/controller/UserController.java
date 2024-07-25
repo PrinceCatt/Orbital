@@ -283,13 +283,13 @@ public class UserController {
         User user = userMapper.findByEmail(email);
         String history = user.getHistory();
 
-        System.out.println("history" + history);
+        System.out.println("history" + history.length());
         System.out.println(history==null);
 
         //convert history from JSON String to JSON array, create a new array with +1 length, if history != null
         ArrayList<Integer> converted = new ArrayList<Integer>();
 
-        if (history. != null) {
+        if (!history.isEmpty()) {
         JSONArray jsonArray = new JSONArray(history);
 
         //put JSON array in the array
@@ -301,7 +301,7 @@ public class UserController {
 
         //if history is null, just add postId
         //check if the new postId is repeatedly called, if yes, do not add
-        if (converted.get(0) != postId) {
+        if (converted.isEmpty() || converted.get(0) != postId) {
             converted.add(postId);
         }
 
