@@ -1,6 +1,6 @@
 <template>
     <span>
-        <el-button @click="add(1)"> Add
+        <el-button @click="add(2)"> Add
         </el-button>
     </span>
 </template>

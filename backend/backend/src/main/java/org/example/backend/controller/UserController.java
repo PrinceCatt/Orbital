@@ -1,5 +1,7 @@
 package org.example.backend.controller;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -9,11 +11,12 @@ import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.service.CommentService;
 import org.example.backend.service.ImageUploadService;
+import org.example.backend.service.PostService;
+import org.example.backend.service.UserService;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +36,14 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private PostMapper postMapper;
-
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private UserService userService;
 
     // For login function
     @PostMapping("/login")
@@ -284,17 +289,7 @@ public class UserController {
         System.out.println(history==null);
 
         //convert history from JSON String to JSON array, create a new array with +1 length, if history != null
-        ArrayList<Integer> converted = new ArrayList<Integer>();
-
-        if (!history.isEmpty()) {
-        JSONArray jsonArray = new JSONArray(history);
-
-        //put JSON array in the array
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            converted.add(jsonObject.getInt("i"));
-        }
-        }
+        List<Integer> converted = userService.convertStringToIntegerList(history);
 
         //if history is null, just add postId
         //check if the new postId is repeatedly called, if yes, do not add
@@ -303,7 +298,7 @@ public class UserController {
         }
 
         //convert the array back to JSON
-        JSONArray resultJsonArray = new JSONArray(converted);
+        JSONArray resultJsonArray = JSONArray.parseArray(JSON.toJSONString(converted));
         String result = resultJsonArray.toString();
 
         //update user
@@ -319,7 +314,11 @@ public class UserController {
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         String history = user.getHistory();
-        return Result.ok().data("history", history);
 
+        List<Integer> converted = userService.convertStringToIntegerList(history);
+
+        List<Post> postHistory = postService.getPostsByIds(converted);
+
+        return Result.ok().data("history", postHistory);
     }
 }
