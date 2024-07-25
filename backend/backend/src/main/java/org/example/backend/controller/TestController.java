@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.backend.entity.Comment;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
+import org.example.backend.mapper.CommentMapper;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
 import org.example.backend.utils.JwtUtils;
@@ -35,6 +36,9 @@ public class TestController {
 
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @GetMapping("/user")
     public Result userTest() {
@@ -71,8 +75,8 @@ public class TestController {
        return result1;
     }
 
-    @GetMapping("/commentAndPost")
-    public Result commentAndPostTest() throws JsonProcessingException {
+    @GetMapping("/Post")
+    public Result PostTest() throws JsonProcessingException {
 
         //define a new user, register
         User user = new User();
@@ -105,10 +109,10 @@ public class TestController {
 
         //update post test
         List<Post> posts = postMapper.selectByUid(userId);
-        Iterator<Post> iterator = posts.iterator();
+        Iterator<Post> iteratorP = posts.iterator();
         Post post2 = null;
-        while (iterator.hasNext()) {
-            post2 = iterator.next();
+        while (iteratorP.hasNext()) {
+            post2 = iteratorP.next();
         }
 
         System.out.println(post2);
@@ -120,7 +124,7 @@ public class TestController {
         Result result2 = restTemplate.postForObject("http://localhost:8088/user/post/update", httpEntity1, Result.class);
         assertEquals(result2.getCode(), 20000);
 
-        //comment in the post
+        //comment test in the post
         Comment comment = new Comment();
         comment.setUid(userId);
         comment.setContent("test comment");
@@ -134,16 +138,30 @@ public class TestController {
 
         assertEquals(result3.getCode(), 20000);
 
-        //finish up, delete post and user
-
+        //like test
         int postId = post2.getId();
+        List<Comment> comments = commentMapper.findByPostIdAndParentCommentIdNull(postId, -1);
+        Iterator<Comment> iteratorC = comments.iterator();
+        Comment comment2 = null;
+        while (iteratorC.hasNext()) {
+            comment2 = iteratorC.next();
+        }
+        int commentId = comment2.getId();
 
-        System.out.println(postId);
+        String commentIdJson = mapper.writeValueAsString(commentId);
+        HttpEntity<String> httpEntity3 = new HttpEntity<String>(commentIdJson, httpHeaders);
+        Result result4 = restTemplate.postForObject("http://localhost:8088/userlike/like", httpEntity3, Result.class);
+        assertEquals(result4.getCode(), 20000);
 
+        Result result5 = restTemplate.postForObject("http://localhost:8088/userlike/status", httpEntity3, Result.class);
+        assertEquals(result5.getCode(), 20000);
+        assertEquals(result5.getData().get("status"), 1);
+
+        //finish up, delete post and user
         String PostIdJson = mapper.writeValueAsString(postId);
-        HttpEntity<String> httpEntity3 = new HttpEntity<String>(PostIdJson, httpHeaders);
+        HttpEntity<String> httpEntity4 = new HttpEntity<String>(PostIdJson, httpHeaders);
 
-        restTemplate.postForObject("http://localhost:8088/user/post/delete", httpEntity3, Result.class);
+        restTemplate.postForObject("http://localhost:8088/user/post/delete", httpEntity4, Result.class);
         userMapper.deleteById(userId);
 
         //final check
@@ -151,7 +169,5 @@ public class TestController {
 
         return result2;
     }
-
-
 
 }

@@ -22,4 +22,5 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     @Select("select * from t_comment where parentCommentId = #{childId}")
     List<Comment> findByChildCommentId(Integer childId);
+
 }

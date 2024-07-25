@@ -30,7 +30,7 @@ public class RedisController {
 
     //like
     @PostMapping("/like")
-    public Result like(int commentId,  HttpServletRequest request) {
+    public Result like(@RequestBody Integer commentId,  HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
@@ -43,7 +43,7 @@ public class RedisController {
 
     //unlike when clicked the second time
     @PostMapping("/unlike")
-    public Result unlike(int commentId,  HttpServletRequest request) {
+    public Result unlike(@RequestBody Integer commentId,  HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
@@ -60,8 +60,8 @@ public class RedisController {
         return Result.ok();
     }
 
-    @GetMapping("/status")
-    public Result status(int commentId,  HttpServletRequest request){
+    @PostMapping("/status")
+    public Result status(@RequestBody Integer commentId,  HttpServletRequest request){
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
