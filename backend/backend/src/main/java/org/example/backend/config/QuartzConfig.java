@@ -17,6 +17,7 @@ public class QuartzConfig {
     @Bean
     public Trigger quartzTrigger() {
         SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule().
+                //the following line is to set the time interval for updating, which is per 60 seconds for now
                 withIntervalInSeconds(60).repeatForever();
         return TriggerBuilder.newTrigger().forJob(quartzDetail()).
                                            withIdentity(LikeTaskIdentity).

@@ -10,6 +10,7 @@ import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.CommentService;
 import org.example.backend.service.ImageUploadService;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
@@ -32,8 +33,12 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private CommentService commentService;
 
     // For login function
     @PostMapping("/login")
@@ -232,6 +237,9 @@ public class UserController {
         if (postUid != uid) {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
+
+        //before deleting the post, delete its comments, if any
+        commentService.deleteAllCommentsToPost(postId);
 
         int result = postMapper.deleteById(postId);
         if(result > 0){

@@ -10,4 +10,8 @@ public interface CommentService {
 
     // Save new comment
     int saveComment(Comment comment);
+
+    //delete all comments to a post before deleting a post
+    public void deleteAllCommentsToPost(int postId);
+
 }
