@@ -214,11 +214,22 @@ export default {
   },
 
   methods: {
+
+    //true meaning not logged in
+    loginInterceptor(){
+      let loginStatus = (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null)
+      if(this.$store.getters.token == null)
+      alert("Please login first")
+      return loginStatus
+    },
+
     callbox(id) {
+      let loginStatus = this.loginInterceptor()
+      if(loginStatus == false){
       console.log(id)
       this.commentId = id;
-      console.log(this.commentId)
       this.dialogVisible = true;
+      }
     },
 
     inputFocus() {
@@ -277,6 +288,12 @@ export default {
     },
 
     likes(commentId) {
+
+    let loginStatus = this.loginInterceptor()
+    if(loginStatus == true){
+      return
+    }
+
       new Promise((resolve, reject) => {
         getStatus(commentId)
           .then((res) => {
@@ -297,6 +314,10 @@ export default {
 
     //send comment to post
     sendCommentToPost() {
+      let loginStatus = this.loginInterceptor()
+      if(loginStatus == true){
+        return
+      }
       let content = document.getElementById("replyInput").value;
       if (content == "") {
         alert("cannot send empty comment");
