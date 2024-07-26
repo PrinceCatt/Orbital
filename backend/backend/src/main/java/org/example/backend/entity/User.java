@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +24,7 @@ public class User {
     @TableField("avatarPath")
     private String avatarPath;
     private String password = "";
+    private String history = "";
 
     @TableField(exist = false)
     private List<Integer> favoritePosts;

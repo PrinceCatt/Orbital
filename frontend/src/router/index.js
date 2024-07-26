@@ -10,9 +10,12 @@ import Page from '@/view/page'
 import Newpost from '@/view/page/new.vue'
 import Post from '@/view/page/post.vue'
 import Chat from '@/view/chat'
+import MyHistory from '@/view/my/history'
 
 Vue.use(VueRouter)
 
+
+//this file is the router address for all different pages
 const router = new VueRouter({
     routes: [
         { path: '/', redirect: '/discovery' },
@@ -21,7 +24,10 @@ const router = new VueRouter({
             needLogin: true }},
         { path:'/my/posts', component: MyPosts, meta: {
             needLogin: true }},    
-        { path: '/my/update/:postId', component: UpdatePost },
+        { path: '/my/update/:postId', component: UpdatePost, meta: {,
+            needLogin: true }},
+        { path:'/my/history', component: MyHistory, meta: {
+            needLogin: true }},
         { path: '/login', name: "login", component: Login },
         {
             path: '/discovery', component: Discovery,

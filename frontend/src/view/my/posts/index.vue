@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
-        label="操作"
+        label="Actions"
         width="180">
         <template slot-scope="scope">
           <el-button type="text" size="midium" @click="goTo(scope.row.id)">details</el-button>
