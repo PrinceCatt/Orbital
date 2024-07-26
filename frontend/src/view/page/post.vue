@@ -218,12 +218,21 @@ export default {
   },
 
   methods: {
+    setAvatar() {
+      let loginStatus = this.loginInterceptor()
+      if (!loginStatus) {
+        this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+        this.avatar = this.$store.state.user.avatar
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
 
     //true meaning not logged in
     loginInterceptor(){
       let loginStatus = (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null)
-      if(this.$store.getters.token == null)
-      alert("Please login first")
+
       return loginStatus
     },
 
@@ -233,6 +242,8 @@ export default {
       console.log(id)
       this.commentId = id;
       this.dialogVisible = true;
+      } else {
+        alert("Please login first")
       }
     },
 
@@ -288,7 +299,7 @@ export default {
 
     //back to discovery page
     back() {
-      this.$router.back();
+      this.$router.go(-1);
     },
 
     likes(commentId) {

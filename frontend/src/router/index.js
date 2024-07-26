@@ -24,7 +24,7 @@ const router = new VueRouter({
             needLogin: true }},
         { path:'/my/posts', component: MyPosts, meta: {
             needLogin: true }},    
-        { path: '/my/update/:postId', component: UpdatePost, meta: {,
+        { path: '/my/update/:postId', component: UpdatePost, meta: {
             needLogin: true }},
         { path:'/my/history', component: MyHistory, meta: {
             needLogin: true }},
