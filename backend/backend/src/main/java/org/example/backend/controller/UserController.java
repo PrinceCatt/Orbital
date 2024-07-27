@@ -42,6 +42,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     // For login function
     @PostMapping("/login")
     //json: {email,password}
@@ -267,19 +268,16 @@ public class UserController {
     }
 
     @GetMapping("/post/getHistory")
-    public Result getHistory(int pageNum,
+    public Result getHistory(@RequestParam(defaultValue = "1") int pageNum,
+                             @RequestParam(defaultValue = "20") int pageSize,
                              HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        String history = user.getHistory();
 
-        List<Integer> converted = userService.convertStringToIntegerList(history);
-
-        List<Post> postHistory = postService.getPostsByIds(converted);
-
-        PageHelper.startPage(pageNum, 10);
+        PageHelper.startPage(pageNum, pageSize);
+        List<Post> postHistory = userService.findHistoryOfUser(user);
         PageInfo<Post> pageInfo = new PageInfo<>(postHistory);
 
         return Result.ok().data("pageInfo", pageInfo);

@@ -3,6 +3,12 @@
     <div class="book">
       <div class="item1">
         <h3>{{ post.author }}</h3>
+        <el-avatar
+        class="header-img"
+        :size="40"
+        :src="post.authorAvatar">
+        </el-avatar>
+        <h3>{{ post.title }}</h3>
         <h3>{{ post.time }}</h3>
       </div>
       <div class="item2">

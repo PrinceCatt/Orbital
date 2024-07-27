@@ -8,7 +8,7 @@
           <el-option label="ACGN-Anime" value="Anime"></el-option>
           <el-option label="ACGN-Comics" value="Comics"></el-option>
           <el-option label="ACGN-Gaming" value="Gaming"></el-option>
-          <el-option label="ACGN-Light Novel" value="ACGN-LightNovel"></el-option>
+          <el-option label="ACGN-Light Novel" value="LightNovel"></el-option>
 
           <el-option label="Music-Chinese" value="Music-Chinese"></el-option>
           <el-option label="Music-English" value="Music-English"></el-option>

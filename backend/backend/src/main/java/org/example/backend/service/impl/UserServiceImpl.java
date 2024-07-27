@@ -7,6 +7,7 @@ import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.PostService;
 import org.example.backend.service.UserService;
 
 import org.example.backend.utils.Result;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,6 +25,8 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
     @Autowired
     PostMapper postMapper;
+    @Autowired
+    PostService postService;
 
     @Override
     public List<Integer> convertStringToIntegerList(String history) {
@@ -32,6 +36,12 @@ public class UserServiceImpl implements UserService {
             return jsonArray.toJavaList(Integer.class);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<Post> findHistoryOfUser(User user) {
+        List<Integer> postIds = convertStringToIntegerList(user.getHistory());
+        return postService.getPostsByIds(postIds);
     }
 
     @Override
@@ -53,6 +63,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         converted.add(0, postId);
+
+        //check if the history exceeds 20 posts, if yes, delete the last viewed one
+        if (converted.size() > 20) {
+            converted.remove(converted.size() - 1);
+        }
 
         //convert the array back to JSON
         JSONArray resultJsonArray = JSONArray.parseArray(JSON.toJSONString(converted));

@@ -90,7 +90,6 @@ export default {
             this.posts = res.data.pageInfo.list
             this.total = res.data.pageInfo.total
             this.pages = res.data.pageInfo.pages
-            this.pageSize = res.data.pageInfo.pageSize
             resolve(this.posts)
         }).catch(err => {
             reject(err)

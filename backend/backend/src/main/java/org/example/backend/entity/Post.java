@@ -25,7 +25,7 @@ public class Post {
     private int uid;
 
     @TableField(exist = false)
-    private int commentNum;
+    private String authorAvatar;
 
     @TableField(exist = false)
     private String author;
