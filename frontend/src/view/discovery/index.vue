@@ -86,6 +86,13 @@
         <el-main>
 
           <router-view></router-view>
+          <h1>NUSurf</h1> 1.0 version
+          <br>
+          <h1>MaYitao, Zhang Zhuoyu</h1>
+          <br>
+          You may contact us through emails:
+          <br>
+          2991588053@qq.com 1208399599@qq.com
           
         </el-main>
       </el-container>
