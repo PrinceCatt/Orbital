@@ -312,6 +312,7 @@ export default {
 
     let loginStatus = this.loginInterceptor()
     if(loginStatus == true){
+      alert("Please login first")
       return
     }
 
@@ -337,6 +338,7 @@ export default {
     sendCommentToPost() {
       let loginStatus = this.loginInterceptor()
       if(loginStatus == true){
+        alert("Please login first")
         return
       }
       let content = document.getElementById("replyInput").value;
