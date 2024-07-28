@@ -5,9 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
-import org.example.backend.mapper.CommentMapper;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.CommentService;
 import org.example.backend.service.ImageUploadService;
 import org.example.backend.service.PostService;
 import org.example.backend.service.UserService;
@@ -36,7 +36,7 @@ public class UserController {
     @Autowired
     private PostMapper postMapper;
     @Autowired
-    private CommentMapper commentMapper;
+    private CommentService commentService;
     @Autowired
     private PostService postService;
     @Autowired
@@ -240,8 +240,8 @@ public class UserController {
         }
 
         int result0 = postMapper.deleteById(postId);
-        int result1 = commentMapper.deleteByPostId(postId);
-        if(result0 > 0 && result1 > 0){
+        commentService.deleteAllCommentsToPost(postId);
+        if(result0 > 0){
             return Result.ok();
         }
         return Result.error().message("Post delete failed");
