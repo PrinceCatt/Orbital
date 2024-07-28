@@ -3,6 +3,12 @@
     <div class="book">
       <div class="item1">
         <h3>{{ post.author }}</h3>
+        <el-avatar
+        class="header-img"
+        :size="40"
+        :src="post.authorAvatar">
+        </el-avatar>
+        <h3>{{ post.title }}</h3>
         <h3>{{ post.time }}</h3>
       </div>
       <div class="item2">
@@ -26,10 +32,11 @@
             <el-avatar
               class="header-img"
               :size="40"
-              :src="this.$store.state.user.avatar"
+              :src="avatar"
             ></el-avatar>
             <div class="reply-info">
               <input
+              v-model="replyInput"
                 tabindex="0"
                 contenteditable="true"
                 id="replyInput"
@@ -129,7 +136,7 @@
                   <span class="author">{{ reply.content }}</span> 
                   <span class="author-time">{{ reply.createTime }}</span>
                 </div>
-                <el-badge :value="comment.likes" class="item">
+                <el-badge :value="reply.likes" class="item">
                   <el-button
                     type="primary"
                     icon="el-icon-edit"
@@ -195,6 +202,7 @@ const clickoutside = {
 export default {
   data() {
     return {
+      avatar: "",
       post: {},
       comments: {},
       replyComments: {},
@@ -204,6 +212,7 @@ export default {
       parentCommentId: -1,
       dialogVisible: false,
       inputValue: "",
+      replyInput: "",
     };
   },
   directives: { clickoutside },
@@ -211,14 +220,37 @@ export default {
   created() {
     this.getPost();
     this.getComments();
+    this.setAvatar();
   },
 
   methods: {
+    setAvatar() {
+      let loginStatus = this.loginInterceptor()
+      if (!loginStatus) {
+        this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+        this.avatar = this.$store.state.user.avatar
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
+
+    //true meaning not logged in
+    loginInterceptor(){
+      let loginStatus = (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null)
+
+      return loginStatus
+    },
+
     callbox(id) {
+      let loginStatus = this.loginInterceptor()
+      if(loginStatus == false){
       console.log(id)
       this.commentId = id;
-      console.log(this.commentId)
       this.dialogVisible = true;
+      } else {
+        alert("Please login first")
+      }
     },
 
     inputFocus() {
@@ -273,10 +305,17 @@ export default {
 
     //back to discovery page
     back() {
-      this.$router.push({ path: `/discovery/page/${this.section}` });
+      this.$router.go(-1);
     },
 
     likes(commentId) {
+
+    let loginStatus = this.loginInterceptor()
+    if(loginStatus == true){
+      alert("Please login first")
+      return
+    }
+
       new Promise((resolve, reject) => {
         getStatus(commentId)
           .then((res) => {
@@ -297,6 +336,11 @@ export default {
 
     //send comment to post
     sendCommentToPost() {
+      let loginStatus = this.loginInterceptor()
+      if(loginStatus == true){
+        alert("Please login first")
+        return
+      }
       let content = document.getElementById("replyInput").value;
       if (content == "") {
         alert("cannot send empty comment");
@@ -307,13 +351,18 @@ export default {
         postId: this.post.id,
         content: content,
         createTime: createTime,
+      }).then(() => {
+        this.replyInput = "";
+        this.inputValue = "";
+        this.dialogVisible = false;
+        this.getComments();
+      }).catch((err) => {
+        console.log(err)
       });
     },
 
     //send comment to comment; params: content, parentCommentId, for both replies to first level comment and second level comment, parentCommentId will be the same first level comment
     sendCommentToComment(content, parentCommentId) {
-      console.log(content);
-      console.log(parentCommentId);
       if (content == "") {
         alert("cannot send empty comment");
         return;
@@ -324,6 +373,12 @@ export default {
         parentCommentId: parentCommentId,
         content: content,
         createTime: createTime,
+      }).then(() => {
+        this.inputValue = "";
+        this.dialogVisible = false;
+        this.getComments();
+      }).catch((err) => {
+        console.log(err)
       });
 
     },

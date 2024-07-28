@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
         // addResourceHandler: 访问映射路径
         // addResourceLocations: 资源绝对路径
         registry.addResourceHandler("/user/avatar/**")
-                .addResourceLocations("file:///E:/dev/tempImages/");
+                .addResourceLocations("/usr/server/avatars/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 

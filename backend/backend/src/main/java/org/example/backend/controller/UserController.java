@@ -1,16 +1,20 @@
 package org.example.backend.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
 import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.CommentService;
 import org.example.backend.service.ImageUploadService;
+import org.example.backend.service.PostService;
+import org.example.backend.service.UserService;
 import org.example.backend.utils.FileUtils;
 import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,33 +35,38 @@ public class UserController {
     private UserMapper userMapper;
     @Autowired
     private PostMapper postMapper;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private UserService userService;
 
 
     // For login function
     @PostMapping("/login")
     //json: {email,password}
     //As the frontEnd sending data in json format, @RequestBody is needed
-    public Result login(@RequestBody User user){
+    public Result login(@RequestBody User user) {
         String email = user.getEmail();
         String password = user.getPassword();
 
         User ActualUser = userMapper.findByEmail(email);
-        if (ActualUser == null){
+        if (ActualUser == null) {
             return Result.error().message("This email has not been registered");
         }
 
-        if (!password.equals(ActualUser.getPassword())){
+        if (!password.equals(ActualUser.getPassword())) {
             return Result.error().message("Please enter the correct email and password");
         }
-
-        String token = JwtUtils.generateToken((user.getEmail()));
+        String token = JwtUtils.generateToken(email);
         return Result.ok().data("token", token);
     }
 
     // To get user info
     @GetMapping("/info") // "token:xxx“
-    public Result info(String token){
-        if (!JwtUtils.validateToken(token)){
+    public Result info(String token) {
+        if (!JwtUtils.validateToken(token)) {
             return Result.error().message("Invalid token");
         }
         // find user's email by token
@@ -68,32 +77,30 @@ public class UserController {
         int id = user.getId();
         String name = user.getName();
         String avatarPath = user.getAvatarPath();
-        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id); // Avatar path to be changed
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id);
     }
 
     // For logout function
     @PostMapping("/logout") // "remove token and all, see details in front end "
-    public Result logout(){ return Result.ok(); }
+    public Result logout() {
+        return Result.ok();
+    }
 
     // For new user to register
     //json:{email,password,name}
     @PostMapping("/register")
-    public Result register(@RequestBody User user){
+    public Result register(@RequestBody User user) {
         String email = user.getEmail();
-        if (userMapper.findByEmail(email) != null){
+        if (userMapper.findByEmail(email) != null) {
             return Result.error().message("This email has been registered");
         }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", user.getName());
-        if (userMapper.selectCount(queryWrapper) > 0) {
-            return Result.error().message("This name has been registered. Please choose another name");
-        }
+
         if (user.getPassword().length() < 6){
             return Result.error().message("Password must be at least 6 characters long");
         }
 
         int result = userMapper.insert(user);
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error();
@@ -101,35 +108,36 @@ public class UserController {
 
     // For user to change name
     @PostMapping("/updateName")
-    public Result updateName(String name, HttpServletRequest request){
+    public Result updateName(String name, HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        if(user.getName().equals(name)){
+        if (user.getName().equals(name)) {
             return Result.error().message("Please enter a new name");
         }
-        
+
         int result = userMapper.updateName(email, name);
-        if (result > 0){
+        if (result > 0) {
             return Result.ok();
+        } else {
+            return Result.error().message("Invalid update");
         }
-        else { return Result.error().message("Invalid update"); }
     }
 
     // For user to change password
     @PostMapping("/changePassword")
-    public Result changePassword(String oldPassword, String newPassword, HttpServletRequest request){
+    public Result changePassword(String oldPassword, String newPassword, HttpServletRequest request) {
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        if(!user.getPassword().equals(oldPassword)){
+        if (!user.getPassword().equals(oldPassword)) {
             return Result.error().message("Please enter the correct old password");
-        } else if (newPassword.length() < 6){
+        } else if (newPassword.length() < 6) {
             return Result.error().message("Password must be at least 6 characters long");
         } else {
             int result = userMapper.changePassword(email, newPassword);
-            if (result > 0){
+            if (result > 0) {
                 return Result.ok();
             }
             return Result.error().message("Invalid update");
@@ -146,7 +154,7 @@ public class UserController {
     private String path;
 
     @PostMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam("avatar") MultipartFile avatar, HttpServletRequest request){
+    public Result updateAvatar(@RequestParam("avatar") MultipartFile avatar, HttpServletRequest request) {
         if (avatar.isEmpty()) {
             return Result.error().message("Avatar should not be empty");
         }
@@ -155,14 +163,14 @@ public class UserController {
         User user = userMapper.findByEmail(email);
         String avatarPath = user.getAvatarPath();
 
-        if (avatarPath != null){
+        if (avatarPath != null) {
             File tempFile = new File(avatarPath);
             String oldFileName = tempFile.getName();
 
             String realAvatarPath = path + File.separator + oldFileName;
             File file = new File(realAvatarPath);
 
-            if (file.exists()){
+            if (file.exists()) {
                 boolean deleted = file.delete();
                 System.out.println("Avatar deleted = " + deleted);
             }
@@ -178,7 +186,7 @@ public class UserController {
             System.out.println("Upload avatar exception: " + e.getMessage());
         }
 
-        String resourceHandlerPath = "http://localhost:8088/user/avatar/";
+        String resourceHandlerPath = "http://114.55.89.49/user/avatar/";
 
         int result = imageUploadService.imageUpload(resourceHandlerPath + newRandomFileName, email);
         if (result > 0) {
@@ -212,7 +220,7 @@ public class UserController {
         post.setUid(uid);
 
         int result = postMapper.insert(post);
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error().message("Post add failed");
@@ -235,8 +243,9 @@ public class UserController {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
 
-        int result = postMapper.deleteById(postId);
-        if(result > 0){
+        int result0 = postMapper.deleteById(postId);
+        commentService.deleteAllCommentsToPost(postId);
+        if(result0 > 0){
             return Result.ok();
         }
         return Result.error().message("Post delete failed");
@@ -256,10 +265,25 @@ public class UserController {
         }
 
         int result = postMapper.updatePost(post.getId(), post.getTitle(), post.getContent(), post.getTime());
-        if(result > 0){
+        if (result > 0) {
             return Result.ok();
         }
         return Result.error().message("Post update failed");
     }
 
+    @GetMapping("/post/getHistory")
+    public Result getHistory(@RequestParam(defaultValue = "1") int pageNum,
+                             @RequestParam(defaultValue = "20") int pageSize,
+                             HttpServletRequest request) {
+
+        String token = request.getHeader("X-Token");
+        String email = JwtUtils.getClaimsByToken(token).getSubject();
+        User user = userMapper.findByEmail(email);
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Post> postHistory = userService.findHistoryOfUser(user);
+        PageInfo<Post> pageInfo = new PageInfo<>(postHistory);
+
+        return Result.ok().data("pageInfo", pageInfo);
+    }
 }

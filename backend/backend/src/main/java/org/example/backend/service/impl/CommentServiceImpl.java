@@ -58,4 +58,12 @@ public class CommentServiceImpl implements CommentService {
 
         return commentMapper.insert(comment);
     }
+
+    public void deleteAllCommentsToPost(@RequestParam("postId") int postId) {
+        List<Comment> comments = commentMapper.findByPostIdAndParentCommentIdNull(postId,-1);
+        for (Comment comment : comments) {
+            int id = comment.getId();
+            commentMapper.deleteById(id);
+        }
+    }
 }

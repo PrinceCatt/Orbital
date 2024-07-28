@@ -3,12 +3,17 @@ package org.example.backend.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
+import org.example.backend.entity.User;
 import org.example.backend.mapper.PostMapper;
 import org.example.backend.mapper.UserMapper;
+import org.example.backend.service.UserService;
+import org.example.backend.utils.JwtUtils;
 import org.example.backend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,6 +25,8 @@ public class PostController {
     private PostMapper postMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/find/user")
     public Result getPostsOfUser(@RequestParam int uid,
@@ -43,10 +50,23 @@ public class PostController {
 
     // Find post by postId
     @GetMapping("/find/id")
-    public Result findPost(int postId) {
+    public Result findPost(int postId,
+                           HttpServletRequest request) {
+        String token = request.getHeader("X-Token");
+        if (token != null) {
+            String email = JwtUtils.getClaimsByToken(token).getSubject();
+            User user = userMapper.findByEmail(email);
+            int result = userService.addHistoryByUser(postId, user);
+            if (result == 0) {
+                return Result.error().message("Add history failed");
+            }
+        }
+
         Post post = postMapper.selectById(postId);
-        String name = userMapper.findNameByUid(post.getUid());
-        post.setAuthor(name);
+        User user = userMapper.selectById(post.getUid());
+
+        post.setAuthor(user.getName());
+        post.setAuthorAvatar(user.getAvatarPath());
         return Result.ok().data("post", post);
     }
 
@@ -59,6 +79,7 @@ public class PostController {
         PageInfo<Post> pageInfo = new PageInfo<>(posts);
         return Result.ok().data("pageInfo",pageInfo);
     }
+
 
 
 }

@@ -13,7 +13,7 @@
     border: true
     :header-cell-style="{'text-align':'center'}"
     :cell-style="{'text-align':'center'}"
-    empty-text="Oops, there is no post for this section yet."
+    empty-text="Oops, there is no post in this section yet."
     @row-click="openPost"
     align="left"
     style="width: 100%;margin:auto">
@@ -90,7 +90,6 @@ export default {
             this.posts = res.data.pageInfo.list
             this.total = res.data.pageInfo.total
             this.pages = res.data.pageInfo.pages
-            this.pageSize = res.data.pageInfo.pageSize
             resolve(this.posts)
         }).catch(err => {
             reject(err)
@@ -110,7 +109,6 @@ export default {
 
     openPost(row, column, cell, event){
       let id = row.id
-      console.log(id) // for debug
       this.$router.push({path: `/post/${id}`})
     }
   },

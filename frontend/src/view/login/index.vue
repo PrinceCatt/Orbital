@@ -73,7 +73,7 @@ export default {
             .dispatch("user/login", this.loginForm)
             .then(() => {
               this.$router.push({ path: "/discovery" });
-              location.replace("");
+              location.reload("");
               this.loading = false;
             })
             .catch(() => {
@@ -91,7 +91,7 @@ export default {
     },
 
     register() {
-      this.$router.push({ path: "register" });
+      this.$router.push({ path: "/register" });
     },
   },
 };

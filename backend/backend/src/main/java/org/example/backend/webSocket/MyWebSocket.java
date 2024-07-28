@@ -89,7 +89,7 @@ public class MyWebSocket {
 
         webSocketSet.remove(this);  //delete from the set
         uidSessionIdMap.remove(uid);
-        System.out.println("有一连接关闭！当前在线人数为" + webSocketSet.size());
+        System.out.println("A connection closed！Currently online number:" + webSocketSet.size());
 
         sendOnlineUsers();
     }

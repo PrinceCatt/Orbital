@@ -37,10 +37,14 @@ public class CommentController {
     @PostMapping("/new")
     public Result addComment(@RequestBody Comment comment,
                              HttpServletRequest request) {
+
+        System.out.println(comment.getLikes());
+
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
         comment.setUid(user.getId());
+        
 
         int parentId = comment.getParentCommentId();
         if (parentId >= 0) {

@@ -55,6 +55,11 @@ public class LikedService {
             int likes = (int) redisTemplate.opsForHash().get("MapUserLikesCount", commentId);
             Comment currComment = commentMapper.selectById(commentId);
             currComment.setLikes(likes);
+
+            if (commentId == 35) {
+                System.out.println(likes);
+            }
+
             commentMapper.updateById(currComment);
         }
     }

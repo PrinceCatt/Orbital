@@ -1,5 +1,7 @@
 import request from '@/utils/request'
 
+
+//register
 // {name, email, password}
 export function register(data) {
   return request({
@@ -9,6 +11,7 @@ export function register(data) {
   })
 }
 
+//login
 // {email, password}
 export function login(data) {
   return request({
@@ -18,6 +21,7 @@ export function login(data) {
   })
 }
 
+//to get user information
 // {token}
 export function getInfo(token) {
   return request({
@@ -27,6 +31,7 @@ export function getInfo(token) {
   })
 }
 
+//logout
 export function logout() {
   return request({
     url: '/user/logout',
@@ -34,6 +39,7 @@ export function logout() {
   })
 }
 
+//update username
 // {newName}
 export function updateName(name) {
   return request({
@@ -53,6 +59,7 @@ export function updateAvatar(avatar) {
   })
 }
 
+//to get all posts of user's own
 // {pageNum}
 export function myPosts(pageNum) {
   return request({
@@ -62,11 +69,29 @@ export function myPosts(pageNum) {
   })
 }
 
+//to delete a certain post of user's own
 //{postId}
 export function deletePost(postId) {
   return request({
     url: '/user/post/delete',
     method: 'delete',
     params: {postId}
+  })
+}
+
+//to add a postId to browse
+export function addHistory(postId) {
+  return request({
+    url: '/user/post/addHistory',
+    method: 'post',
+    params: {postId}
+  })
+}
+
+export function getHistory(pageNum) {
+  return request({
+    url: '/user/post/getHistory',
+    method: 'get',
+    params: {pageNum}
   })
 }
