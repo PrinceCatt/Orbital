@@ -20,9 +20,7 @@
                 <el-button @click="openPage('Gaming')">Gaming</el-button>
               </el-menu-item>
               <el-menu-item index="1-4">
-                <el-button @click="openPage('LightNovel')"
-                  >LightNovel</el-button
-                >
+                <el-button @click="openPage('LightNovel')">LightNovel</el-button>
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -31,9 +29,44 @@
             <template slot="title">Music</template>
             <el-menu-item-group>
               <template slot="title"></template>
-              <el-menu-item index="2-1">Chinese</el-menu-item>
-              <el-menu-item index="2-2">English</el-menu-item>
-              <el-menu-item index="2-2">Spanish</el-menu-item>
+              <el-menu-item index="2-1">
+                <el-button @click="openPage('Music-Chinese')">Chinese</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-2">
+                <el-button @click="openPage('Music-English')">English</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-3">
+                <el-button @click="openPage('Music-Japanese')">Japanese</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-4">
+                <el-button @click="openPage('Music-Korean')">Korean</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-5">
+                <el-button @click="openPage('Music-Spanish')">Spanish</el-button>
+                </el-menu-item>
+              <el-menu-item index="2-6">
+                <el-button @click="openPage('Music-Others')">Others</el-button>
+                </el-menu-item>  
+            </el-menu-item-group>
+          </el-submenu>
+
+          <el-submenu index="3">
+            <template slot="title">Life in NUS</template>
+            <el-menu-item-group>
+              <template slot="title"></template>
+              <el-menu-item index="3-1">
+                <el-button @click="openPage('NUS-Study')">Study</el-button>
+                </el-menu-item>
+              <el-menu-item index="3-2">
+                <el-button @click="openPage('NUS-Relationship')">Relationship</el-button>
+                </el-menu-item>
+              <el-menu-item index="3-3">
+                <el-button @click="openPage('NUS-Games')">Physical Games</el-button>
+                </el-menu-item>
+              <el-menu-item index="3-4">
+                <el-button @click="openPage('NUS-Pals')">Pals</el-button>
+                </el-menu-item>
+
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
@@ -53,6 +86,13 @@
         <el-main>
 
           <router-view></router-view>
+          <h1>NUSurf</h1> 1.0 version
+          <br>
+          <h1>MaYitao, Zhang Zhuoyu</h1>
+          <br>
+          You may contact us through emails:
+          <br>
+          2991588053@qq.com 1208399599@qq.com
           
         </el-main>
       </el-container>

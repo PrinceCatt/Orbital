@@ -17,7 +17,11 @@
       <br>
       <private-chat v-if="Visible" ref="private"></private-chat>
       <br>
-      Message: <input type="text" v-model="text">
+      Message: <el-input v-model="text" 
+      type="textarea"
+      :rows="2"
+      maxlength="1000" show-word-limit>z
+        </el-input>
       <button @click="send()">Send</button>
       <br>
       <br>
@@ -99,9 +103,8 @@ export default {
     connectWebSocket() {
         if ('WebSocket' in window) {
           var token = this.$store.state.user.token
-          this.websocket = new WebSocket('ws://localhost:8088/ws', [token])
+          this.websocket = new WebSocket('ws://114.55.89.49:8088/ws', [token])
           this.initWebSocket()
-          this.connected = true
         } else { alert('Current browser does not support websocket') }
     },
       
@@ -125,7 +128,7 @@ export default {
     this.setMessageInnerHTML("An error occurred during WebSocket connection")
   },
   setOnopenMessage() {
-    this.setMessageInnerHTML("WebSocket connection success")
+    this.setMessageInnerHTML("Chat server connection success")
   },
   setOnmessageMessage(event) {
     var json = JSON.parse(event.data)
@@ -178,5 +181,8 @@ export default {
   margin-top:40px;
   border:1px solid gray;
   padding:20px;
+}
+.el-textarea {
+  width: 400px;
 }
 </style>

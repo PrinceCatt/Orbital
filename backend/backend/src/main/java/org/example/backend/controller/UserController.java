@@ -1,8 +1,6 @@
 package org.example.backend.controller;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.backend.entity.Post;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,6 +42,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     // For login function
     @PostMapping("/login")
     //json: {email,password}
@@ -61,8 +59,7 @@ public class UserController {
         if (!password.equals(ActualUser.getPassword())) {
             return Result.error().message("Please enter the correct email and password");
         }
-
-        String token = JwtUtils.generateToken((user.getEmail()));
+        String token = JwtUtils.generateToken(email);
         return Result.ok().data("token", token);
     }
 
@@ -80,7 +77,7 @@ public class UserController {
         int id = user.getId();
         String name = user.getName();
         String avatarPath = user.getAvatarPath();
-        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id); // Avatar path to be changed
+        return Result.ok().data("email", email).data("name", name).data("avatar", avatarPath).data("id", id);
     }
 
     // For logout function
@@ -97,12 +94,8 @@ public class UserController {
         if (userMapper.findByEmail(email) != null) {
             return Result.error().message("This email has been registered");
         }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", user.getName());
-        if (userMapper.selectCount(queryWrapper) > 0) {
-            return Result.error().message("This name has been registered. Please choose another name");
-        }
-        if (user.getPassword().length() < 6) {
+
+        if (user.getPassword().length() < 6){
             return Result.error().message("Password must be at least 6 characters long");
         }
 
@@ -193,7 +186,7 @@ public class UserController {
             System.out.println("Upload avatar exception: " + e.getMessage());
         }
 
-        String resourceHandlerPath = "http://localhost:8088/user/avatar/";
+        String resourceHandlerPath = "http://114.55.89.49/user/avatar/";
 
         int result = imageUploadService.imageUpload(resourceHandlerPath + newRandomFileName, email);
         if (result > 0) {
@@ -246,11 +239,9 @@ public class UserController {
             return Result.error().message("Post delete failed. You are not allowed to delete others' posts");
         }
 
-        //before deleting the post, delete its comments, if any
+        int result0 = postMapper.deleteById(postId);
         commentService.deleteAllCommentsToPost(postId);
-
-        int result = postMapper.deleteById(postId);
-        if (result > 0) {
+        if(result0 > 0){
             return Result.ok();
         }
         return Result.error().message("Post delete failed");
@@ -277,19 +268,16 @@ public class UserController {
     }
 
     @GetMapping("/post/getHistory")
-    public Result getHistory(int pageNum,
+    public Result getHistory(@RequestParam(defaultValue = "1") int pageNum,
+                             @RequestParam(defaultValue = "20") int pageSize,
                              HttpServletRequest request) {
 
         String token = request.getHeader("X-Token");
         String email = JwtUtils.getClaimsByToken(token).getSubject();
         User user = userMapper.findByEmail(email);
-        String history = user.getHistory();
 
-        List<Integer> converted = userService.convertStringToIntegerList(history);
-
-        List<Post> postHistory = postService.getPostsByIds(converted);
-
-        PageHelper.startPage(pageNum, 10);
+        PageHelper.startPage(pageNum, pageSize);
+        List<Post> postHistory = userService.findHistoryOfUser(user);
         PageInfo<Post> pageInfo = new PageInfo<>(postHistory);
 
         return Result.ok().data("pageInfo", pageInfo);

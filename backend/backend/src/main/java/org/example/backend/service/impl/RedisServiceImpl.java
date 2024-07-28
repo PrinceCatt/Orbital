@@ -37,12 +37,14 @@ public class RedisServiceImpl implements RedisService {
     public void saveLikeToRedis(int commentId, int giveUserId) {
         String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
         redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLiked, key, LikedStatusEnum.Like.getCode());
+        System.out.println("--------------------------------------------saved");
     }
 
     @Override
     public void unlikeFromRedis(int commentId, int giveUserId) {
         String key = RedisKeyUtils.getLikedKey(commentId, giveUserId);
         redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLiked, key, LikedStatusEnum.Unlike.getCode());
+        System.out.println("--------------------------------------------unliked");
     }
 
 
@@ -59,18 +61,22 @@ public class RedisServiceImpl implements RedisService {
         String key = RedisKeyUtils.getLikedKey(commentId, userId);
 
         //the user like is not created or something went wrong so the increment of like count terminates
-        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == null) {
+        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == null || // user like not created
+                (int) redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == 0)  // status being unliked which is quite impossible
+        {
           return;
         }
 
         //the like count is not created so create one and increase
-        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId) == null) {
-            redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLikesCount, commentId, 0);
-            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1);
+        if(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId) == null) {  // if user lies exists and being 1
+            redisTemplate.opsForHash().put(RedisKeyUtils.MapUserLikesCount, commentId, 0);  // create a like count with initial value of 0
+            System.out.println("--------------------------------------------incrementLikeCount 1");
+            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1); // increment
         }
 
         //normal condition: like count exists so increase by one
-        else if("0".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLikesCount, commentId))) {
+        else {
+            System.out.println("--------------------------------------------incrementLikeCount 2");
             redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, 1);
         }
     }
@@ -78,8 +84,12 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void decrementLikeCount(int commentId, int userId) {
         String key = RedisKeyUtils.getLikedKey(commentId, userId);
-        if("1".equals(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key))) {
-            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, -1);
+        System.out.println("--------------------------------------------decrementInit");
+        System.out.println(redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key));
+
+        if(((int)redisTemplate.opsForHash().get(RedisKeyUtils.MapUserLiked, key) == 0)) {  // this is the status of user like being already unliked
+            System.out.println("--------------------------------------------decrementLikeCount");
+            redisTemplate.opsForHash().increment(RedisKeyUtils.MapUserLikesCount, commentId, -1);  // decrement
         }
     }
 

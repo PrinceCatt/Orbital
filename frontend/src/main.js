@@ -8,7 +8,7 @@ import router from './router'
 import store from './store'
 import locale from 'element-ui/lib/locale/lang/en'
 
-axios.defaults.baseURL = "http://localhost:8088"
+axios.defaults.baseURL = "http://114.55.89.49:8088"
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
@@ -35,7 +35,7 @@ router.beforeEach(function(to, from, next) {
       });
     }
   } else {
-    // not need to login
+    // no need to login
     next();
   }
 });

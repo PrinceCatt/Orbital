@@ -29,7 +29,16 @@
         label="Title"
         width="200">
       </el-table-column>
-
+      <el-table-column
+        fixed="right"
+        label="Actions"
+        width="180">
+        <template slot-scope="scope">
+          <el-button type="text" size="midium" @click="goTo(scope.row.id)">details</el-button>
+          <el-button @click="updatePost(scope.row.id)" type="text" size="midium">update</el-button>
+          <el-button @click="deletePost(scope.row)" type="text" size="midium">delete</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="pagaination-tool" style="padding:20px 110px 70px">
       <div class="count-show">
@@ -91,7 +100,7 @@ export default {
       },
 
       goTo(postId){
-        this.$router.replace(`post/${postId}`)
+        this.$router.push({path: `/post/${postId}`})
       }
       ,
       deletePost(row) {
@@ -116,6 +125,10 @@ export default {
           }).catch(err => {
               console.log(err)
           })
+      },
+
+      updatePost(postId) {
+        this.$router.push({path: `update/${postId}`})
       },
       
       newPost() {

@@ -15,7 +15,7 @@
     <el-button type="text" @click="open">{{Login}}</el-button>
     </el-menu-item>
     <el-submenu index="2">
-      <template slot="title">My</template>
+      <template slot="title">User Space</template>
       <el-menu-item index="2-1">
         <el-button type="text" @click="myProfile">Profile</el-button>
       </el-menu-item>
@@ -25,13 +25,6 @@
       <el-menu-item index="2-3">
         <el-button type="text" @click="myHistory">History</el-button>
       </el-menu-item>
-      <el-menu-item index="2-4">Favorite</el-menu-item>
-      <el-submenu index="2-5">
-        <template slot="title">Message</template>
-        <el-menu-item index="2-4-1">@me</el-menu-item>
-        <el-menu-item index="2-4-2">comment me</el-menu-item>
-        <el-menu-item index="2-4-3">Liked me</el-menu-item>
-      </el-submenu>
     </el-submenu>
     <el-menu-item index="3">
       
@@ -78,12 +71,7 @@
 
         //open my profile
         myProfile(){
-          if (this.$store.getters.token == 'test_template_token' || this.$store.getters.token == null) {
-            alert("Please login first")
-            this.openLogin()
-          } else {
-            this.$router.push({path: '/my/profile'})
-          }
+          this.$router.push({path: '/my/profile'})
         },
 
         //open my posts

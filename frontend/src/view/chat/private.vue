@@ -60,7 +60,7 @@
   <el-input
   :rows="5"
   type="textarea"
-  placeholder="请输入内容"
+  placeholder="Please enter text"
   @keyup.enter.native="submitMessage"
   v-model="text"
   >
@@ -198,10 +198,12 @@ import { getMessages } from "@/api/chat";
   z-index: 100;
   bottom: 0px;
   overflow: scroll;
+}
   ul {
     display: flex;
     flex-wrap: wrap;
     padding: 10px;
+  }
     li {
       cursor: pointer;
       width: 10%;
@@ -209,8 +211,7 @@ import { getMessages } from "@/api/chat";
       list-style: none;
       text-align: center;
     }
-  }
-}
+  
 .submit-btn {
   margin: 0 15px 10px 0;
   float: right;
@@ -222,6 +223,9 @@ import { getMessages } from "@/api/chat";
 .message-me{
   width: 98%;
   text-align: right;
+}
+.el-textarea {
+  width: 100%;
 }
 
 </style>

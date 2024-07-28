@@ -1,6 +1,8 @@
 <template>
     
     <div>
+      <h3>It only includes the latest 20 posts you viewed</h3>
+
         <el-table
         :data="posts"
         border

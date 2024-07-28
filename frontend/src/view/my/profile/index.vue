@@ -30,7 +30,7 @@
       <el-upload
         class="avatar-uploader"
         name="avatar"
-        action="http://localhost:8088/user/updateAvatar"
+        action="http://114.55.89.49:8088/user/updateAvatar"
         :show-file-list="false"
         :on-success="handleAvatarUpload"
         :before-upload="beforeAvatarUpload"
@@ -67,10 +67,23 @@ export default {
     };
   },
 
+  created() {
+    this.getInfo();
+  },
+
   methods: {
+    getInfo() {
+      this.$store.dispatch('user/getInfo', this.$store.state.user.token).then(() => {
+        this.email = this.$store.state.user.email;
+        this.name = this.$store.state.user.name;
+        this.avatar = this.$store.state.user.avatar;
+      })
+    },
+
     handleAvatarUpload(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.$router.replace("/profile");
+      this.getInfo();
+      this.imageUrl = "";
     },
 
     beforeAvatarUpload(file) {
@@ -98,7 +111,8 @@ export default {
               this.$message({
                 type: "success",
                 message: "Your new username is: " + value,
-              });
+              })
+              this.getInfo();
             })
             .catch(() => {
               this.$message({

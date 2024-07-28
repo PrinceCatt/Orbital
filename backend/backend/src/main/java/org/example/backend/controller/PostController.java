@@ -62,8 +62,10 @@ public class PostController {
         }
 
         Post post = postMapper.selectById(postId);
-        String name = userMapper.findNameByUid(post.getUid());
-        post.setAuthor(name);
+        User user = userMapper.selectById(post.getUid());
+
+        post.setAuthor(user.getName());
+        post.setAuthorAvatar(user.getAvatarPath());
         return Result.ok().data("post", post);
     }
 

@@ -52,7 +52,6 @@ const actions = {
     })
   },
 
-
   register({ commit }, userInfo) {
     const { email, password, name } = userInfo
     return new Promise((resolve, reject) => {
