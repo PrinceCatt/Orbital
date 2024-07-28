@@ -136,7 +136,7 @@
                   <span class="author">{{ reply.content }}</span> 
                   <span class="author-time">{{ reply.createTime }}</span>
                 </div>
-                <el-badge :value="comment.likes" class="item">
+                <el-badge :value="reply.likes" class="item">
                   <el-button
                     type="primary"
                     icon="el-icon-edit"
